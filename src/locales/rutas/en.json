@@ -1,0 +1,24 @@
+{
+  "rutas": {
+    "inicio": "home",
+    "clinica": "clinic",
+    "ventas": "sales",
+    "inventarios": "inventory",
+    "ajustes": "settings",
+    "consultas": "consultations",
+    "consultas-nuevo": "new",
+    "consultas-modificar": "modify",
+    "consultas-mediciones": "measures",
+    "consultas-atencion": "atention",
+    "pacientes": "patientes",
+    "pacientes-nuevo": "new",
+    "pacientes-modificar": "modify",
+    "medicos": "doctors",
+    "citas": "appointments",
+    "clientes": "customers",
+    "facturas": "invoices",
+    "seguridad": "security",
+    "usuario": "user",
+    "acceder": "login"
+  }
+}

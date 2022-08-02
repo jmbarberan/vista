@@ -1,0 +1,69 @@
+{
+  "name": "viniapro",
+  "version": "4.0.0",
+  "private": true,
+  "engines": {
+    "node": "14.17.5"
+  },
+  "scripts": {
+    "dev": "vue-cli-service serve",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "@mdi/font": "^5.9.55",
+    "@types/vuelidate": "^0.7.14",
+    "axios": "^0.21.1",
+    "bootstrap-vue": "^2.21.2",
+    "core-js": "^3.10.1",
+    "md5": "^2.3.0",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
+    "quill-delta-to-html": "^0.12.0",
+    "register-service-worker": "^1.7.1",
+    "v-contextmenu": "^2.9.0",
+    "v-runtime-template": "^1.10.0",
+    "vue": "^2.6.11",
+    "vue-contextmenu": "^1.5.10",
+    "vue-html-to-paper": "^1.3.1",
+    "vue-i18n": "^8.24.3",
+    "vue-line-clamp": "^1.3.2",
+    "vue-loader": "^15.9.6",
+    "vue-moment": "^4.1.0",
+    "vue-perfect-scrollbar": "^0.2.1",
+    "vue-quill-editor": "^3.0.6",
+    "vue-radial-progress": "^0.3.2",
+    "vue-router": "^3.2.0",
+    "vue-runtime-helpers": "^1.1.2",
+    "vue-scrollto": "^2.20.0",
+    "vue-search-select": "^2.9.3",
+    "vue-select": "^3.11.2",
+    "vue-shortkey": "^3.1.7",
+    "vue-switches": "^2.0.1",
+    "vuejs-datepicker": "^1.6.2",
+    "vuelidate": "^0.7.6",
+    "vuetable-2": "^1.3.1",
+    "vuex": "^3.4.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-pwa": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "^4.1.1",
+    "mini-css-extract-plugin": "^0.8.2",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^8.0.2",
+    "vue-template-compiler": "^2.6.11",
+    "webpack-bundle-analyzer": "^3.9.0"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
