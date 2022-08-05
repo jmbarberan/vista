@@ -11,6 +11,7 @@ import modVentas from "./modules/ventas";
 import modMaestros from "./modules/maestros";
 import modSubscripciones from "./modules/subscripciones";
 import modCxc from "./modules/cxc";
+import modNomina from "./modules/nomina";
 import { setCurrentLanguage, setEmpresa, getCurrentSubscriber } from '../utils'
 
 Vue.use(Vuex)
@@ -125,6 +126,7 @@ export default new Vuex.Store({
     ventas: modVentas,
     maestros: modMaestros,
     subscripciones: modSubscripciones,
-    cxc: modCxc
+    cxc: modCxc,
+    nomina: modNomina
   }
 })

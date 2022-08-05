@@ -139,9 +139,12 @@ export default {
             }
         },
         loginError(val) {
-            console.log(val)
             if (val != null) {
-                this.$notify("error", "No se puede acceder", val, {
+                let msj = "Usuario o contraseña invalidos"            
+                if (val != undefined && val.data != undefined) {
+                    msj = val.data;
+                }
+                this.$notify("error", "No se puede acceder", msj, {
                     duration: 3000,
                     permanent: false
                 });

@@ -454,7 +454,7 @@
         "validacion": {
           "nombres": "Debe digitar los apellidos y nombres",
           "cedula": "se requiere una cédula/RUC que sea válido",
-          "direccion": "Se debe digitar la dirección del paciente",
+          "direccion": "Se debe digitar la dirección",
           "email": "El correo electrónico no es válido",
           "telefonos": "El teléfono solo debe contener números"
         },

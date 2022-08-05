@@ -74,7 +74,7 @@ export default {
         })
         .catch(function(e) {
           setCurrentUser(null);
-            commit('setError', e)
+            commit('setError', e.response)
             setTimeout(() => {
               commit('clearError')
             }, 3000)
