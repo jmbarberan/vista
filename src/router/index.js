@@ -9,6 +9,7 @@ import inventariosRutas from "@/router/modulos/inventarios";
 import ajustesRutas from "@/router/modulos/ajustes";
 import seguridadRutas from "@/router/modulos/seguridad"; 
 import cxcRutas from "@/router/modulos/cxc"; 
+import nominaRutas from "@/router/modulos/nomina"; 
 
 Vue.use(VueRouter);
 
@@ -47,6 +48,14 @@ const routes = [
         redirect: `cxc/cuenta-corriente`,
         meta: { roles: [UserRole.Admin, UserRole.Agente] },
         children: cxcRutas()
+      },
+      {
+        path: "nomina",
+        component: () =>
+        import(/* webpackChunkName: "nomina" */ "@/views/nomina"),
+        redirect: `nomina/empleados`,
+        meta: { roles: [UserRole.Admin] },
+        children: nominaRutas()
       },
       {
         path: traducir("rutas.ajustes"),

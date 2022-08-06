@@ -114,14 +114,14 @@ export default function inventariosRutas() {
       name: "productos-modificar",
       path: `${traducir("rutas.productos")}/${traducir("rutas.productos-modificar")}`,
       component: () =>
-        import(/* webpackChunkName: "medicos-modificar" */ "@/views/inventarios/ProductosEditor.vue"),
+        import(/* webpackChunkName: "productos-modificar" */ "@/views/inventarios/ProductosEditor.vue"),
       meta: { roles: [UserRole.Admin, UserRole.Bodega] },
     },
     {
       name: "productos-crear",
       path: `${traducir("rutas.productos")}/${traducir("rutas.productos-nuevo")}`,
       component: () =>
-        import(/* webpackChunkName: "medicos-crear" */ "@/views/inventarios/ProductosEditor.vue"),
+        import(/* webpackChunkName: "productos-crear" */ "@/views/inventarios/ProductosEditor.vue"),
       meta: { roles: [UserRole.Admin, UserRole.Bodega] },
     },
     {

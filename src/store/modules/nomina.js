@@ -1,6 +1,7 @@
 import { empleadosBuscar, empleadoRegistrado, empleadoGuardar, 
-  empleadoPorCedula, empleadoModificarEstado } from "@/rutas/nomina";
-import { getCurrentSubscriber } from "../../utils/index";
+  empleadoPorCedula, empleadoModificarEstado, cargosPorEstado
+} from "@/rutas/nomina";
+import { getRequestConfig } from "../../utils/index";
 import axios from 'axios';
 
 const nomina = {
@@ -68,51 +69,24 @@ const nomina = {
   },
   actions: {
     async empleadosBuscar(context, p) {
-      let bkend = empleadosBuscar(p)
-      let config = {
-        url: bkend.ruta,
-        method: bkend.metodo,
-        crossorigin: true
-      };
-      return await axios(config)
+      return await axios(getRequestConfig(empleadosBuscar(p)))
     },
     async empleadoRegistrado(context, p) {
-      let bkend = empleadoRegistrado(p)
-      let config = {
-        url: bkend.ruta,
-        method: bkend.metodo,
-        crossorigin: true
-      }
-      return await axios(config);
+      return await axios(getRequestConfig(empleadoRegistrado(p)));
     },
     async empleadoGuardar(context, p) {
-      let bkend = empleadoGuardar();
-      let config = {
-        url: bkend.ruta,
-        data: JSON.stringify(p),
-        method: bkend.metodo,
-        crossorigin: true
-      };
-      return await axios(config);
+      return await axios(getRequestwDataConfig(empleadoGuardar(), p));
     },
     async empleadoPorCedula(context, p) {
-      let bkend = empleadoPorCedula(p)
-      let config = {
-        url: bkend.ruta,
-        method: bkend.metodo,
-        crossorigin: true
-      }
-      return await axios(config);
+      return await axios(getRequestConfig(empleadoPorCedula(p)));
     },
     async empleadoModificarEstado(context, p) {
-      let bkend = empleadoModificarEstado(p)
-      let config = {
-        url: bkend.ruta,
-        method: bkend.metodo,
-        crossorigin: true
-      }
-      return await axios(config);
+      return await axios(getRequestConfig(empleadoModificarEstado(p)));
     },
+    
+    async cargosPorEstado(context, p) {      
+      return await axios(getRequestConfig(cargosPorEstado(p)));
+    }
   }
 }
 

@@ -18,7 +18,7 @@
     </b-row>
     <b-row>
       <b-colxx xxs="12">
-        <b-card class="mb-4">
+        <b-card class="mb-4 mt-2">
           <b-table
             ref="custom-table"
             class="vuetable"
@@ -95,6 +95,7 @@
   </div>
 </template>
 <script>
+import { getCurrentSubscriber } from "../../utils/index";
 import EncabezadoTablas from "@/containers/views/EncabezadoTablas";
 export default {
   components: {
@@ -144,8 +145,8 @@ export default {
       ],
       empleados: [],
       busquedaAtributos: [
-        this.$t("vista.inventarios.productos.campos.nombre"),
-        this.$t("vista.ventas.clientes.campos.cedula")
+        "Nombres",
+        "Cedula"
       ],
       busquedaEjecutando: false
     }
@@ -179,8 +180,19 @@ export default {
       this.busquedaEjecutando = true;
       this.empleados = [];
       this.paginaActual = 1;
+      let buscaAtrib = "nombres";
+      if (this.$store.state.clinica.tablasBuscador.atributoIdx == 1) {
+        buscaAtrib = "cedula";
+      }
       this.$store
-        .dispatch("nomina/empleadosBuscar")
+        .dispatch("nomina/empleadosBuscar", {
+          sub: getCurrentSubscriber().id,
+          emp: this.$store.state.empresaAccedida.id,
+          tipo: this.$store.state.clinica.tablasBuscador.extendida ? 1 : 0,
+          atrib: buscaAtrib,
+          estado: this.$store.state.clinica.tablasBuscador.eliminados ? 9 : 0,
+          filtro: this.$store.state.clinica.tablasBuscador.texto
+        })
         .then(function(r) {
           if (r.data != undefined) {
             this.empleados = r.data;
@@ -209,7 +221,7 @@ export default {
         }.bind(this));
     },
     modificar(p) {
-      this.abrirEditor("empleados-modificar", p.item.Id, p.item);
+      this.abrirEditor("empleados-modificar", p.item.id, p.item);
     },
     crear() {
       this.abrirEditor("empleados-crear", 0, null);
@@ -232,7 +244,7 @@ export default {
     modificarEstado(pid, pest, cmd) {
       this.busquedaEjecutando = true;
       this.$store
-        .dispatch("nominac/productoModificarEstado", { 
+        .dispatch("nomina/empleadoModificarEstado", { 
           id: pid,
           estado: pest
          })
@@ -263,7 +275,7 @@ export default {
   computed: {
     total() {
       if (!this.busquedaEjecutando) {
-        return this.productos.length;
+        return this.empleados.length;
       } else {
         return  0;
       }
@@ -278,10 +290,55 @@ export default {
     }
   },
   mounted() {
-    
+    if (this.$store.state.nomina.empleadosBuscadorCache.lista.length > 0) {
+      this.empleados = this.$store.state.nomina.empleadosBuscadorCache.lista;
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosLista', []);
+    }
+    if (this.$store.state.nomina.empleadosBuscadorCache.texto.length > 0) {
+      this.$store.commit('clinica/setBuscaTablasTexto', this.$store.state.nomina.empleadosBuscadorCache.texto);
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosTexto', '');
+    }
+    if (this.$store.state.nomina.empleadosBuscadorCache.atributo.length > 0) {
+      this.$store.commit('clinica/setBusquedaAtributo', this.$store.state.nomina.empleadosBuscadorCache.atributo);
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosAtributo', '');
+    } else {
+      this.$store.commit("clinica/setBusquedaAtributo", "Nombre");
+    }
+    if (this.$store.state.nomina.empleadosBuscadorCache.atributoIdx >= 0) {
+      this.$store.commit('clinica/setBusquedaAtributoIdx', this.$store.state.nomina.empleadosBuscadorCache.atributoIdx);
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosAtributoIdx', 0);
+    }
+    if (this.$store.state.nomina.empleadosBuscadorCache.extendida) {
+      this.$store.commit('clinica/setBuscaTablasExtendida', this.$store.state.nomina.empleadosBuscadorCache.extendida);
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosExtendida', false);
+    }
+    if (this.$store.state.nomina.empleadosBuscadorCache.eliminados) {
+      this.$store.commit('clinica/setBuscaTablasExtendida', this.$store.state.nomina.empleadosBuscadorCache.eliminados);
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosEliminados', false);
+    }
   },
   beforeDestroy() {
-    
+    this.$store.commit('nomina/setCacheBusquedaEmpleadosLista', this.empleados);
+    if (this.$store.state.clinica.tablasBuscador.texto.length > 0) {
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosTexto', this.$store.state.clinica.tablasBuscador.texto);
+      this.$store.commit('clinica/setBuscaTablasTexto', '');
+    }
+    if (this.$store.state.clinica.tablasBuscador.atributo.length > 0) {
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosAtributo', this.$store.state.clinica.tablasBuscador.atributo);
+      this.$store.commit('clinica/setBusquedaAtributo', '');
+    }
+    if (this.$store.state.clinica.tablasBuscador.atributoIdx >= 0) {
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosAtributoIdx', this.$store.state.clinica.tablasBuscador.atributoIdx);
+      this.$store.commit('clinica/setBusquedaAtributoIdx', 0);
+    }
+    if (this.$store.state.clinica.tablasBuscador.extendida) {
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosExtendida', this.$store.state.clinica.tablasBuscador.extendida);
+      this.$store.commit('clinica/setBuscaTablasExtendida', false);
+    }
+    if (this.$store.state.clinica.tablasBuscador.eliminados) {
+      this.$store.commit('nomina/setCacheBusquedaEmpleadosEliminados', this.$store.state.clinica.tablasBuscador.eliminados);
+      this.$store.commit('clinica/setBuscaTablasEliminados', false);
+    }
   },
 }
 </script>

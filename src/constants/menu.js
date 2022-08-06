@@ -140,6 +140,20 @@ const data = [
     ]
   },
   {
+    id: "nomina",
+    icon: "iconsminds-address-book-2",
+    label: "menu.nomina.titulo",
+    to: `/nomina`,
+    subs: [
+      {
+        icon: "iconsminds-business-mens",
+        label: "menu.nomina.empleados.titulo",
+        to: `/nomina/empleados`,
+        roles: [UserRole.Admin], 
+      },
+    ]
+  },
+  {
     id: "cajas",
     icon: "iconsminds-cash-register-2",
     label: "menu.cajas.titulo",

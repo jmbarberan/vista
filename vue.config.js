@@ -36,6 +36,7 @@ module.exports = {
   productionSourceMap: false,
   assetsDir: './assets/',
   configureWebpack: {
+    devtool: 'source-map',
     plugins: [
       new CopyPlugin(
         [

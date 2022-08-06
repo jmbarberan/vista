@@ -19,7 +19,7 @@ import { getCurrentLanguage, getCurrentSubscriber } from './utils'
 import 'vue-search-select/dist/VueSearchSelect.css'
 import Vuelidate from "vuelidate";
 import "@mdi/font/css/materialdesignicons.css";
-import VueHtmlToPaper from "vue-html-to-paper";
+//import VueHtmlToPaper from "vue-html-to-paper";
 import momentz from 'moment-timezone';
 
 momentz.tz.setDefault('America/Guayaquil');
@@ -83,7 +83,7 @@ Vue.mixin({
   }
 })
 
-export const app = new Vue({
+const app = new Vue({
   i18n,
   router,
   store,
@@ -93,3 +93,5 @@ export const app = new Vue({
 store.$app = app;
 router.$app = app;
 app.$mount('#app');
+
+export default app;

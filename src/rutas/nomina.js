@@ -36,12 +36,19 @@ export const empleadoModificarEstado = function(p) {
   }
 };
 
-export const empleadoGuardar = function(p) {
+export const empleadoGuardar = function() {
   return {
     metodo : "post",
     ruta: `${root}/empleados/guardar`
   }
 };
-
-
 //#endergion
+
+//#region Cargos
+export const cargosPorEstado = function(p) {
+  return {
+    metodo : "get",
+    ruta: `${root}/cargos/sub/${p.sub}/emp/${p.emp}/estado/${p.estado}`
+  }
+}
+//#endregion

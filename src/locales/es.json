@@ -134,6 +134,14 @@
       "existencias": "Existencia de productos",
       "movimientospro": "Movimientos por producto"
     },
+    "nomina": {
+      "titulo": "Nomina",
+      "empleados": {
+        "titulo": "Empleados",
+        "nuevo": "Nuevo",
+        "modificar": "Modificar"
+      }
+    },
     "clinica": {
       "titulo": "Clínica",
       "pacientes": {
@@ -747,7 +755,53 @@
     "launch-small-modal": "Lanzar Pequeño Modal"
   },
   "pages": {
+    "add-new": "AGREGAR NUEVO",
+    "add-new-modal-title": "Agregar ítem nuevo",
+    "display-options": "Opciones de Visualización",
+    "orderby": "Ordenar por : ",
+    "product-name": "Nombre del Producto",
+    "category": "Categoría",
+    "description": "Descripción",
+    "status": "Estado",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "delete": "Borrar",
+    "another-action": "Otra acción",
+    "actions": "ACCIONES",
+    "header": "Encabezado",
+    "details": "DETALLES",
+    "orders": "PEDIDOS",
+    "rating": "Clasificación",
+    "price": "Precio",
+    "ingredients": "Ingredientes",
+    "is-vegan": "Es Vegano",
+    "order-status": "Estado del Pedido",
+    "bake-progress": "Progreso de Hornear",
+    "popularity": "Popularidad",
+    "comments": "Comentarios",
     "error-title": "Lo sentimos, ha ocurrido un error!",
-    "error-code": "Codigo de error"
-  }
+    "error-code": "Código de error",
+    "go-back-home": "VOLVER AL INICIO",
+    "vue-version": "Vue Version",
+    "inline-version": "Inline Styled Html Version",
+    "mailing-info": "Mailing templates use inline styling and table layout to be displayed well at various service providers. To provide better usability we include it as regular html with dangerouslySetInnerHTML.",
+    "like": "Me gusta",
+    "likes": "Me gusta",
+    "details-title": "Detalles",
+    "comments-title": "Comentarios",
+    "questions-title": "Preguntas",
+    "similar-projects": "Proyectos Similares",
+    "send": "Enviar",
+    "addComment": "Añadir un comentario",
+    "location": "Ubicación",
+    "responsibilities": "Responsabilidades",
+    "photos": "Fotos",
+    "who-to-follow": "A quién seguir",
+    "follow": "SEGUIR",
+    "followers": "SEGUIDORES",
+    "recent-posts": "Mensajes Recientes",
+    "profile": "PERFIL",
+    "friends": "AMIGOS",
+    "images": "IMAGENES"
+  }  
 }
