@@ -21,6 +21,18 @@ export default function nominaRutas() {
       component: () =>
         import(/* webpackChunkName: "empleados-crear" */ "@/views/nomina/EmpleadosEditor.vue"),
       meta: { roles: [UserRole.Admin] },
+    },
+    {
+      path: 'cargos',
+      component: () =>
+      import(/* webpackChunkName: "empleados" */ "@/views/nomina/Cargos.vue"),
+      meta: { roles: [UserRole.Admin] }
+    },
+    {
+      path: 'movimientos',
+      component: () =>
+      import(/* webpackChunkName: "movimientoEditor" */ "@/views/nomina/MovimientoEditor.vue"),
+      meta: { roles: [UserRole.Admin] }
     }
   ]
 

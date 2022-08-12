@@ -25,7 +25,8 @@ export default new Vuex.Store({
     subscripcion: {
       id: 0,
       tipo: 0,
-      nombre: ""
+      nombre: "",
+      logo: ""
     },
     remotoConfig: {
       headers : {
@@ -73,6 +74,9 @@ export default new Vuex.Store({
     },
     setSubscripcionNombre(state, nom) {
       state.subscripcion.nombre = nom;
+    },
+    setSubscripcionLogoRuta(state, p) {
+      state.subscripcion.logo = p;
     },
     setEmpresaAccedida(state, p) {
       state.empresaAccedida = {

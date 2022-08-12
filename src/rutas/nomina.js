@@ -4,7 +4,14 @@ let root = "/nomina";
 export const empleadosBuscar = function(p) {
   return {
     metodo : "get",
-    ruta: `${root}/empleados/sub/${p.sub}/emp/${p.emp}/tipo/${p.tipo}/estado/${p.estado}/atributo/${p.atrib}/filtro/${p.filtro}/buscar`
+    ruta: `${root}/empleados/sub/${p.sub}/emp/${p.emp}/tipo/${p.tipo}/estado/${p.estado}/atributo/${p.atributo}/filtro/${p.filtro}/buscar`
+  }
+};
+
+export const empleadosBuscarMin = function(filtro) {
+  return {
+    metodo : "get",
+    ruta: `${root}/empleados/buscar/${filtro}`
   }
 };
 
@@ -49,6 +56,20 @@ export const cargosPorEstado = function(p) {
   return {
     metodo : "get",
     ruta: `${root}/cargos/sub/${p.sub}/emp/${p.emp}/estado/${p.estado}`
+  }
+}
+
+export const cargoModificarEstado = function(p) {
+  return {
+    metodo : "patch",
+    ruta: `${root}/cargos/${p.id}/estado/${p.estado}/modificar`
+  }
+}
+
+export const cargoGuardar = function() {
+  return {
+    metodo : "post",
+    ruta: `${root}/cargos/guardar`
   }
 }
 //#endregion

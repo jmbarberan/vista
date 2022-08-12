@@ -1,7 +1,8 @@
 import { empleadosBuscar, empleadoRegistrado, empleadoGuardar, 
-  empleadoPorCedula, empleadoModificarEstado, cargosPorEstado
+  empleadoPorCedula, empleadoModificarEstado, cargosPorEstado,
+  cargoGuardar, empleadosBuscarMin
 } from "@/rutas/nomina";
-import { getRequestConfig } from "../../utils/index";
+import { getRequestConfig, getRequestwDataConfig, getRequestwParamsConfig } from "../../utils/index";
 import axios from 'axios';
 
 const nomina = {
@@ -71,6 +72,9 @@ const nomina = {
     async empleadosBuscar(context, p) {
       return await axios(getRequestConfig(empleadosBuscar(p)))
     },
+    async empleadosBuscarMin(context, p) {
+      return await axios(getRequestwParamsConfig(empleadosBuscarMin(p.filtro), p.params))
+    },
     async empleadoRegistrado(context, p) {
       return await axios(getRequestConfig(empleadoRegistrado(p)));
     },
@@ -86,6 +90,9 @@ const nomina = {
     
     async cargosPorEstado(context, p) {      
       return await axios(getRequestConfig(cargosPorEstado(p)));
+    },
+    async cargoGuardar(context, p) {      
+      return await axios(getRequestwDataConfig(cargoGuardar(), p));
     }
   }
 }

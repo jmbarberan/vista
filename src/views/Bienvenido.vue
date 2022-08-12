@@ -77,12 +77,14 @@ export default {
           this.$store.commit('setSubscripcionId', r.data.cid);
           this.$store.commit('setSubscripcionTipo', r.data.tipo);
           this.$store.commit('setSubscripcionNombre', r.data.nom);
+          this.$store.commit('setSubscripcionLogoRuta', r.data.logo);
           this.$store.commit('setRemotoConfigToken', window.btoa(encodeURIComponent(encoded)));
           axios.defaults.headers.common['Authorization'] = window.btoa(encodeURIComponent(encoded));
           setCurrentSubscriber({
             id: r.data.cid,
             nombre: r.data.nom,
             tipo: r.data.tipo,
+            logo: r.data.logo,
             codigo: window.btoa(encodeURIComponent(encoded))
           });
           this.$router.push({
@@ -137,6 +139,7 @@ export default {
         this.$store.commit('setSubscripcionId', sub.id);
         this.$store.commit('setSubscripcionTipo', sub.tipo);
         this.$store.commit('setSubscripcionNombre', sub.nombre);
+        this.$store.commit('setSubscripcionLogoRuta', sub.logoruta);
         this.accedidoLabel = "Acceder como " + sub.nombre;
       }
     }

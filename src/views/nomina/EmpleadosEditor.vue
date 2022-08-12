@@ -8,132 +8,137 @@
     </b-row>
     <b-row>
       <b-colxx xxs="12">
-          <b-card class="mb-4" :title="tituloAccion" >
-            <h6 class="mb-4">{{ $t('vista.ventas.clientes.datos-personales') }}</h6>
-              <b-form class="av-tooltip mb-5 tooltip-label-right">
-                <b-row>
-                  <b-colxx xxs="12" sm="6">
-                    <b-form-group :label="$t('vista.ventas.clientes.campos.cedula')">
-                      <div>
-                        <b-overlay :show="consultandoCedula" rounded="lg" opacity="0.6">
-                          <template #overlay>
-                            <div class="d-flex align-items-center">
-                              <b-spinner small type="grow" variant="secondary"></b-spinner>
-                              <b-spinner type="grow" variant="dark"></b-spinner>
-                              <b-spinner small type="grow" variant="secondary"></b-spinner>
-                              <!-- We add an SR only text for screen readers -->
-                              <span class="sr-only">{{ $t('vista.busqueda.espere-porfa') }}...</span>
-                            </div>
-                          </template>
-                          <b-form-input 
-                            type="text" v-model.trim="empleado.cedula" 
-                            @keyup.enter="consultarCedula()" class="fondo-transparente-min" 
-                            :state="!$v.empleado.cedula.$error"
-                            :placeholder="$t('vista.busqueda.digitar-enter')"/>
-                          <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.cedula') }}</b-form-invalid-feedback>
-                        </b-overlay>
-                      </div>
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx xxs="12" sm="6">
-                    <b-form-group :label="$t('vista.ventas.clientes.campos.nombres')">
-                      <b-form-input type="text" v-model="empleado.nombres" :state="!$v.empleado.nombres.$error"/>
-                      <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.nombres') }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx xxs="12" sm="12">
-                    <b-form-group :label="$t('vista.ventas.clientes.campos.direccion')">
-                      <b-form-input type="text" v-model.trim="empleado.direccion" :state="!$v.empleado.direccion.$error"/>
-                      <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.direccion') }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx xxs="12" sm="6">
-                    <b-form-group :label="$t('vista.ventas.clientes.campos.telefonos')">
-                      <b-form-input type="text" v-model.trim="empleado.telefonos" :state="!$v.empleado.telefonos.$error"/>
-                      <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.telefonos') }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx xxs="12" sm="6">
-                    <b-form-group :label="$t('vista.ventas.clientes.campos.correo')">
-                      <b-form-input type="text" v-model.trim="empleado.email"  :state="!$v.empleado.email.$error"/>
-                      <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.email') }}</b-form-invalid-feedback>
-                    </b-form-group>
-                  </b-colxx>
-                </b-row>
-                <h6 class="mb-4">Datos de nomina</h6>
-                <b-row>
-                  <b-colxx xxs="12" sm="6">
-                    <b-form-group label="Cargo">
-                      <b-form-select
-                        v-model="empleado.cargo_id" 
-                        :options="cargos"
-                        value-field="id"
-                        text-field="denominacion"
-                        size="sm"
-                      />
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx xxs="12" sm="6">
-                    <b-form-group label="Sueldo">
-                      <b-form-input type="text" pattern="^\d*(\.\d{0,2})?$" v-model.number="empleado.sueldo"/>
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx xxs="12" sm="6">
-                    <b-form-group label='Fecha de ingreso'>
-                      <datepicker
-                        class="fecha-md"
-                        :bootstrap-styling="true"
-                        v-model="entrada"
-                        :language="es"
-                      ></datepicker>
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx xxs="12" sm="6">
-                    <b-form-group label='Entrada al seguro social'>
-                      <datepicker
-                        class="fecha-md"
-                        :bootstrap-styling="true"
-                        v-model="asegurado"
-                        :language="es"
-                      ></datepicker>
-                    </b-form-group>
-                  </b-colxx>
-                  <b-colxx xxs="12" sm="6">
-                    <b-form-group label='Registro en el ministerio'>
-                      <datepicker
-                        class="fecha-md"
-                        :bootstrap-styling="true"
-                        v-model="registro"
-                        :language="es"
-                      ></datepicker>
-                    </b-form-group>
-                  </b-colxx>
-                </b-row>
-                <div class="mt-4">
-                  <b-overlay 
-                    :show="guardando" 
-                    opacity=0.6
-                    spinner-small
-                    spinner-variant="primary"
-                    class="d-inline-block"
-                    @hidden="ocultarGuardando"
-                  >
-                    <b-button ref="btGuardar" :disabled="guardando" @click="guardar()" variant="success">{{ $t('vista.comandos.guardar') }}</b-button>
-                  </b-overlay>  
-                  <b-button ref="btCancelar" :disabled="guardando" @click="cancelar()" variant="primary" class="ml-4">{{ $t('vista.comandos.cancelar') }}</b-button>
-                </div>
-            </b-form>
-          </b-card>
+        <b-card class="mb-4" :title="tituloAccion" >
+          <h6 class="mb-4">{{ $t('vista.ventas.clientes.datos-personales') }}</h6>
+            <b-form class="av-tooltip mb-5 tooltip-label-right">
+              <b-row>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group :label="$t('vista.ventas.clientes.campos.cedula')">
+                    <div>
+                      <b-overlay :show="consultandoCedula" rounded="lg" opacity="0.6">
+                        <template #overlay>
+                          <div class="d-flex align-items-center">
+                            <b-spinner small type="grow" variant="secondary"></b-spinner>
+                            <b-spinner type="grow" variant="dark"></b-spinner>
+                            <b-spinner small type="grow" variant="secondary"></b-spinner>
+                            <!-- We add an SR only text for screen readers -->
+                            <span class="sr-only">{{ $t('vista.busqueda.espere-porfa') }}...</span>
+                          </div>
+                        </template>
+                        <b-form-input 
+                          type="text" v-model.trim="empleado.cedula" 
+                          @keyup.enter="consultarCedula()" class="fondo-transparente-min"
+                          :state="!$v.empleado.cedula.$error"
+                          :placeholder="$t('vista.busqueda.digitar-enter')"/>
+                        <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.cedula') }}</b-form-invalid-feedback>
+                      </b-overlay>
+                    </div>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group :label="$t('vista.ventas.clientes.campos.nombres')">
+                    <b-form-input type="text" v-model="empleado.nombres" :state="!$v.empleado.nombres.$error"/>
+                    <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.nombres') }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="12">
+                  <b-form-group :label="$t('vista.ventas.clientes.campos.direccion')">
+                    <b-form-input type="text" v-model.trim="empleado.direccion" :state="!$v.empleado.direccion.$error"/>
+                    <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.direccion') }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group :label="$t('vista.ventas.clientes.campos.telefonos')">
+                    <b-form-input type="text" v-model.trim="empleado.telefonos" :state="!$v.empleado.telefonos.$error"/>
+                    <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.telefonos') }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group :label="$t('vista.ventas.clientes.campos.correo')">
+                    <b-form-input type="text" v-model.trim="empleado.email"  :state="!$v.empleado.email.$error"/>
+                    <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.email') }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </b-colxx>
+              </b-row>
+              <h6 class="mb-4">Datos de nomina</h6>
+              <b-row>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group label="Cargo">
+                    <b-form-select
+                      v-model="empleado.cargo_id" 
+                      :options="cargos"
+                      value-field="id"
+                      text-field="denominacion"
+                      size="sm"
+                      @change="cargoCambiado()"
+                    />
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group label="Sueldo">
+                    <b-form-input type="number" pattern="^\d*(\.\d{0,2})?$" v-model.number="empleado.sueldo"/>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group label='Fecha de ingreso'>
+                    <datepicker
+                      class="fecha-md"
+                      :bootstrap-styling="true"
+                      v-model="entrada"
+                      :language="es"
+                    ></datepicker>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group label='Entrada al seguro social'>
+                    <datepicker
+                      class="fecha-md"
+                      :bootstrap-styling="true"
+                      v-model="asegurado"
+                      :language="es"
+                    ></datepicker>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group label='Registro en el ministerio'>
+                    <datepicker
+                      class="fecha-md"
+                      :bootstrap-styling="true"
+                      v-model="registro"
+                      :language="es"
+                    ></datepicker>
+                  </b-form-group>
+                </b-colxx>
+              </b-row>
+              <div class="mt-4">
+                <b-overlay 
+                  :show="guardando" 
+                  opacity=0.6
+                  spinner-small
+                  spinner-variant="primary"
+                  class="d-inline-block"
+                  @hidden="ocultarGuardando"
+                >
+                  <b-button ref="btGuardar" :disabled="guardando" @click="guardar()" variant="success">{{ $t('vista.comandos.guardar') }}</b-button>
+                </b-overlay>  
+                <b-button ref="btCancelar" :disabled="guardando" @click="cancelar()" variant="primary" class="ml-4">{{ $t('vista.comandos.cancelar') }}</b-button>
+              </div>
+          </b-form>
+        </b-card>
       </b-colxx>
+    </b-row>
+    <b-row>
+      <!-- Agregar administrador de cuentas bancarias -->
     </b-row>
   </div>
 </template>
 <script>
+//import { setTimeout } from 'timers'
 import { getCurrentSubscriber } from "../../utils/index";
 import { cedulaValida } from '../../utils'
 import Datepicker from "vuejs-datepicker";
 import { es } from 'vuejs-datepicker/dist/locale';
-//import moment from 'moment';
+import moment from 'moment';
 const { required, minLength, maxLength, email, numeric } = require("vuelidate/lib/validators");
 export default {
   components: {
@@ -152,6 +157,7 @@ export default {
         telefonos: "",
         email: "",
         cargo_id: "",
+        cargo: "",
         sueldo: 0,
         entrada_fecha: null,
         aseguramiento_fecha: null,
@@ -160,11 +166,14 @@ export default {
         referencia: 0,
         estado: 0,
         relCargo: null,
-        relCuentas: []
+        relCuentas: [],
+        cuentasEliminadas: []
       },
       cargos: [],
       guardando: false,
       consultandoCedula: false,
+      esperandoBuscarCedula: false,
+      montando: false
     }
   },
   validations: {
@@ -225,9 +234,96 @@ export default {
       return res;
     }
   },
+  watch: {
+    'empleado.cedula': function() {
+      if (!this.montando) {
+        if (this.empleado.cedula.length >= 10) {
+          if (!this.esperandoBuscarCedula) {
+            setTimeout(() => {
+              this.esperandoBuscarCedula = false;
+              this.consultarCedula();
+            }, 2000);
+            this.esperandoBuscarCedula = true;
+          }
+        }
+      }
+    }
+  },
   methods: {
     guardar() {
-      
+      let continuar = true;
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        continuar = false;
+        this.$notify(
+          "warning", 
+          this.$t("vista.transacciones.guardar-canot"), 
+          this.$t("vista.transacciones.guardar-invalido"), 
+          { duration: 3000, permanent: false }
+        ); 
+      } else {
+        this.$store
+          .dispatch("nomina/empleadoRegistrado", { 
+            sub: getCurrentSubscriber().id, 
+            emp: this.$store.state.empresaAccedida.id, 
+            id: this.empleado.id, 
+            cedula: this.empleado.cedula, 
+            nombres: this.empleado.nombres 
+          })
+          .then(function(res) {
+            this.empleado.subscripcion_id = getCurrentSubscriber().id;
+            this.empleado.empresa_id = this.$store.state.empresaAccedida.id;
+            if (this.empleado.entrada_fecha != null) {
+              this.empleado.entrada_fecha = moment(this.empleado.entrada_fecha).format("YYYY-MM-DD");
+            }
+            if (this.empleado.aseguramiento_fecha != null) {
+              this.empleado.aseguramiento_fecha = moment(this.empleado.aseguramiento_fecha).format("YYYY-MM-DD");
+            }
+            if (this.empleado.ministerio_fecha != null) {
+              this.empleado.ministerio_fecha = moment(this.empleado.ministerio_fecha).format("YYYY-MM-DD");
+            }        
+            this.$store
+              .dispatch("nomina/empleadoGuardar", JSON.stringify(this.empleado))
+              .then(function(res) {
+                if (res.status <= 201) {
+                  this.$notify(
+                    "success", 
+                    this.$t("vista.comandos.guardar") + " empleado", 
+                    res.data.msj, 
+                    { duration: 3000, permanent: false }
+                  );
+                  this.$router.back();
+                } else {
+                  this.$notify(
+                    "warning", 
+                    this.$t("vista.comandos.guardar") + " empleado", 
+                    res.data.msj, 
+                    { duration: 3000, permanent: false }
+                  );
+                }
+                this.procesando = false;
+              }.bind(this))
+              .catch(function(e) {
+                this.procesando = false;
+                let msj = this.$t("vista.transacciones.guardar-error");
+                if (e.response.data.msj != undefined);
+                  msj = e.response.data.msj;
+                this.$notify(
+                  "warnnig", 
+                  this.$t("vista.comandos.guardar") + " empleado", 
+                  msj,
+                  { duration: 3000, permanent: false }
+                );
+              }.bind(this)
+            );
+          }.bind(this))
+          .catch(function(e) {
+            this.$notify("warning", 
+              "Guardar empleado",
+              e.response.data,
+              { duration: 3000, permanent: false });
+          }.bind(this));
+      }
     },
     cancelar() {
       this.$router.back();
@@ -236,25 +332,35 @@ export default {
       this.$refs.btGuardar.focus();
     },
     consultarCedula() {
-      this.consultandoCedula = true;
-      this.$store
-        .dispatch("nomina/empleadoRegistrado", { 
-          id: this.empleado.id,
-          cedula: this.empleado.cedula,
-          nombres: this.empleado.nombres,
-          sub: getCurrentSubscriber().id,
-          emp: this.$store.state.empresaAccedida.id,
-        })
-        .then(function(res) {
-          this.consultandoCedula = false;  
-        }.bind(this))
-        .catch(function(e) {
-          this.$notify("warning", 
-              "Cédula registrada",
-              e.response.data,
-              { duration: 3000, permanent: false });
-          this.consultandoCedula = false;
-        }.bind(this));
+      if (this.empleado.cedula.length > 0) {
+        this.consultandoCedula = true;
+        this.$store
+          .dispatch("nomina/empleadoRegistrado", { 
+            id: this.empleado.id,
+            cedula: this.empleado.cedula,
+            nombres: this.empleado.nombres,
+            sub: getCurrentSubscriber().id,
+            emp: this.$store.state.empresaAccedida.id,
+          })
+          .then(function(res) {
+            this.consultandoCedula = false;  
+          }.bind(this))
+          .catch(function(e) {
+            this.$notify("warning", 
+                "Cédula registrada",
+                e.response.data,
+                { duration: 3000, permanent: false });
+            this.consultandoCedula = false;
+          }.bind(this));
+      }
+    },
+    cargoCambiado() {
+      let c = this.cargos.filter(function(o) {
+        return o.id == this.empleado.cargo_id;
+      }.bind(this));
+      if (c != undefined && c != null && c.length > 0) {
+        this.empleado.sueldo = c[0].remuneracion_valor;
+      }
     }
   },
   created() {
@@ -271,6 +377,7 @@ export default {
       }.bind(this));
   },
   mounted() {
+    this.montando = true;
     if (this.$route.params.id > 0) {                
       if (this.$route.params.dato.relCuentas.length > 0) {
         this.secuenciaPrecio = this.$route.params.dato.relCuentas.length;
@@ -293,7 +400,11 @@ export default {
       this.empleado.estado = this.$route.params.dato.estado;
       this.empleado.relCargo = this.$route.params.dato.relCargo;
       this.empleado.relCuentas = this.$route.params.dato.relCuentas;
+      this.empleado.cuentasEliminadas = [];
     }
+    this.$nextTick(() => {
+      this.montando = false;
+    });
   }
  }
 </script>

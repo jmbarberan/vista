@@ -151,6 +151,18 @@ const data = [
         to: `/nomina/empleados`,
         roles: [UserRole.Admin], 
       },
+      {
+        icon: "iconsminds-id-card",
+        label: "menu.nomina.cargos",
+        to: `/nomina/cargos`,
+        roles: [UserRole.Admin], 
+      },
+      {
+        icon: "iconsminds-folder",
+        label: "menu.nomina.movimientos",
+        to: `/nomina/movimientos`,
+        roles: [UserRole.Admin], 
+      },
     ]
   },
   {

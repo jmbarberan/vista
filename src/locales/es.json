@@ -140,7 +140,9 @@
         "titulo": "Empleados",
         "nuevo": "Nuevo",
         "modificar": "Modificar"
-      }
+      },
+      "cargos": "Cargos",
+      "movimientos": "Transacciones"
     },
     "clinica": {
       "titulo": "Clínica",
@@ -189,7 +191,6 @@
       "miclave": "Cambiar mi contraseña",
       "roles": "Roles"
     }
-    
   },
   "vista": {
     "el": "el",
@@ -242,6 +243,7 @@
       "cancelar": "Cancelar",
       "continuar": "Continuar",
       "volver": "Volver",
+      "cerrar-sesion": "Cerrar sesión",
       "salir": "Salir",
       "aceptar": "Aceptar",
       "cambiar-clave": "Actualizar contraseña",

@@ -63,16 +63,14 @@
           <template slot="button-content">
             <span v-if="currentUser != undefined" class="name mr-2 mt-2">{{ currentUser.codigo }}</span>
             <span>
-              <!--img :alt="currentUser.title" :src="currentUser.img" /-->
-              <b-avatar v-if="currentUser != undefined" variant="primary" :text="traerIniciales(currentUser.nombres)" class="border-0 ml-0 mr-4 align-self-top"></b-avatar>
+              <img v-if="subImage.length > 0" :alt="currentUser.codigo" :src="subImage" />
+              <b-avatar v-else variant="primary" :text="traerIniciales(currentUser.nombres)" class="border-0 ml-0 mr-4 align-self-top"></b-avatar>
             </span>
           </template>
           <b-dropdown-item>{{ $t("vista.comandos.cambiar-clave") }}</b-dropdown-item>
-          <!--b-dropdown-item>Potencial</!--b-dropdown-item>
-          <b-dropdown-item>Historial</b-dropdown-item>
-          <b-dropdown-item>Soporte</b-dropdown-item>
-          <b-dropdown-divider /-->
-          <b-dropdown-item @click="logout">{{ $t("vista.comandos.salir") }}</b-dropdown-item>
+          <b-dropdown-item @click="logout">{{ $t("vista.comandos.cerrar-sesion") }}</b-dropdown-item>
+          <b-dropdown-divider />
+          <b-dropdown-item @click="salir">{{ $t("vista.comandos.salir") }}</b-dropdown-item>
         </b-dropdown>
       </div>
     </div>
@@ -82,14 +80,9 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import { MenuIcon, MobileMenuIcon, Logo } from "../../components/Svg";
-import { getDirection, setDirection, getThemeColor, setThemeColor, getCurrentUser } from "../../utils";
+import { getDirection, setDirection, getThemeColor, setThemeColor, getCurrentUser, getCurrentSubscriber } from "../../utils";
 import ColorSwitcher from '../../components/Common/ColorSwitcher.vue';
-import {
-  searchPath,
-  menuHiddenBreakpoint,
-  localeOptions,
-  buyUrl,
-} from "../../constants/config";
+import { localeOptions } from "../../constants/config";
 
 export default {
   components: {
@@ -100,55 +93,29 @@ export default {
   },
   data() {
     return {
-      searchKeyword: "",
-      isMobileSearch: false,
-      isSearchOver: false,
       fullScreen: false,
-      menuHiddenBreakpoint,
-      searchPath,
       localeOptions,
-      buyUrl,
-      //notifications,
       isDarkActive: false,
     };
   },
   methods: {
     ...mapMutations(["changeSideMenuStatus", "changeSideMenuForMobile"]),
-    ...mapActions(["setLang", "signOut"]),
-    search() {
-      this.$router.push(`${this.searchPath}?search=${this.searchKeyword}`);
-      this.searchKeyword = "";
-    },
-    searchClick() {
-      if (window.innerWidth < this.menuHiddenBreakpoint) {
-        if (!this.isMobileSearch) {
-          this.isMobileSearch = true;
-        } else {
-          this.search();
-          this.isMobileSearch = false;
-        }
-      } else {
-        this.search();
-      }
-    },
-    handleDocumentforMobileSearch() {
-      if (!this.isSearchOver) {
-        this.isMobileSearch = false;
-        this.searchKeyword = "";
-      }
-    },
-
+    ...mapActions(["setLang", "signOut", "exitSubscriberAccount"]),
     changeLocale(locale, direction) {
       const currentDirection = getDirection().direction;
       if (direction !== currentDirection) {
         setDirection(direction);
       }
-
       this.setLang(locale);
     },
     logout() {
       this.signOut().then(() => {
         this.$router.push("/usuario/acceder");
+      });
+    },
+    salir() {
+      this.exitSubscriberAccount().then(() => {
+        this.$router.push("/bienvenido");
       });
     },
     traerIniciales(txt) {
@@ -212,10 +179,13 @@ export default {
       get: function() {
         return getCurrentUser();
       }
+    },
+    subImage: {
+      get: function() {
+        let ret =  getCurrentSubscriber().logo ? getCurrentSubscriber().logo : "";
+        return ret;
+      }
     }
-  },
-  beforeDestroy() {
-    document.removeEventListener("click", this.handleDocumentforMobileSearch);
   },
   created() {
     const color = getThemeColor();
@@ -244,16 +214,6 @@ export default {
         }, 1000);
       }
     },
-    isMobileSearch(val) {
-      if (val) {
-        document.addEventListener("click", this.handleDocumentforMobileSearch);
-      } else {
-        document.removeEventListener(
-          "click",
-          this.handleDocumentforMobileSearch
-        );
-      }
-    }
   }
 };
 </script>

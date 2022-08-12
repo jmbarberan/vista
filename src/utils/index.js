@@ -19,6 +19,15 @@ export const getRequestwDataConfig = (bkend, datos) => {
   }
 }
 
+export const getRequestwParamsConfig = (bkend, params) => {
+  return {
+    url: `${process.env.VUE_APP_ROOT_API}${bkend.ruta}`,
+    params: params,
+    method: bkend.metodo,
+    crossorigin: true
+  }
+}
+
 export const mapOrder = (array, order, key) => {
   array.sort(function (a, b) {
     var A = a[key]

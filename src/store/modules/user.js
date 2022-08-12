@@ -1,5 +1,5 @@
 //import { isAuthGuardActive } from '../../constants/config'
-import { setCurrentUser, getCurrentUser } from '../../utils'
+import { setCurrentUser, getCurrentUser, setCurrentSubscriber } from '../../utils'
 import { codigoReseteoSolicitar, codigoReseteoValidar, codigoResetear } from "@/rutas/subscripciones";
 import { apiSeguridad } from "@/rutas/seguridad";
 //import { UserRole } from "@/utils/auth.roles";
@@ -102,17 +102,25 @@ export default {
     },
     signOut({ commit }) {
       setCurrentUser(null);
-      // vaciar listas de cache de busquedas de ventanas
       commit('clinica/setBuscaConsultaListaCache', []);
-      /*commit('clinica/setCacheBusquedaPacientesLista', []);
-      commit('clinica/setCacheBusquedaMedicosLista', []);
-      commit("clinica/setMedicoUsuario", 0);*/
       commit("setEmpresaAccedida", {
         id: 0,
         nombre: "",
         sesion: false
       });
       commit('setLogout');
+    },
+    exitSubscriberAccount({ commit }) {
+      setCurrentUser(null);
+      commit('clinica/setBuscaConsultaListaCache', []);
+      commit("setEmpresaAccedida", {
+        id: 0,
+        nombre: "",
+        sesion: false
+      });
+      commit('setLogout');
+      setCurrentSubscriber(null);
+      this.removeAxiosAuthor();
     },
     removeAxiosAuthor() {
       axios.defaults.headers.common['Authorization'] = "";

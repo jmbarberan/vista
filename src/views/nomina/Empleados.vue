@@ -97,6 +97,7 @@
 <script>
 import { getCurrentSubscriber } from "../../utils/index";
 import EncabezadoTablas from "@/containers/views/EncabezadoTablas";
+//import { BuscadorPersonasArgs } from "../../utils/personasBuscadorArgs"
 export default {
   components: {
     "encabezado-tabla": EncabezadoTablas
@@ -188,10 +189,10 @@ export default {
         .dispatch("nomina/empleadosBuscar", {
           sub: getCurrentSubscriber().id,
           emp: this.$store.state.empresaAccedida.id,
-          tipo: this.$store.state.clinica.tablasBuscador.extendida ? 1 : 0,
-          atrib: buscaAtrib,
+          atributo: buscaAtrib,
           estado: this.$store.state.clinica.tablasBuscador.eliminados ? 9 : 0,
-          filtro: this.$store.state.clinica.tablasBuscador.texto
+          filtro: this.$store.state.clinica.tablasBuscador.texto,
+          tipo: this.$store.state.clinica.tablasBuscador.extendida ? 1 : 0
         })
         .then(function(r) {
           if (r.data != undefined) {
