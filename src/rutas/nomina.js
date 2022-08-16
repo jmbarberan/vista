@@ -1,5 +1,14 @@
 let root = "/nomina";
 
+//#region Tablas
+export const registrosPorTabla = function(p) {
+  return {
+    metodo : "get",
+    ruta: `${root}/tablas/${p.tabla}/sub/${p.sub}/emp/${p.emp}/registros`
+  }
+}
+//#endregion
+
 //#region Empleados
 export const empleadosBuscar = function(p) {
   return {
@@ -49,7 +58,7 @@ export const empleadoGuardar = function() {
     ruta: `${root}/empleados/guardar`
   }
 };
-//#endergion
+//#endregion
 
 //#region Cargos
 export const cargosPorEstado = function(p) {
@@ -70,6 +79,36 @@ export const cargoGuardar = function() {
   return {
     metodo : "post",
     ruta: `${root}/cargos/guardar`
+  }
+}
+//#endregion
+
+//#region Movimientos
+export const  movimientoPorId = function(id) {
+  return {
+    metodo : "get",
+    ruta: `${root}/movimientos/${id}`
+  }
+};
+
+export const movimientosBuscar = function(p) {
+  return {
+    metodo : "get",
+    ruta: `${root}/movimientos/sub/${p.sub}/emp/${p.emp}/clase/${p.clase}/estado/${p.estado}/desde/${p.desde}/hasta/${p.hasta}/tipo/${p.tipo}/filtro/${p.filtro}/buscar`
+  }
+}
+
+export const movimientoModificarEstado = function(id, estado) {
+  return {
+    metodo : "patch",
+    ruta: `${root}/movimiento/${id}/estado/${estado}/modificar`
+  }
+}
+
+export const movimientoGuardar = function() {
+  return {
+    metodo : "post",
+    ruta: `${root}/movimiento/guardar`
   }
 }
 //#endregion

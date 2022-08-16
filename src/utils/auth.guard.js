@@ -1,5 +1,5 @@
 import { isAuthGuardActive } from '../constants/config'
-import { setCurrentUser, getCurrentUser } from '.'
+import { setCurrentUser, getCurrentUser, getCurrentSubscriber } from '.'
 export default (to, from, next) => {
   if (to.matched.some(record => record.meta.loginRequired)) {    
     if (isAuthGuardActive) {
@@ -13,12 +13,26 @@ export default (to, from, next) => {
         }
       } else {
         setCurrentUser(null);
-        next('/usuario/acceder')
+        let sub = getCurrentSubscriber();
+        if (sub != null && sub.id > 0) {
+          next('/usuario/acceder');
+        } else {
+          next('/bienvenido');
+        }
       }
     } else {
       next();
     }
   } else {
-    next()
+    if (to.path == "/usuario/acceder") {
+      let sub = getCurrentSubscriber();
+      if (sub == null) {
+        next('/bienvenido');
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
   }
 }

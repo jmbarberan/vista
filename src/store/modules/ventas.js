@@ -1,4 +1,4 @@
-import { ventaPorNumero, ventaGuardar, ventasBuscar, ventaPorId, ventasDiario } from "@/rutas/ventas";
+import { ventaPorNumero, ventaGuardar, ventasBuscar, ventaPorId, ventasDiario, ventaModificarEstado } from "@/rutas/ventas";
 import { tipoFactura, tipoNotaVenta, tipoDevolucion } from "@/constants/tipos";
 import moment from 'moment'
 import axios from 'axios';
@@ -158,7 +158,10 @@ const ventas = {
         id: 1,
         respuesta: response
       };
-    }
+    },
+    async ventaModificarEstado(context, p) {
+      return await axios.put(this.$app.appConfig.apiUrl + ventaModificarEstado(p.id, p.estado));
+    },
   },
   mutations: {
     // Cache de busqueda de ventas

@@ -159,9 +159,10 @@ const data = [
       },
       {
         icon: "iconsminds-folder",
-        label: "menu.nomina.movimientos",
+        label: "menu.nomina.movimientos.titulo",
         to: `/nomina/movimientos`,
         roles: [UserRole.Admin], 
+        crear: '/nomina/movimientos/nuevo'
       },
     ]
   },

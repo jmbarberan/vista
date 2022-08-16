@@ -81,96 +81,96 @@ const {
 } = require("vuelidate/lib/validators");
 
 export default {
-    components: {
-        ModelListSelect
-    },
-    data() {
-			return {
-				crendencial: {
-					usuario: "",
-					clave: ""
-				},
-                empresas: [],
-                empresaSeleccionado: null
-			};
-    },
-    mixins: [validationMixin],
-    validations: {
-			crendencial: {
-				clave: {
-					required,
-				},
-				usuario: {
-					required,
-				}
-			}
-    },
-    computed: {
-      ...mapGetters([
-            "currentUser", 
-            "processing", 
-            "loginError"
-        ])
-    },
-    methods: {
-			...mapActions(["login"]),
-			formSubmit() {
-				this.$v.$touch();
-				this.$v.crendencial.$touch();
-				if (!this.$v.crendencial.$anyError && this.empresaSeleccionado.Id > 0) {
-					this.login({
-						usuario: this.crendencial.usuario,
-						clave: this.crendencial.clave
-					});
-				}
-			}
-    },
-    watch: {
-        currentUser(val) {
-            if (val && val.Id && val.Nombres.length > 0) {
-                setTimeout(() => {
-                    this.$router.push("/inicio");
-                    this.$store.commit("setEmpresaAccedida", {
-                        id: this.empresaSeleccionado.Id,
-                        nombre: this.empresaSeleccionado.Nombre,
-                        sesion: true
-                    });
-                }, 200);
+  components: {
+      ModelListSelect
+  },
+  data() {
+    return {
+      crendencial: {
+        usuario: "",
+        clave: ""
+      },
+              empresas: [],
+              empresaSeleccionado: null
+    };
+  },
+  mixins: [validationMixin],
+  validations: {
+    crendencial: {
+      clave: {
+        required,
+      },
+      usuario: {
+        required,
+      }
+    }
+  },
+  computed: {
+    ...mapGetters([
+      "currentUser", 
+      "processing", 
+      "loginError"
+    ])
+  },
+  methods: {
+    ...mapActions(["login"]),
+    formSubmit() {
+      this.$v.$touch();
+      this.$v.crendencial.$touch();
+      if (!this.$v.crendencial.$anyError && this.empresaSeleccionado.Id > 0) {
+        this.login({
+          usuario: this.crendencial.usuario,
+          clave: this.crendencial.clave
+        });
+      }
+    }
+  },
+  watch: {
+      currentUser(val) {
+          if (val && val.Id && val.Nombres.length > 0) {
+              setTimeout(() => {
+                  this.$router.push("/inicio");
+                  this.$store.commit("setEmpresaAccedida", {
+                      id: this.empresaSeleccionado.Id,
+                      nombre: this.empresaSeleccionado.Nombre,
+                      sesion: true
+                  });
+              }, 200);
+          }
+      },
+      loginError(val) {
+          if (val != null) {
+              let msj = "Usuario o contraseña invalidos"            
+              if (val != undefined && val.data != undefined) {
+                  msj = val.data;
+              }
+              this.$notify("error", "No se puede acceder", msj, {
+                  duration: 3000,
+                  permanent: false
+              });
+          }
+      }
+  },
+  mounted() {
+    this.$store
+      .dispatch("ajustes/empresasPorEstado", 0)
+      .then(function(r) {
+        this.empresas = r.data;
+        if (this.empresas.length > 0) {
+          let emp = getEmpresa();
+          if (emp && parseInt(emp.id) > 0) {                        
+            let res = this.empresas.filter(e => e.Id == emp.id)
+            if (res.length > 0) {
+              this.empresaSeleccionado = res[0]
             }
-        },
-        loginError(val) {
-            if (val != null) {
-                let msj = "Usuario o contraseña invalidos"            
-                if (val != undefined && val.data != undefined) {
-                    msj = val.data;
-                }
-                this.$notify("error", "No se puede acceder", msj, {
-                    duration: 3000,
-                    permanent: false
-                });
-            }
+          } else {
+            this.empresaSeleccionado = this.empresas[0];
+          }
         }
-    },
-    mounted() {
-        this.$store
-            .dispatch("ajustes/empresasPorEstado", 0)
-            .then(function(r) {
-                this.empresas = r.data;
-                if (this.empresas.length > 0) {
-                    let emp = getEmpresa();
-                    if (emp && parseInt(emp.id) > 0) {                        
-                        let res = this.empresas.filter(e => e.Id == emp.id)
-                        if (res.length > 0) {
-                            this.empresaSeleccionado = res[0]
-                        }
-                    } else {
-                        this.empresaSeleccionado = this.empresas[0];
-                    }
-                }
-            }.bind(this))
-            .catch(function(ex) {
-                console.log(ex);
-            });
-    },
+      }.bind(this))
+      .catch(function(ex) {
+        console.log(ex);
+      });
+  }
 };
 </script>

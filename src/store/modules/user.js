@@ -110,7 +110,7 @@ export default {
       });
       commit('setLogout');
     },
-    exitSubscriberAccount({ commit }) {
+    exitSubscriberAccount({ commit, dispatch }) {
       setCurrentUser(null);
       commit('clinica/setBuscaConsultaListaCache', []);
       commit("setEmpresaAccedida", {
@@ -120,7 +120,7 @@ export default {
       });
       commit('setLogout');
       setCurrentSubscriber(null);
-      this.removeAxiosAuthor();
+      dispatch("removeAxiosAuthor");
     },
     removeAxiosAuthor() {
       axios.defaults.headers.common['Authorization'] = "";

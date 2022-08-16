@@ -420,9 +420,27 @@ hr {
   font-size: 1rem;
 }
 
+.list-group-item {
+  background-color: transparent;
+  padding: 0.0rem 0.3rem;
+
+  &:hover{
+    background-color: $theme-color-2;
+    border-color: $theme-color-2;
+  }
+
+}
+
+.list-group-item.active {
+  background-color: $theme-color-1;
+  border-color: $theme-color-1;
+}
+
 .list-group-item-nav {
   background-color: transparent;
   padding: 0.0rem 0.3rem;
+
+  
 }
 
 .truncate {
@@ -2403,7 +2421,7 @@ button {
           position: absolute;
           width: 4px;
           height: 4px;
-          top: 50%;
+          top: 40%;
           transform: translateY(-50%);
           left: -16px;
         }

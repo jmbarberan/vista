@@ -47,7 +47,8 @@ const tipos = [
   "Cuadre de caja",
   "Comprobante de egreso",
   "Pedido",
-  "Proforma"
+  "Proforma",
+  "Adelanto de nomina"
 ]
 
 export function tipoDenominacion(t) {
@@ -62,3 +63,4 @@ export const tipoBodegaIngreso = 6;
 export const tipoBodegaEgreso = 7;
 export const tipoCompra = 19;
 export const tipoNotasIngreso = 20;
+export const tipoNominaAdelanto = 49;

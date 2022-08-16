@@ -142,7 +142,11 @@
         "modificar": "Modificar"
       },
       "cargos": "Cargos",
-      "movimientos": "Transacciones"
+      "movimientos": {
+        "titulo": "Transacciones",
+        "nuevo": "Nuevo",
+        "modificar": "Modificar"
+      }
     },
     "clinica": {
       "titulo": "Clínica",
@@ -290,8 +294,10 @@
         "null": "warning"
       },
       "iconos": {
-        "0": "mdi-check-circle-outline",
-        "2": "mdi-mdi-check-circle-outlin,e"
+        "0": "mdi-alert-circle-outline",
+        "1": "mdi-check-circle-outline",
+        "2": "mdi-close-circle-outline",
+        "null": "mdi-help-circle-outline"
       }
     },
     "clinica": {
@@ -626,6 +632,28 @@
         "req-codigo": "Debe digitar el código del usuario",
         "req-nombre": "Debe digitar los nombres del usuario",
         "req-clave": "Debe digitar la contraseña del usuario"
+      }
+    },
+    "nomina": {
+      "movimientos": {
+        "estados": {
+          "0": "Pendiente",
+          "1": "Descontado",
+          "2": "Eliminado",
+          "null": "Desconocido",
+          "colores": {
+            "0": "warning",
+            "1": "success",
+            "2": "danger",
+            "null": "secondary"
+          },
+          "iconos": {
+            "0": "mdi-alert-circle-outline",
+            "1": "mdi-check-circle-outline",
+            "2": "mdi-close-circle-outline",
+            "null": "mdi-help-circle-outline"
+          }
+        }
       }
     }
   },

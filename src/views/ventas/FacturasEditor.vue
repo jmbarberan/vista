@@ -78,7 +78,7 @@
                           :placeholder="$t('vista.busqueda.digitar-enter') + ' ' + $t('vista.busqueda.por') + ' ' + $t('vista.ventas.clientes.campos.cedula')"
                           :readonly="lectura"/>
                         <b-input-group-append>
-                          <b-button variant="outline-primary" class="borde-recto" @click="buscarCliente()" title="Ejecutar busqueda">
+                          <b-button variant="outline-primary" class="borde-recto" @click="validarCedula()" title="Ejecutar busqueda">
                             <i class="mdi mdi-magnify"/>
                           </b-button>
                         </b-input-group-append>

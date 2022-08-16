@@ -31,8 +31,22 @@ export default function nominaRutas() {
     {
       path: 'movimientos',
       component: () =>
-      import(/* webpackChunkName: "movimientoEditor" */ "@/views/nomina/MovimientoEditor.vue"),
-      meta: { roles: [UserRole.Admin] }
+      import(/* webpackChunkName: "movimientos" */ "@/views/nomina/Movimientos.vue"),
+      meta: { roles: [UserRole.Admin], rutaNuevo: 'nomina-movimiento-nuevo', rutaModificar: 'nomina-movimiento-modificar' }
+    },
+    {
+      name: 'nomina-movimiento-nuevo',
+      path: 'movimientos/nuevo',
+      component: () =>
+      import(/* webpackChunkName: "movimientosNuevo" */ "@/views/nomina/MovimientosEditor.vue"),
+      meta: { roles: [UserRole.Admin], accion: "Nuevo" }
+    },
+    {
+      name: 'nomina-movimiento-modificar',
+      path: 'movimientos/modificar',
+      component: () =>
+      import(/* webpackChunkName: "movimientosModificar" */ "@/views/nomina/MovimientosEditor.vue"),
+      meta: { roles: [UserRole.Admin], accion: "Modificar" }
     }
   ]
 

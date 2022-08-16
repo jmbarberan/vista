@@ -334,3 +334,7 @@ export const horario =()=> {
     { id:28, codigo: "16:45", titulo: "16:45H", hora: 16, minuto: 45 },
   ]
 }
+
+export const mayorQueCero =(val)=> {
+  return val > 0
+}

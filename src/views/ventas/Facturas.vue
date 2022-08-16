@@ -297,7 +297,7 @@ export default {
         comando = this.$t("vista.comandos.restaurar");
       this.busquedaEjecutando = true;
       this.$store
-        .dispatch("inventarios/movimientoModificarEstado", {
+        .dispatch("ventas/ventaModificarEstado", {
           id: pid,
           estado: pestado
          })

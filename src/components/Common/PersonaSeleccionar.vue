@@ -207,7 +207,7 @@ export default {
       this.items = pers;
       this.seleccionado = null;
       this.verModal = ver;
-      this.$nextTick(function(){
+      this.$nextTick(function() {
         this.enfocarBusqueda();
         this.cargarFilasPagina();
       }.bind(this));

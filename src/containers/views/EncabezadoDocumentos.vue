@@ -13,9 +13,9 @@
       <piaf-breadcrumb />
       <div class="mb-2">
         <div class="d-block d-md-inline-block">
-          <b-list-group class="list-group-nav float-md-left inline-vertical-middle mr-2 invisible-sm" horizontal>
+          <b-list-group class="float-md-left inline-vertical-middle mr-2 invisible-sm" horizontal>
             <b-list-group-item 
-              class="list-group-item-nav" :active="busquedaTipo == 0" button 
+              :active="busquedaTipo == 0" button 
               @click="cambiarBuscaTipo(0)"
               v-b-tooltip.hover 
               :title="`${titulo} recientes`"
@@ -23,7 +23,7 @@
               <i class="mdi mdi-18px mdi-clock-outline"/>
             </b-list-group-item>
             <b-list-group-item 
-              class="list-group-item-nav" :active="busquedaTipo == 1" button 
+              :active="busquedaTipo == 1" button 
               @click="cambiarBuscaTipo(1)"
               v-b-tooltip.hover 
               title="Buscar por fecha" 
@@ -31,7 +31,7 @@
               <i class="mdi mdi-18px mdi-calendar-month"/>
             </b-list-group-item>
             <b-list-group-item 
-              class="list-group-item-nav" :active="busquedaTipo == 2" button 
+              :active="busquedaTipo == 2" button 
               @click="cambiarBuscaTipo(2)"
               v-b-tooltip.hover 
               title="Buscar por concepto"
@@ -39,7 +39,7 @@
               <i class="mdi mdi-18px mdi-clipboard-text-outline"/>
             </b-list-group-item>
             <b-list-group-item 
-              class="list-group-item-nav" :active="busquedaTipo == 3" button 
+              :active="busquedaTipo == 3" button 
               @click="cambiarBuscaTipo(3)"
               v-b-tooltip.hover 
               title="Buscar por numero"

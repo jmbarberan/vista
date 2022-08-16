@@ -1,9 +1,11 @@
 import { empleadosBuscar, empleadoRegistrado, empleadoGuardar, 
   empleadoPorCedula, empleadoModificarEstado, cargosPorEstado,
-  cargoGuardar, empleadosBuscarMin
+  cargoGuardar, empleadosBuscarMin, registrosPorTabla, 
+  movimientosBuscar, movimientoGuardar
 } from "@/rutas/nomina";
 import { getRequestConfig, getRequestwDataConfig, getRequestwParamsConfig } from "../../utils/index";
 import axios from 'axios';
+import moment from 'moment'
 
 const nomina = {
   namespaced: true,
@@ -24,6 +26,17 @@ const nomina = {
       atributo: "",
       atributoIdx: 0,
       lista: []
+    },
+    movimientoEditorData:  null,
+    movimientosBuscadorCache: {
+      texto: "",
+      desde: null,
+      hasta: null,
+      tipo: 0,
+      extendida: false,
+      eliminados: false,
+      atributo: null,
+      lista: [],
     },
   },
   mutations: {
@@ -67,8 +80,35 @@ const nomina = {
     setCacheBusquedaEmpleadosAtributoIdx(state, i) {
       state.empleadosBuscadorCache.atributoIdx = i;
     },
+    setCacheBuscaMovimientosLista(state, l) {
+      state.movimientosBuscadorCache.lista = l;
+    },
+    setCacheBuscaMovimientosTexto(state, p) {
+      state.movimientosBuscadorCache.texto = p;
+    },
+    setCacheBuscaMovimientosDesde(state, p) {
+      state.movimientosBuscadorCache.desde = p;
+    },
+    setCacheBuscaMovimientosHasta(state, p) {
+      state.movimientosBuscadorCache.hasta = p;
+    },
+    setCacheBuscaMovimientosTipo(state, p) {
+      state.movimientosBuscadorCache.tipo = p;
+    },
+    setCacheBuscaMovimientosExtendida(state, p) {
+      state.movimientosBuscadorCache.extendida = p;
+    },
+    setCacheBuscaMovimientosEliminados(state, p) {
+      state.movimientosBuscadorCache.eliminados = p;
+    },
+    setCacheBuscaMovimientosAtributo(state, p) {
+      state.movimientosBuscadorCache.atributo = p;
+    }
   },
   actions: {
+    async registrosPorTabla(context, p) {
+      return await axios(getRequestConfig(registrosPorTabla(p)));
+    },
     async empleadosBuscar(context, p) {
       return await axios(getRequestConfig(empleadosBuscar(p)))
     },
@@ -93,7 +133,19 @@ const nomina = {
     },
     async cargoGuardar(context, p) {      
       return await axios(getRequestwDataConfig(cargoGuardar(), p));
-    }
+    },
+
+    // #region Movimientos
+    async movimientosBuscar(context, p) {
+      return await axios(getRequestConfig(movimientosBuscar(p)));
+    },
+    async movimientoGuardar(context, p) {
+      return await axios(getRequestwDataConfig(movimientoGuardar(), p));
+    },
+    async movimientoModificarEstado(context, p) {
+      return await axios.put(this.$app.appConfig.apiUrl + movimientoModificarEstado(p.id, p.estado));
+    },
+    // #endregion
   }
 }
 
