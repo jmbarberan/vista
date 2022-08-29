@@ -1,7 +1,8 @@
 import { empleadosBuscar, empleadoRegistrado, empleadoGuardar, 
   empleadoPorCedula, empleadoModificarEstado, cargosPorEstado,
   cargoGuardar, empleadosBuscarMin, registrosPorTabla, 
-  movimientosBuscar, movimientoGuardar
+  movimientosBuscar, movimientoGuardar, 
+  rubrosPorEstado, rubroModificarEstado, rubroGuardar
 } from "@/rutas/nomina";
 import { getRequestConfig, getRequestwDataConfig, getRequestwParamsConfig } from "../../utils/index";
 import axios from 'axios';
@@ -133,6 +134,18 @@ const nomina = {
     },
     async cargoGuardar(context, p) {      
       return await axios(getRequestwDataConfig(cargoGuardar(), p));
+    },
+
+    async rubrosPorEstado(context, p) {      
+      return await axios(getRequestConfig(rubrosPorEstado(p)));
+    },
+    async rubroGuardar(context, p) {      
+      return await axios(getRequestwDataConfig(rubroGuardar(), p));
+    },
+    async rubroModificarEstado(context, p) {
+      return await axios.put(this.$app.appConfig.apiUrl + rubroModificarEstado({
+        ...p
+      }));
     },
 
     // #region Movimientos

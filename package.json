@@ -2,13 +2,10 @@
   "name": "viniapro",
   "version": "4.0.0",
   "private": true,
-  "engines": {
-    "node": "14.17.5"
-  },
   "scripts": {
-    "dev": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "dev": "vue-cli-service serve"
   },
   "dependencies": {
     "@mdi/font": "^5.9.55",
@@ -46,6 +43,8 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^4.0.0",
+    "@fullhuman/vue-cli-plugin-purgecss": "~4.1.0",
     "@vue/cli-plugin-pwa": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
@@ -65,5 +64,8 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "engines": {
+    "node": "14.17.5"
+  }
 }

@@ -142,8 +142,23 @@
         "modificar": "Modificar"
       },
       "cargos": "Cargos",
+      "rubros": {
+        "titulo": "Rubros",
+        "nuevo": "Nuevo",
+        "modificar": "Modificar"
+      },
       "movimientos": {
         "titulo": "Transacciones",
+        "nuevo": "Nuevo",
+        "modificar": "Modificar"
+      },
+      "roles": {
+        "titulo": "Roles de pago",
+        "nuevo": "Nuevo",
+        "modificar": "Modificar"
+      },
+      "liquidaciones": {
+        "titulo": "Liquidaciones",
         "nuevo": "Nuevo",
         "modificar": "Modificar"
       }

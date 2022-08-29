@@ -470,13 +470,13 @@ export default {
         this.$store
           .dispatch("maestros/clientesBuscar", p)
           .then(function(r) {
-            if (r.respuesta.data != undefined) {
-              if (r.respuesta.data.length > 0) {
-                if (r.respuesta.data.length == 1) {
+            if (r.data != undefined) {
+              if (r.data.length > 0) {
+                if (r.data.length == 1) {
                   this.cliente = r.respuesta.data[0];
                   this.busquedaTexto = r.respuesta.data[0].Nombres;
                 } else {
-                  this.$refs.cliSeleccionador.cargarClientes(r.respuesta.data, true);
+                  this.$refs.cliSeleccionador.cargarClientes(r.data, true);
                 }
               }
             }

@@ -83,6 +83,29 @@ export const cargoGuardar = function() {
 }
 //#endregion
 
+//#region Rubros
+export const rubrosPorEstado = function(p) {
+  return {
+    metodo : "get",
+    ruta: `${root}/rubros/sub/${p.sub}/emp/${p.emp}/estado/${p.estado}`
+  }
+}
+
+export const rubroModificarEstado = function(p) {
+  return {
+    metodo : "patch",
+    ruta: `${root}/rubros/${p.id}/estado/${p.estado}/modificar`
+  }
+}
+
+export const rubroGuardar = function() {
+  return {
+    metodo : "post",
+    ruta: `${root}/rubros/guardar`
+  }
+}
+//#endregion
+
 //#region Movimientos
 export const  movimientoPorId = function(id) {
   return {

@@ -1,40 +1,8 @@
 <template>
   <div>
-    <b-modal v-model="verEditor" title="Datos del cargo" v-on:ok.prevent="cargoGuardar();" 
-        v-on:cancel="cancelar()" v-on:close="cancelar()">
-      <b-form class="av-tooltip mb-5 tooltip-label-right">
-        <b-row>
-          <b-colxx xxs="12" sm="6">
-            <b-form-group label="Denominacion">
-              <b-form-input type="text" v-model="editable.denominacion" :state="!$v.editable.denominacion.$error"/>
-              <b-form-invalid-feedback>Debe asignar la denominacion del cargo</b-form-invalid-feedback>
-            </b-form-group>
-          </b-colxx>
-          <b-colxx xxs="12" sm="6">
-            <b-form-group label="Sueldo">
-              <b-form-input type="number" pattern="^\d*(\.\d{0,2})?$" v-model="editable.remuneracion_valor" :state="!$v.editable.remuneracion_valor.$error"/>
-              <b-form-invalid-feedback>Debe asignar el sueldo del cargo</b-form-invalid-feedback>
-            </b-form-group>
-          </b-colxx>
-          <b-colxx xxs="12" sm="12">
-            <b-form-group label="Descripcion/Actividades">
-              <b-form-input type="text" v-model="editable.descripcion"/>
-            </b-form-group>
-          </b-colxx>
-        </b-row>
-      </b-form>
-      <template #modal-footer="{ ok, cancel }">
-        <b-button variant="success" size="sm" @click="ok()">
-          {{ $t('vista.comandos.aceptar') }}
-        </b-button>
-        <b-button size="sm" @click="cancel()">
-          {{ $t('vista.comandos.cancelar') }}
-        </b-button>
-      </template>
-    </b-modal>
     <b-row>
       <b-colxx xxs="12">
-        <h1>Cargos</h1>
+        <h1>Rubros de Nomina</h1>
         <div class="top-right-button-container">
           <b-checkbox switch 
               v-model="verEliminados" 
@@ -62,7 +30,7 @@
             class="vuetable"
             :per-page="porPagina"
             :fields="columnas"
-            :items="cargos"
+            :items="items"
             :current-page="paginaActual"
           >
             <template #table-busy>
@@ -76,6 +44,12 @@
               </b-badge>
             </template>
             <template #cell(acciones)="row">
+              <span
+                class="span-comando mdi mdi-eye mdi-18px mr-2"
+                @click="ver(row)"
+                v-b-tooltip.hover
+                :title="$t('vista.comandos.ver')"
+              />
               <span v-if="row.item.estado == 0"
                 class="span-comando mdi mdi-pen mdi-18px mr-2" 
                 @click="modificar(row)"
@@ -95,11 +69,11 @@
                 :title="$t('vista.comandos.restaurar')"
               />
             </template>
-            <template #cell(remuneracion_valor)="fila">
+            <!--template #cell(remuneracion_valor)="fila">
               <div style="text-align: right;">
                 {{ parseFloat(fila.item.remuneracion_valor) | dinero }}
               </div>
-            </template>
+            </!--template-->
           </b-table>
           <b-pagination
             size="sm"
@@ -130,9 +104,7 @@
     </b-row>
   </div>
 </template>
-
 <script>
-const { required } = require("vuelidate/lib/validators");
 import { getCurrentSubscriber } from "../../utils/index";
 
 export default {
@@ -158,13 +130,18 @@ export default {
           sortable: true
         },
         { 
-          label: "Sueldo", 
-          key: "remuneracion_valor",
+          label: "Origen", 
+          key: "relOrigen.denominacion",
           sortable: true
         },
         {
-          label: "Descripcion", 
-          key: "descripcion", 
+          label: "Periodo", 
+          key: "relPeriodo.denominacion", 
+          sortable: false 
+        },
+        {
+          label: "Formula", 
+          key: "relFormula.denominacion", 
           sortable: false 
         },
         {
@@ -174,31 +151,14 @@ export default {
           sortable: true
         }
       ],
-      cargos: [],
-      editable: this.inicializarEditable(),
-      verEditor: false,
+      items: [],
       verEliminados: false
     }
-  },
-  validations: {
-    editable: {
-      denominacion: {
-        required
-      },
-      remuneracion_valor: {
-        required
-      }
-    }
-  },
-  filters: {
-    dinero(val) {
-      return val.toFixed(2);
-    },
   },
   computed: {
     total() {
       if (!this.busquedaEjecutando) {
-        return this.cargos.length;
+        return this.items.length;
       } else {
         return  0;
       }
@@ -242,7 +202,7 @@ export default {
       this.consultando = true;
       this.paginaActual = 1;
       this.$store
-        .dispatch("nomina/cargosPorEstado", {
+        .dispatch("nomina/rubrosPorEstado", {
           sub: getCurrentSubscriber().id,
           emp: this.$store.state.empresaAccedida.id,
           estado: est
@@ -250,12 +210,12 @@ export default {
         .then(function(r) {
           if (r) {
             if (r.data != undefined) {
-              this.cargos = r.data;
+              this.items = r.data;
             }
           }
-          if (this.cargos.length <= 0) {
+          if (this.items.length <= 0) {
             this.$notify("warning", 
-              this.$t("vista.busqueda.consultando") + " cargos", e, 
+              this.$t("vista.busqueda.consultando") + " rubros", e, 
               {
                 duration: 3000,
                 permanent: false
@@ -269,20 +229,32 @@ export default {
         .catch(function(e) {
           this.busquedaEjecutando = false;
           this.$notify("warning", 
-            this.$t("vista.busqueda.consultando") + " cargos", 
+            this.$t("vista.busqueda.consultando") + " rubros", 
             this.$t("vista.busqueda.no-encontrado"), 
             { duration: 3000, permanent: false });
           this.consultando = false;
         }.bind(this));
     },
+    ver(p) {
+      this.abrirEditor(this.$route.meta.rutaModificar, p.item.id, p.item, true);
+    },
     modificar(p) {
-      this.editable = JSON.parse(JSON.stringify(p.item));
-      this.verEditor = true;
+      this.abrirEditor(this.$route.meta.rutaModificar, p.item.id, p.item, false);
     },
     crear() {
-      this.verEditor = true;
+      this.abrirEditor(this.$route.meta.rutaNuevo, 0, null, false);
     },
-    cargoGuardar() {
+    abrirEditor(ruta, pid, psel, plec) {
+      this.$router.push({
+        name: ruta,
+        params: {
+          id: pid,
+          dato: JSON.parse(JSON.stringify(psel)),
+          lectura: plec
+        }
+      });
+    },
+    rubroGuardar() {
       this.$v.$touch();
       if (this.$v.$invalid) {
         this.$notify("warning", 
@@ -294,18 +266,18 @@ export default {
         this.editable.empresa_id = parseInt(this.$store.state.empresaAccedida.id);
         this.editable.remuneracion_valor = parseFloat(this.editable.remuneracion_valor);
         this.$store
-          .dispatch("nomina/cargoGuardar", JSON.stringify(this.editable))
+          .dispatch("nomina/rubroGuardar", JSON.stringify(this.editable))
           .then(function(res) {
             if (res.status <= 201) {
               this.$notify("success",
-                this.$t("vista.comandos.guardar") + " cargo",
+                this.$t("vista.comandos.guardar") + " rubro",
                 res.data.msj,
                 { duration: 3000, permanent: false });
               this.editable = this.inicializarEditable();
               this.listar();
             } else {
               this.$notify("warning", 
-                this.$t("vista.comandos.guardar") + " cargos", 
+                this.$t("vista.comandos.guardar") + " rubros", 
                 res.data.msj,
                 { duration: 3000, permanent: false });
             }
@@ -317,30 +289,12 @@ export default {
                 e.message : 
                 this.$t("vista.transacciones.guardar-error");
             this.$notify("danger",
-              this.$t("vista.comandos.guardar") + " cargo",
+              this.$t("vista.comandos.guardar") + " rubro",
               msj,
               { duration: 3000, permanent: false });
           }.bind(this)
         );
       } 
-    },
-    cancelar() {
-      this.editable = this.inicializarEditable();
-    },
-    inicializarEditable() {
-      return {
-        id: 0,
-        subscripcion_id: 0,
-        empresa_id: 0,
-        denominacion: "",
-        departamento_id: 0,
-        descripcion: "",
-        remuneracion_tipo: 0,
-        remuneracion_valor: 0,
-        referencia: 0,
-        actualizacion: null,
-        estado: 0
-      }
     },
     restaurar(p) {
       this.modificarEstado(p.item.id, 0, this.$t("vista.comandos.restaurar"));
@@ -351,12 +305,12 @@ export default {
     modificarEstado(pid, pest, cmd) {
       this.busquedaEjecutando = true;
       this.$store
-        .dispatch("nomina/cargoModificarEstado", { 
+        .dispatch("nomina/rubroModificarEstado", { 
           id: pid,
           estado: pest
          })
         .then(function(r) {
-          this.$notify("success", cmd + " cargo", r.data, {
+          this.$notify("success", cmd + " rubro", r.data, {
 						duration: 3000,
 						permanent: false
 					});
@@ -377,7 +331,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

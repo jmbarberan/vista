@@ -158,11 +158,29 @@ const data = [
         roles: [UserRole.Admin], 
       },
       {
+        icon: "iconsminds-calculator",
+        label: "menu.nomina.rubros.titulo",
+        to: `/nomina/rubros`,
+        roles: [UserRole.Admin], 
+      },
+      {
         icon: "iconsminds-folder",
         label: "menu.nomina.movimientos.titulo",
         to: `/nomina/movimientos`,
         roles: [UserRole.Admin], 
         crear: '/nomina/movimientos/nuevo'
+      },
+      {
+        icon: "iconsminds-folder",
+        label: "menu.nomina.roles.titulo",
+        to: `/nomina/roles`,
+        roles: [UserRole.Admin],
+      },
+      {
+        icon: "iconsminds-folder",
+        label: "menu.nomina.liquidaciones.titulo",
+        to: `/nomina/liquidaciones`,
+        roles: [UserRole.Admin]
       },
     ]
   },

@@ -77,7 +77,7 @@
                           @keyup.enter="validarCedula()" 
                           :placeholder="$t('vista.busqueda.digitar-enter') + ' ' + $t('vista.busqueda.por') + ' ' + $t('vista.ventas.clientes.campos.cedula')"
                           :readonly="lectura"/>
-                        <b-input-group-append>
+                        <b-input-group-append v-show="!lectura">
                           <b-button variant="outline-primary" class="borde-recto" @click="validarCedula()" title="Ejecutar busqueda">
                             <i class="mdi mdi-magnify"/>
                           </b-button>
@@ -97,10 +97,10 @@
                       @keyup.enter="buscarCliente()" 
                       @keyup.ctrl.stop.prevent="pulsaControl"
                       :placeholder="$t('vista.busqueda.digitar-enter') + ' ' + $t('vista.busqueda.por') + ' ' + $t('vista.ventas.clientes.campos.nombres')"/>
-                    <b-input-group-append is-text>
+                    <b-input-group-append is-text v-show="!lectura">
                       <input size="sm" type="checkbox" v-model="busquedaClienteAvz" title="Busqueda extendida"/>
                     </b-input-group-append>
-                    <b-input-group-append>
+                    <b-input-group-append v-show="!lectura">
                       <b-button variant="outline-primary" class="borde-recto" @click="buscarCliente()">
                         <i class="mdi mdi-magnify"/>
                       </b-button>
@@ -373,10 +373,12 @@ export default {
           Nombres: '',
           Identificacion: ''
         },
+        Comprobante: 0,
+        Contado: 0,
         relItems: [],
         relSucursal: null,
         relImpuestos: [],
-        itemsEliminados: []
+        itemsEliminados: []        
       },
       original: null,
       sucursales: [],

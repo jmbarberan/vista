@@ -28,21 +28,23 @@ const maestros = {
       return await axios.get(this.$app.appConfig.apiUrl + clientePorCedula(ced));
     },
     async clientesBuscar(context, p) {
-      let ruta = this.$app.appConfig.apiUrl + clientesBuscar(p);
-      const response = await axios.get(ruta)
-        .catch(e => {
-          return {
-            id: -1,
-            respuesta: e
-          };
-        });
-      return {
-        id: 1,
-        respuesta: response
-      };
+      let ruta = this.$app.appConfig.apiUrl + clientesBuscar(p);      
+      return await axios.get(ruta);
     },
     async clientesPorNombre(context, p) {
       return await axios.get(this.$app.appConfig.apiUrl + clientesPorNombre(p.estado, p.texto, context.rootState.empresaAccedida.id));
+    },
+    async clientesBuscarCtx(context) {
+      let tipo = context.rootState.clinica.tablasBuscador.extendida ? 1 : 0;
+      let estado = context.rootState.clinica.tablasBuscador.eliminados ? 9 : 0;
+      let p = {
+        tipo: tipo,
+        atrib: context.rootState.clinica.tablasBuscador.atributo,
+        estado: estado,
+        filtro: context.rootState.clinica.tablasBuscador.texto,
+        emp: context.rootState.empresaAccedida.id
+      };
+      return await axios.get(this.$app.appConfig.apiUrl + clientesBuscar(p));
     },
     async proveedorPorCedula(context, ced) {
       return await axios.get(this.$app.appConfig.apiUrl + proveedorPorCedula(ced));

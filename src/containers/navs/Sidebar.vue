@@ -16,14 +16,14 @@
               rel="noopener noreferrer" target="_blank"
             >
               <i :class="item.icon" />
-              {{ $t(item.label) }}
+              <span>{{ $t(item.label) }}</span>
             </a>
             <a v-else-if="item.subs && item.subs.length>0"
-              @click.prevent="openSubMenu($event,item)"
+              @click.prevent="openSubMenu($event, item)"
               :href="`#${item.to}`"
             >
               <i :class="item.icon" />
-              {{ $t(item.label) }}
+              <span>{{ $t(item.label) }}</span>
             </a>
             <router-link
               v-else
@@ -31,7 +31,7 @@
               :to="item.to"
             >
               <i :class="item.icon" />
-              {{ $t(item.label) }}
+              <span>{{ $t(item.label) }}</span>
             </router-link>
           </li>
         </ul>

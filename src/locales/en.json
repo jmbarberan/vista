@@ -117,10 +117,10 @@
       "de": "of",
       "al": "to",
       "etiqueta": "Buscar por",
-      "eliminados": "Show deleted",
-      "extendida": "Eextended search",
-      "eliminados-alt": "Deleted",
-      "extendida-alt": "Search+"
+      "eliminados": "Ver eliminados",
+      "extendida": "Busqueda extendida",
+      "eliminados-alt": "Eliminado",
+      "extendida-alt": "Buscar+"
     },
     "comandos": {
       "acciones": "Actions",

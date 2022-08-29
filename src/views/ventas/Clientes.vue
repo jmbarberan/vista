@@ -24,9 +24,10 @@
             class="vuetable"
             :per-page="porPagina"
             :fields="columnas"
-            :items="pacientes"
+            :items="clientes"
             :current-page="paginaActual"
             :busy="busquedaEjecutando"
+            responsive
           >
             <template #table-busy>
               <div class="loading-with-text">
@@ -54,8 +55,8 @@
               />
             </template>
             <template #cell(estado)="fila">
-              <b-badge :variant="$t('vista.estados.colores.' + parseInt(fila.item.estado))">
-                {{ $t('vista.estados.' + parseInt(fila.item.estado)) }}
+              <b-badge :variant="$t('vista.estados.colores.' + parseInt(fila.item.Estado))">
+                {{ $t('vista.estados.' + parseInt(fila.item.Estado)) }}
               </b-badge>
             </template>
           </b-table>
@@ -90,12 +91,12 @@
 </template>
 <script>
 import EncabezadoTablas from "@/containers/views/EncabezadoTablas";
-import PacienteSeleccionar from "@/components/Clinica/PacienteSeleccionar";
+//import PacienteSeleccionar from "@/components/Clinica/PacienteSeleccionar";
 import { mapGetters } from "vuex"
 export default {
   components: {
     "encabezado-tabla": EncabezadoTablas,
-    "paciente-seleccionar": PacienteSeleccionar
+    //"paciente-seleccionar": PacienteSeleccionar
   },
   data() {
     return {
@@ -197,17 +198,15 @@ export default {
       this.clientes = [];
       this.paginaActual = 1;
       this.$store
-        .dispatch("clinica/buscarPacientes")
+        .dispatch("maestros/clientesBuscar")
         .then(function(r) {
-          if (r.id == 1) {
-            if (r.respuesta.data != undefined) {
-              this.pacientes = r.respuesta.data;
-            }
+          if (r.data != undefined) {
+            this.clientes = r.data;
           }
           this.busquedaEjecutando = false;
-          if (this.pacientes.length <= 0) {
+          if (this.clientes.length <= 0) {
             this.$notify("warning", 
-              this.$t("vista.comandos.buscar") + " " + this.$t("vista.clinica.pacientes.denominacion"), 
+              this.$t("vista.comandos.buscar") + " clientes", 
               this.$t("vista.busqueda.no-encontrado"), 
               { duration: 3000, permanent: false });
             this.cambiarPaginaActual(1);
@@ -217,14 +216,39 @@ export default {
           }
         }.bind(this))
         .catch(function(e) {
-          console.log("Error");
-          console.log(e);
           this.busquedaEjecutando = false;
           this.$notify("warning", 
-            this.$t("vista.comandos.buscar") + " " + this.$t("vista.clinica.pacientes.denominacion"), 
+            this.$t("vista.comandos.buscar") + " clientes", 
             this.$t("vista.busqueda.no-encontrado"), 
             { duration: 3000, permanent: false });
         }.bind(this));
+      /*this.$store
+        .dispatch("maestros/buscarClientes")
+        .then(function(r) {
+          if (r.id == 1) {
+            if (r.respuesta.data != undefined) {
+              this.clientes = r.respuesta.data;
+            }
+          }
+          this.busquedaEjecutando = false;
+          if (this.clientes.length <= 0) {
+            this.$notify("warning", 
+              this.$t("vista.comandos.buscar") + " clientes", 
+              this.$t("vista.busqueda.no-encontrado"), 
+              { duration: 3000, permanent: false });
+            this.cambiarPaginaActual(1);
+          } else {
+            this.paginaActual = 1;
+            this.cambiarPaginaActual(1);
+          }
+        }.bind(this))
+        .catch(function(e) {
+          this.busquedaEjecutando = false;
+          this.$notify("warning", 
+            this.$t("vista.comandos.buscar") + " clientes", 
+            this.$t("vista.busqueda.no-encontrado"), 
+            { duration: 3000, permanent: false });
+        }.bind(this));*/
     },
     modificar(p) {
       this.abrirEditor("clientes-modificar", p.item.id, p.item);
@@ -242,8 +266,8 @@ export default {
       });
     },
     acUnificar(p) {
-      this.unificar.mantenido = p.item.id;
-      this.selPacienteVer = true;
+      /*this.unificar.mantenido = p.item.id;
+      this.selPacienteVer = true;*/
     },
     eliminar(p) {
       this.modificarEstado(p.item.id, 2, this.$t("vista.comandos.eliminar"));
@@ -254,20 +278,20 @@ export default {
     modificarEstado(pid, pest, cmd) {
       this.busquedaEjecutando = true;
       this.$store
-        .dispatch("clinica/pacienteModificarEstado", { 
+        .dispatch("mastros/clienteModificarEstado", { 
           id: pid,
           estado: pest
          })
         .then(function(r) {
           this.buscar();
-          this.$notify("success", cmd + " " + this.$t("vista.clinica.consultas.campos.paciente"),
+          this.$notify("success", cmd + " cliente",
             r.data,
             { duration: 3000, permanent: false });
         }.bind(this))
         .catch(function(e) {
           console.log("Error");
           console.log(e);
-          this.$notify("warning", cmd + " " + this.$t("vista.clinica.consultas.campos.paciente"),
+          this.$notify("warning", cmd + " cliente",
             this.$t("vista.comandos.fallo") + " " + cmd.toLowerCase() + " este item.",
             { duration: 3000, permanent: false });
         }.bind(this));
@@ -306,7 +330,7 @@ export default {
   },
   mounted() {
     if (this.$store.state.clinica.pacientesBuscadorCache.lista.length > 0) {
-      this.pacientes = this.$store.state.clinica.pacientesBuscadorCache.lista;
+      this.clientes = this.$store.state.clinica.pacientesBuscadorCache.lista;
       this.$store.commit('clinica/setCacheBusquedaPacientesLista', []);
     }
     if (this.$store.state.clinica.pacientesBuscadorCache.texto.length > 0) {
@@ -333,7 +357,7 @@ export default {
     }
   },
   beforeDestroy() {
-    this.$store.commit('clinica/setCacheBusquedaPacientesLista', this.pacientes);
+    this.$store.commit('clinica/setCacheBusquedaPacientesLista', this.clientes);
     if (this.$store.state.clinica.tablasBuscador.texto.length > 0) {
       this.$store.commit('clinica/setCacheBusquedaPacientesTexto', this.$store.state.clinica.tablasBuscador.texto);
       this.$store.commit('clinica/setBuscaTablasTexto', '');
