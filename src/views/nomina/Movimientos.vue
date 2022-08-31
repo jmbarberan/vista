@@ -230,8 +230,8 @@ export default {
         }.bind(this))
         .catch(function(e) {
           let msj = this.$t("vista.busqueda.no-encontrado");
-          if (e.response) {
-            msj = e.response;
+          if (e.response && e.response.statusText) {
+            msj = e.response.statusText;
           } else {
             if (e.message) {
               msj = e.message;
@@ -285,7 +285,6 @@ export default {
             comando + " " + this.$t('vista.ventas.facturas.denominacion'),
             r.data,
             { duration: 3000, permanent: false });
-          this.mensaje(r.data, comando + " " + tipo, "success");
         }.bind(this))
         .catch(function(e) {
           console.log("Error");

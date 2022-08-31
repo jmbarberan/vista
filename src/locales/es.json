@@ -217,6 +217,7 @@
     "esta": "esta",
     "este": "este",
     "error": "Error",
+    "lectura": "Solo lectura",
     "tema": {
       "claro-titulo": "Tema Claro",
       "oscuro-titulo": "Tema Oscuro",
@@ -271,7 +272,9 @@
       "fallo": "No se pudo",
       "guardo": "guardó",
       "elimino": "eliminó",
-      "restauro": "restauró"
+      "restauro": "restauró",
+      "mostrar": "Mostrar",
+      "ocultar": "Ocultar"
     },
     "transacciones": {
       "atencion": "Atención",
@@ -281,7 +284,11 @@
         "fecha": "Fecha",
         "numero": "Numero",
         "concepto": "Concepto",
-        "valor": "Valor"
+        "valor": "Valor",
+        "estado": "Estado",
+        "descripcion": "Descripción",
+        "anio": "Año",
+        "mes": "Mes"
       },
       "agregar-items": "Agregar items",
       "guardando": "Guardando",
@@ -654,6 +661,43 @@
         "estados": {
           "0": "Pendiente",
           "1": "Descontado",
+          "2": "Eliminado",
+          "null": "Desconocido",
+          "colores": {
+            "0": "warning",
+            "1": "success",
+            "2": "danger",
+            "null": "secondary"
+          },
+          "iconos": {
+            "0": "mdi-alert-circle-outline",
+            "1": "mdi-check-circle-outline",
+            "2": "mdi-close-circle-outline",
+            "null": "mdi-help-circle-outline"
+          }
+        }        
+      },
+      "rubros":{
+        "campos": {
+          "denominacion": "Denominación"
+        }
+      },
+      "roles": {
+        "campos": {
+          "empleado":  "Empleado",
+          "empleados": "Empleados",
+          "pagado":    "Pagado",
+          "ingresos":  "Ingresos",
+          "egresos":   "Egresos",
+          "totales":   "Totales",
+          "rubros":    "Rubros"
+        },
+        "comandos": {
+          "liquidar": "Liquidar"
+        },
+        "estados": {
+          "0": "Pendiente",
+          "1": "Liquidado",
           "2": "Eliminado",
           "null": "Desconocido",
           "colores": {

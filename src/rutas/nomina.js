@@ -135,3 +135,40 @@ export const movimientoGuardar = function() {
   }
 }
 //#endregion
+
+//#region Roles
+export const rolesBuscar = function(p) {
+  return {
+    metodo : "get",
+    ruta: `${root}/roles/sub/${p.sub}/emp/${p.emp}/clase/${p.clase}/estado/${p.estado}/desde/${p.desde}/hasta/${p.hasta}/tipo/${p.tipo}/filtro/${p.filtro}/buscar`
+  }
+}
+
+export const rolesModificarEstado = function(p) {
+  return {
+    metodo : "patch",
+    ruta: `${root}/roles/${p.id}/estado/${p.estado}/modificar`
+  }
+}
+
+export const rolesRubros = function(p) {
+  return {
+    metodo : "get",
+    ruta: `${root}/roles/sub/${p.sub}/emp/${p.emp}/mes/${p.mes}/anio/${p.anio}/rubros`
+  }
+}
+
+export const rolesLiquidar = function(id) {
+  return {
+    metodo : "patch",
+    ruta: `${root}/roles/${id}/liquidar`
+  }
+}
+
+export const rolesGuardar = function() {
+  return {
+    metodo : "post",
+    ruta: `${root}/roles/guardar`
+  }
+}
+//#endregion

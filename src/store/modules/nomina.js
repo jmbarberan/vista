@@ -2,7 +2,8 @@ import { empleadosBuscar, empleadoRegistrado, empleadoGuardar,
   empleadoPorCedula, empleadoModificarEstado, cargosPorEstado,
   cargoGuardar, empleadosBuscarMin, registrosPorTabla, 
   movimientosBuscar, movimientoGuardar, 
-  rubrosPorEstado, rubroModificarEstado, rubroGuardar
+  rubrosPorEstado, rubroModificarEstado, rubroGuardar,
+  rolesBuscar, rolesGuardar, rolesModificarEstado, rolesLiquidar, rolesRubros
 } from "@/rutas/nomina";
 import { getRequestConfig, getRequestwDataConfig, getRequestwParamsConfig } from "../../utils/index";
 import axios from 'axios';
@@ -30,6 +31,26 @@ const nomina = {
     },
     movimientoEditorData:  null,
     movimientosBuscadorCache: {
+      texto: "",
+      desde: null,
+      hasta: null,
+      tipo: 0,
+      extendida: false,
+      eliminados: false,
+      atributo: null,
+      lista: [],
+    },
+    rolesBuscadorCache: {
+      texto: "",
+      desde: null,
+      hasta: null,
+      tipo: 0,
+      extendida: false,
+      eliminados: false,
+      atributo: null,
+      lista: [],
+    },
+    liquidacionesBuscadorCache: {
       texto: "",
       desde: null,
       hasta: null,
@@ -81,6 +102,7 @@ const nomina = {
     setCacheBusquedaEmpleadosAtributoIdx(state, i) {
       state.empleadosBuscadorCache.atributoIdx = i;
     },
+
     setCacheBuscaMovimientosLista(state, l) {
       state.movimientosBuscadorCache.lista = l;
     },
@@ -104,6 +126,56 @@ const nomina = {
     },
     setCacheBuscaMovimientosAtributo(state, p) {
       state.movimientosBuscadorCache.atributo = p;
+    },
+
+    setCacheBuscaRolesLista(state, l) {
+      state.rolesBuscadorCache.lista = l;
+    },
+    setCacheBuscaRolesTexto(state, p) {
+      state.rolesBuscadorCache.texto = p;
+    },
+    setCacheBuscaRolesDesde(state, p) {
+      state.rolesBuscadorCache.desde = p;
+    },
+    setCacheBuscaRolesHasta(state, p) {
+      state.rolesBuscadorCache.hasta = p;
+    },
+    setCacheBuscaRolesTipo(state, p) {
+      state.rolesBuscadorCache.tipo = p;
+    },
+    setCacheBuscaRolesExtendida(state, p) {
+      state.rolesBuscadorCache.extendida = p;
+    },
+    setCacheBuscaRolesEliminados(state, p) {
+      state.rolesBuscadorCache.eliminados = p;
+    },
+    setCacheBuscaRolesAtributo(state, p) {
+      state.rolesBuscadorCache.atributo = p;
+    },
+
+    setCacheBuscaLiquidacionesLista(state, l) {
+      state.liquidacionesBuscadorCache.lista = l;
+    },
+    setCacheBuscaLiquidacionesTexto(state, p) {
+      state.liquidacionesBuscadorCache.texto = p;
+    },
+    setCacheBuscaLiquidacionesDesde(state, p) {
+      state.liquidacionesBuscadorCache.desde = p;
+    },
+    setCacheBuscaLiquidacionesHasta(state, p) {
+      state.liquidacionesBuscadorCache.hasta = p;
+    },
+    setCacheBuscaLiquidacionesTipo(state, p) {
+      state.liquidacionesBuscadorCache.tipo = p;
+    },
+    setCacheBuscaLiquidacionesExtendida(state, p) {
+      state.liquidacionesBuscadorCache.extendida = p;
+    },
+    setCacheBuscaLiquidacionesEliminados(state, p) {
+      state.liquidacionesBuscadorCache.eliminados = p;
+    },
+    setCacheBuscaLiquidacionesAtributo(state, p) {
+      state.liquidacionesBuscadorCache.atributo = p;
     }
   },
   actions: {
@@ -158,6 +230,24 @@ const nomina = {
     async movimientoModificarEstado(context, p) {
       return await axios.put(this.$app.appConfig.apiUrl + movimientoModificarEstado(p.id, p.estado));
     },
+    // #endregion
+
+    // #region Roles
+    async rolesBuscar(context, p) {
+      return await axios(getRequestConfig(rolesBuscar(p)));
+    },
+    async rolesGuardar(context, p) {
+      return await axios(getRequestwDataConfig(rolesGuardar(), p));
+    },
+    async rolesRubros(context, p) {
+      return await axios(getRequestConfig(rolesRubros(p)));
+    },
+    async rolesModificarEstado(context, p) {
+      return await axios(getRequestConfig(rolesModificarEstado(p)));
+    },
+    async rolesLiquidar(context, p) {
+      return await axios(getRequestConfig(rolesLiquidar(p)));
+    }
     // #endregion
   }
 }

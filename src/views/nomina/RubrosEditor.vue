@@ -61,13 +61,6 @@
               </b-colxx>
               <b-colxx xxs="12" sm="4">
                 <b-form-group label="Mes que aplica" v-slot="{ ariaDescribedby }">
-                  <!--b-form-checkbox-group
-                      v-model="mesesSeleccionados"
-                      :options="meses"
-                      :aria-describedby="ariaDescribedby"
-                      switches
-                      :disabled="aplicaTodosMeses"
-                    /-->
                   <b-form-select
                     v-model="rubro.referencia"
                     :options="meses"

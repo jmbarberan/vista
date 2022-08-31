@@ -360,6 +360,6 @@ export const sueldosLista =()=> {
   return [
     { id: 1, denominacion: "Sueldo" },
     { id: 2, denominacion: "Sueldo seguro" },
-    { id: 2, denominacion: "RBU actual" },
+    { id: 3, denominacion: "RBU actual" },
   ]
 }

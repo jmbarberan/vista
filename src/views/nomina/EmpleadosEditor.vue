@@ -80,7 +80,7 @@
                   </b-form-group>
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
-                  <b-form-group label='Fecha de ingreso'>
+                  <b-form-group label='Fecha de ingreso' class="zindex8">
                     <datepicker
                       class="fecha-md"
                       :bootstrap-styling="true"
@@ -90,7 +90,7 @@
                   </b-form-group>
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
-                  <b-form-group label='Entrada al seguro social'>
+                  <b-form-group label='Entrada al seguro social' class='zindex7'>
                     <datepicker
                       class="fecha-md"
                       :bootstrap-styling="true"
@@ -100,7 +100,7 @@
                   </b-form-group>
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
-                  <b-form-group label='Registro en el ministerio'>
+                  <b-form-group label='Registro en el ministerio' class='zindex6'>
                     <datepicker
                       class="fecha-md"
                       :bootstrap-styling="true"

@@ -111,12 +111,12 @@
             </template>
           </b-table>
           <b-button
-              class="flex-inicio mt-4"
-              size="xs"
-              variant="outline-secondary"
-              @click="vaciarItems()" 
-              :disabled="lectura || movimiento.relItems.length <= 0"
-            ><i class="mdi mdi-delete-sweep"/> {{ $t('vista.transacciones.eliminar-todo') }}</b-button> 
+            class="flex-inicio mt-4"
+            size="xs"
+            variant="outline-secondary"
+            @click="vaciarItems()" 
+            :disabled="lectura || movimiento.relItems.length <= 0"
+          ><i class="mdi mdi-delete-sweep"/> {{ $t('vista.transacciones.eliminar-todo') }}</b-button> 
           <div class="mt-4">
             <b-overlay
               :show="procesando" 
