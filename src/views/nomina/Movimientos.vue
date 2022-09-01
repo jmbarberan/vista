@@ -155,6 +155,11 @@ export default {
           sortable: true,
         },
         {
+          label: "Origen", 
+          key: "relOrigen.denominacion", 
+          sortable: true 
+        },
+        {
           label: this.$t("vista.clinica.consultas.campos.estado"),
           key: "estado",
           sortable: true

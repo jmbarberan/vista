@@ -137,7 +137,7 @@
               </template>
               <template #cell(acciones)="fila">
                 <span
-                  class="span-comando"
+                  class="span-comando mr-2"
                   @click="fila.toggleDetails"
                   v-b-tooltip.hover
                   :title="fila.detailsShowing ? $t('vista.comandos.ocultar') + ' ' + $t('vista.nomina.roles.campos.rubros').toLowerCase() : $t('vista.comandos.mostrar') + ' ' + $t('vista.nomina.roles.campos.rubros').toLowerCase()"
@@ -422,13 +422,89 @@ export default {
   },  
   methods: {
     eliminarItem(p) {
+      let ret = this.rol.relEmpleados;
+      if (p.item.index > 0) {
+        ret = this.rol.relEmpleados.filter(x => {
+          return x.index != p.item.index;
+        });
+      } else {
+        if (p.item.empleado_id > 0) {
+          ret = this.rol.relEmpleados.filter(x => {
+            return x.empleado_id != p.item.empleado_id;
+          });
+        }
+      }
+      this.rol.relEmpleados = ret;
 
+      if (p.item.empleado_id > 0) {
+        let rubs = this.rol.relRubros.filter(x => {
+          return x.empleado_id != p.item.empleado_id;
+        });
+        this.rol.relRubros = rubs;
+      }
     },
     eliminarRubro(p) {
-      
+      if (p.item.index > 0) {
+        let eli = p.item.empleado_id;
+        let rubs = this.rol.relRubros.filter(x => {
+          return x.index != p.item.index;
+        });
+        this.rol.relRubros = rubs;
+
+        let emod = this.rol.relEmpleados.filter(x => {
+          return x.empleado_id == eli;
+        });
+        if (emod.length > 0) {
+          emod = emod[0];
+          let rubse = rubs.filter(x => {
+            return x.empleado_id == eli;
+          });
+          const ings = rubse.reduce((acc, o) => acc + parseFloat(o.ingreso), 0);
+          const egrs = rubse.reduce((acc, o) => acc + parseFloat(o.egreso), 0);
+          emod.ingresos = ings;
+          emod.egresos = egrs;
+          emod.rubros = rubse;
+          this.rol.relEmpleados[emod.index] = emod;
+        }
+      }
     },
     guardar() {
-
+      if (this.rol.id == 0) {
+        this.rol.subscripcion_id = getCurrentSubscriber().id,
+        this.rol.empresa_id = this.$store.state.empresaAccedida.id
+      }
+      this.$store
+        .dispatch("nomina/rolesGuardar", JSON.stringify(this.rol))
+        .then(function(res) {
+          if (res.status <= 201) {
+            this.$notify("success",
+              this.$t("vista.transacciones.guardando-reg"),
+              res.data.msj,
+              { duration: 3000, permanent: false });
+            this.lectura = true;
+            this.$router.back();
+          } else {
+            this.$notify("warning",
+              this.$t("vista.transacciones.guardar-reg"),
+              res.data.msj,
+              { duration: 3000, permanent: false });
+            this.procesando = false;  
+          }
+        }.bind(this))
+        .catch(function(e) {
+          this.procesando = false;
+          let msj = this.$t("vista.transacciones.guardar-error");
+          if (e.response != undefined && e.response.data.msj != undefined) {
+            msj = e.response.data.msj;
+          } else {
+            if (e.message) msj = e.message;
+          }
+          this.$notify("danger",
+            this.$t("vista.comandos.guardar"),
+            msj,
+            { duration: 3000, permanent: false });  
+        }.bind(this)
+      );
     },
     cancelar() {
       this.$router.back();
@@ -484,8 +560,8 @@ export default {
       e.returnValue = "";
     },
     indexarItems() {
-      let idx = 1;
-      let idr = 1;
+      let idx = 0;
+      let idr = 0;
       let itemsRol = this.rol.relEmpleados.map(item => {
         item.index = idx;
         idx++;
@@ -498,17 +574,17 @@ export default {
       });
       this.rol.relRubros = rubrosRol;
 
-      itemsRol.forEach((emp, index) => {
+      itemsRol.forEach((emp, idx) => {
         var rubsEmp = rubrosRol.filter(function (rub) {
           return rub.empleado_id == emp.empleado_id;
         });
         if (rubsEmp.length > 0 && this.rol.id == 0) {
           const ings = rubsEmp.reduce((acc, o) => acc + parseFloat(o.ingreso), 0);
           const egrs = rubsEmp.reduce((acc, o) => acc + parseFloat(o.egreso), 0);
-          itemsRol[index].ingresos = ings;
-          itemsRol[index].egresos = egrs;
+          itemsRol[idx].ingresos = ings;
+          itemsRol[idx].egresos = egrs;
         }
-        itemsRol[index].rubros = rubsEmp;
+        itemsRol[idx].rubros = rubsEmp;
       });
       this.rol.relEmpleados = itemsRol;
     }

@@ -32,7 +32,7 @@
                 </b-form-group>
               </b-colxx>
               <b-colxx xxs="12" sm="4">
-                <b-form-group label="Tipo" class="has-float-label">
+                <!--b-form-group label="Tipo" class="has-float-label">
                   <b-form-select
                     v-model="movimiento.tipo"
                     :options="tipos"
@@ -43,6 +43,20 @@
                     :state="!$v.movimiento.tipo.$error" 
                   />
                   <b-form-invalid-feedback>Debe seleccionar el tipo</b-form-invalid-feedback>
+                </b-form-group-->
+                <b-form-group label="Origen" class="has-float-label">
+                  <b-form-select
+                    v-model="movimiento.origen"
+                    :options="origenes"
+                    value-field="id"
+                    text-field="denominacion"
+                    size="sm"
+                    :state="!$v.movimiento.origen.$error"
+                    :disabled="lectura"
+                  />
+                  <b-form-invalid-feedback
+                    >Seleccione el origen del movimiento</b-form-invalid-feedback
+                  >
                 </b-form-group>
               </b-colxx>
               <b-colxx xxs="12" sm="4" md="4" lg="4">
@@ -187,7 +201,7 @@ export default {
           nombres: ''
         }
       },
-      tipos: [],
+      origenes: [],
       procesando: false,
       lectura: false,
       ocupadoCedula: false,
@@ -214,7 +228,7 @@ export default {
         required,
         maxValue: mayorQueCero
       },
-      tipo: {
+      origen: {
         required,
         maxValue: mayorQueCero
       },
@@ -260,16 +274,8 @@ export default {
           this.$t("vista.transacciones.guardar-error"),
           { duration: 3000, permanent: false });
       } else {
-        if (this.movimiento.tipo == null || this.movimiento.tipo <= 0) {
-          this.$notify("danger",
-            this.$t("vista.comandos.guardar"),
-            "Debe seleccionar el tipo",
-            { duration: 3000, permanent: false });
-          this.procesando = false;
-        } else {
-          this.procesarGuardado();
-          this.procesando = false;
-        }
+        this.procesarGuardado();
+        this.procesando = false;
       }
     },
     ocultaOverlay() {
@@ -375,7 +381,7 @@ export default {
     }
   },
   created() {
-    this.$store
+    /*this.$store
       .dispatch("nomina/registrosPorTabla", {
         tabla: 4,
         sub: 0,
@@ -394,7 +400,28 @@ export default {
         console.log("Error => MovimientosEditor => ");
         console.log({ex});
         this.lectura = true;
-      }.bind(this));
+      }.bind(this));*/
+
+    this.$store
+      .dispatch("nomina/registrosPorTabla", {
+        tabla: 5,
+        sub: 0,
+        emp: 0,
+      })
+      .then(
+        function (r) {
+          if (r) {
+            this.origenes = r.data;
+          }
+        }.bind(this)
+      )
+      .catch(
+        function (ex) {
+          console.log("Error => RubroEditor => ");
+          console.log({ ex });
+          this.lectura = true;
+        }.bind(this)
+      );
   },
   mounted() {
     if (this.$route.params.id > 0) {
@@ -413,7 +440,8 @@ export default {
         refencia: this.$route.params.dato.refencia,
         estado: this.$route.params.dato.estado,
         empleado_id: this.$route.params.dato.empleado_id,
-        relEmpleado: this.$route.params.dato.relEmpleado
+        relEmpleado: this.$route.params.dato.relEmpleado,
+        relOrigen: this.$route.params.dato.relOrigen
       };
       if (this.$route.params.dato.fecha != undefined) {
         try {

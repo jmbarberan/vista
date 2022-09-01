@@ -47,7 +47,7 @@
                 class="span-comando mdi mdi-pen mdi-18px mr-2"
                 @click="modificar(row)"
                 v-b-tooltip.hover
-                title="$t('vista.comandos.modificar')"
+                :title="$t('vista.comandos.modificar')"
               />
               <span v-if="row.item.estado == 0"
                 class="span-comando mdi mdi-calculator mdi-18px mr-2"
@@ -59,7 +59,7 @@
                 class="span-comando mdi mdi-trash-can-outline mdi-18px" 
                 @click="eliminar(row)"
                 v-b-tooltip.hover
-                title="$t('vista.comandos.eliminar')"
+                :title="$t('vista.comandos.eliminar')"
               />
               <span v-if="row.item.estado == 2"
                 class="span-comando mdi mdi-restore mdi-18px" 

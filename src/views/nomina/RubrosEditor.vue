@@ -240,7 +240,6 @@ export default {
       periodo: { maxValue: mayorQueCero },
       formula: { maxValue: mayorQueCero },
       valor: {
-        numeric,
         maxValue: mayorQueCero,
       },
     },

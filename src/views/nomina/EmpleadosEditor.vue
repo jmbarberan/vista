@@ -90,6 +90,16 @@
                   </b-form-group>
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
+                  <b-form-group label='Registro en el ministerio' class='zindex6'>
+                    <datepicker
+                      class="fecha-md"
+                      :bootstrap-styling="true"
+                      v-model="registro"
+                      :language="es"
+                    ></datepicker>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="6">
                   <b-form-group label='Entrada al seguro social' class='zindex7'>
                     <datepicker
                       class="fecha-md"
@@ -100,13 +110,8 @@
                   </b-form-group>
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
-                  <b-form-group label='Registro en el ministerio' class='zindex6'>
-                    <datepicker
-                      class="fecha-md"
-                      :bootstrap-styling="true"
-                      v-model="registro"
-                      :language="es"
-                    ></datepicker>
+                  <b-form-group label="Sueldo seguro">
+                    <b-form-input type="number" pattern="^\d*(\.\d{0,2})?$" v-model.number="empleado.sueldo_seguro"/>
                   </b-form-group>
                 </b-colxx>
               </b-row>
@@ -165,6 +170,7 @@ export default {
         departamento_id: 0,
         referencia: 0,
         estado: 0,
+        sueldo_seguro: 0,
         relCargo: null,
         relCuentas: [],
         cuentasEliminadas: []
@@ -398,6 +404,7 @@ export default {
       this.empleado.departamento_id = this.$route.params.dato.departamento_id;
       this.empleado.referencia = this.$route.params.dato.referencia;
       this.empleado.estado = this.$route.params.dato.estado;
+      this.empleado.sueldo_seguro = this.$route.params.dato.sueldo_seguro;
       this.empleado.relCargo = this.$route.params.dato.relCargo;
       this.empleado.relCuentas = this.$route.params.dato.relCuentas;
       this.empleado.cuentasEliminadas = [];
