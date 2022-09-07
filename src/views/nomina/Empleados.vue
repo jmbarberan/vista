@@ -27,6 +27,7 @@
             :items="empleados"
             :current-page="paginaActual"
             :busy="busquedaEjecutando"
+            responsive
           >
             <template #table-busy>
               <div class="loading-with-text">
@@ -95,7 +96,7 @@
   </div>
 </template>
 <script>
-import { getCurrentSubscriber } from "../../utils/index";
+import { getCurrentSubscriber, getEmpresa } from "../../utils/index";
 import EncabezadoTablas from "@/containers/views/EncabezadoTablas";
 //import { BuscadorPersonasArgs } from "../../utils/personasBuscadorArgs"
 export default {
@@ -188,7 +189,7 @@ export default {
       this.$store
         .dispatch("nomina/empleadosBuscar", {
           sub: getCurrentSubscriber().id,
-          emp: this.$store.state.empresaAccedida.id,
+          emp: getEmpresa().id,
           atributo: buscaAtrib,
           estado: this.$store.state.clinica.tablasBuscador.eliminados ? 9 : 0,
           filtro: this.$store.state.clinica.tablasBuscador.texto,

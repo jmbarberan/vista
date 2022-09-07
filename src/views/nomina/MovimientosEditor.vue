@@ -168,7 +168,7 @@
 <script>
 import Datepicker from "vuejs-datepicker";
 import { es } from 'vuejs-datepicker/dist/locale';
-import { getCurrentSubscriber, mayorQueCero } from "../../utils/index"
+import { getCurrentSubscriber, getEmpresa, mayorQueCero } from "../../utils/index"
 import PersonaSeleccionar from '../../components/Common/PersonaSeleccionar.vue'
 const { required, maxValue } = require("vuelidate/lib/validators");
 export default {
@@ -182,7 +182,7 @@ export default {
       movimiento: {
         id: 0,
         subscripcion_id: 0,
-        empresa_id: 0,
+        empresa_id: getEmpresa().id,
         tipo: 0,
         numero: 0,
         fecha: null,
@@ -214,7 +214,7 @@ export default {
         buscador: "nomina/empleadosBuscarMin",
         params: {
           sub: getCurrentSubscriber().id,
-          emp: this.$store.state.empresaAccedida.id,
+          emp: getEmpresa().id,
           tipo: 0,
           atributo: "nombres",
           estado: 0

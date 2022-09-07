@@ -132,6 +132,7 @@
 <script>
 import EncabezadoDocs from "@/containers/views/EncabezadoDocumentos";
 import { tipoDenominacion } from "@/constants/tipos";
+import { getEmpresa } from "../../utils";
 export default {
   components: {
     "encabezado-tabla": EncabezadoDocs
@@ -427,7 +428,7 @@ export default {
     this.$store.commit('setBuscaMovimientosDesde', new Date());
     this.$store.commit('setBuscaMovimientosHasta', new Date());
     this.$store
-      .dispatch("ajustes/sucursalesEmpresa", this.$store.state.empresaAccedida.id)
+      .dispatch("ajustes/sucursalesEmpresa", getEmpresa().id)
       .then(function(r) {
         this.sucursales = r.data;
         this.cargarSucursalesBusqueda();

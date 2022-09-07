@@ -321,6 +321,7 @@ import ClienteSeleccionar from "@/components/Maestros/ClienteSeleccionar";
 import { mapGetters } from 'vuex';
 import moment from 'moment'
 import VRuntimeTemplate from "v-runtime-template";
+import { getEmpresa } from "../../utils";
 const { required } = require("vuelidate/lib/validators");
 
 export default {
@@ -946,7 +947,7 @@ export default {
   },
   created() {
     this.$store
-      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: this.$store.state.empresaAccedida.id})
+      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: getEmpresa().id})
       .then(function(r) {
         this.bodegas = r.data;
         if (this.bodegas.length > 0) {
@@ -954,7 +955,7 @@ export default {
         }
       }.bind(this));
     this.$store
-      .dispatch("ajustes/sucursalesEmpresa", this.$store.state.empresaAccedida.id)
+      .dispatch("ajustes/sucursalesEmpresa", getEmpresa().id)
       .then(function(r) {
         if (r) {
           this.sucursales = r.data;

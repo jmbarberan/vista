@@ -196,6 +196,7 @@ import {
   sueldosLista,
   mayorQueCero,
   getCurrentSubscriber,
+getEmpresa,
 } from "../../utils/index";
 const {
   required,
@@ -219,7 +220,7 @@ export default {
         referencia: 0,
         estado: 0,
         subscripcion_id: 0,
-        empresa_id: 0,
+        empresa_id: getEmpresa().id,
         divisible: 1,
         meses_aplica: "",
       },
@@ -281,7 +282,7 @@ export default {
       } else {
         if (this.rubro.id <= 0) {
           this.rubro.subscripcion_id = getCurrentSubscriber().id;
-          this.rubro.empresa_id = this.$store.state.empresaAccedida.id;
+          this.rubro.empresa_id = getEmpresa().id;
         }
         this.$store
           .dispatch("nomina/rubroGuardar", JSON.stringify(this.rubro))

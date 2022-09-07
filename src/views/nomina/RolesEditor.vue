@@ -239,6 +239,13 @@
                 variant="primary"
                 class="mr-4"
               >{{ $t("vista.comandos.modificar") }}</b-button>
+              <b-button
+                ref="btImprimir"
+                v-show="lectura"
+                @click="imprimir()"
+                variant="secondary"
+                :title="$t('vista.comandos.imprimir')"
+              ><i class="mdi mdi-printer mdi-18px"/></b-button>
               <b-overlay
                 :show="guardando"
                 opacity="0.6"
@@ -277,7 +284,8 @@ import { es } from 'vuejs-datepicker/dist/locale';
 import {
   mesesAnio,
   getCurrentSubscriber,
-  mayorQueCero
+  mayorQueCero,
+getEmpresa
 } from "../../utils/index";
 const {
   maxValue,
@@ -471,7 +479,7 @@ export default {
     guardar() {
       if (this.rol.id == 0) {
         this.rol.subscripcion_id = getCurrentSubscriber().id,
-        this.rol.empresa_id = this.$store.state.empresaAccedida.id
+        this.rol.empresa_id = getEmpresa().id
       }
       this.$store
         .dispatch("nomina/rolesGuardar", JSON.stringify(this.rol))
@@ -515,6 +523,12 @@ export default {
     modificar() {
 
     },
+    imprimir() {
+      // imprimir rol
+    },
+    imprimirPlanilla(p) {
+      // imprimir planilla individual
+    },
     agregar() {
       // traer datos
       this.procesando = true;
@@ -523,7 +537,7 @@ export default {
       this.$store
         .dispatch("nomina/rolesRubros", {
           sub: getCurrentSubscriber().id,
-          emp: this.$store.state.empresaAccedida.id,
+          emp: getEmpresa().id,
           mes: this.rol.mes,
           anio: this.rol.anio
         })

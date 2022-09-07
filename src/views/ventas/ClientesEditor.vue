@@ -152,7 +152,7 @@
   </div>
 </template>
 <script>
-import { cedulaValida } from '../../utils'
+import { cedulaValida, getEmpresa } from '../../utils'
 import Datepicker from "vuejs-datepicker";
 import {es} from 'vuejs-datepicker/dist/locale';
 import moment from 'moment';
@@ -179,7 +179,7 @@ export default {
         estado: 0,
         relCliente: {
           id: 0,
-          empresa_id: 1,
+          empresa_id: getEmpresa().id,
           codigo: "",
           identificacion: "",
           identificacion_tipo: 0,

@@ -227,6 +227,7 @@
     },
     "busqueda": {
       "buscar": "Buscar",
+      "filtro": "Filtro",
       "de": "de",
       "al": "al",
       "por": "por",
@@ -248,6 +249,9 @@
       "acciones": "Acciones",
       "ver": "Ver",
       "buscar": "Buscar",
+      "filtrar": "Filtrar",
+      "remover": "Remover",
+      "quitar": "Quitar",
       "actualizar": "Actualizar",
       "nuevo": "Nuevo",
       "modificar": "Modificar",

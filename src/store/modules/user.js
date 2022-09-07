@@ -61,7 +61,11 @@ export default {
     async login({ commit }, payload) {
       commit('clearError')
       commit('setProcessing', true);
-      //commit("clinica/setMedicoUsuario", 0);
+      commit("setEmpresaAccedida", {
+        id: 0,
+        nombre: "",
+        sesion: false
+      });
       var params = JSON.stringify({
         "usr": payload.usuario,
         "cla": md5(payload.clave)
@@ -71,6 +75,7 @@ export default {
           setCurrentUser(r.data);
           r.data['Clave'] = "";
           commit('setUser', r.data);
+          commit("setEmpresaAccedida", payload.empresa);
         })
         .catch(function(e) {
           setCurrentUser(null);

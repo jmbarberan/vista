@@ -120,7 +120,12 @@ export default {
       if (!this.$v.crendencial.$anyError && this.empresaSeleccionado.Id > 0) {
         this.login({
           usuario: this.crendencial.usuario,
-          clave: this.crendencial.clave
+          clave: this.crendencial.clave,
+          empresa: {
+            id: this.empresaSeleccionado.Id,
+            nombre: this.empresaSeleccionado.Nombre,
+            sesion: true
+          }
         });
       }
     }
@@ -130,11 +135,6 @@ export default {
           if (val && val.Id && val.Nombres.length > 0) {
               setTimeout(() => {
                   this.$router.push("/inicio");
-                  this.$store.commit("setEmpresaAccedida", {
-                      id: this.empresaSeleccionado.Id,
-                      nombre: this.empresaSeleccionado.Nombre,
-                      sesion: true
-                  });
               }, 200);
           }
       },

@@ -34,6 +34,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import { getEmpresa } from "../../utils";
 export default {
   expose: ['enfocarCantidad'],
   data: function() {
@@ -95,7 +96,7 @@ export default {
           this.ocupado = true;
           let params = {
             ext: this.busquedaAvz ? 1 : 0,
-            emp: this.$store.state.empresaAccedida.id,
+            emp: getEmpresa().id,
             estado: 0,
             filtro: this.busquedaTexto
           }

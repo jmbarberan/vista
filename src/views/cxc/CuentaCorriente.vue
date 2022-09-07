@@ -266,6 +266,7 @@ import { tipoDenominacion } from "@/constants/tipos";
 import ClienteSeleccionar from "@/components/Maestros/ClienteSeleccionar";
 import { mapGetters } from 'vuex';
 import { tipoFactura } from '../../constants/tipos';
+import { getEmpresa } from '../../utils';
 
 export default {
   components: {
@@ -462,7 +463,7 @@ export default {
         let atrib = this.tipoBusca;
         atrib = atrib.replace("Cedula", "Identificacion");
         let p = {
-          emp: this.$store.state.empresaAccedida.id,
+          emp: getEmpresa().id,
           atrib: atrib,
           estado: 0,
           filtro: this.busquedaTexto
@@ -512,7 +513,7 @@ export default {
   },
   mounted() {
     this.$store
-      .dispatch("ajustes/sucursalesEmpresa", this.$store.state.empresaAccedida.id)
+      .dispatch("ajustes/sucursalesEmpresa", getEmpresa().id)
       .then(function(r) {
         this.sucursales = r.data
         this.sucursalSel.id = r.data[0].Id

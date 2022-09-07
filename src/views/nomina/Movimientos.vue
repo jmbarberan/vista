@@ -111,7 +111,7 @@
 <script>
 import EncabezadoDocs from "@/containers/views/EncabezadoDocumentos";
 import { tipoDenominacion } from "@/constants/tipos";
-import { getCurrentSubscriber } from "../../utils";
+import { getCurrentSubscriber, getEmpresa } from "../../utils";
 import moment from "moment";
 export default {
   components: {
@@ -219,7 +219,7 @@ export default {
       this.$store
         .dispatch("nomina/movimientosBuscar", {
           sub: getCurrentSubscriber().id,
-          emp: this.$store.state.empresaAccedida.id,
+          emp: getEmpresa().id,
           tipo: this.$store.state.movimientoBuscador.extendida ? 1 : 0,
           filtro: txt,
           estado: this.$store.state.movimientoBuscador.eliminados ? 9 : 0,

@@ -101,6 +101,7 @@
 
 <script>
 import EncabezadoDocs from "@/containers/views/EncabezadoDocumentos";
+import { getEmpresa } from "../../utils";
 export default {
   components: {
     "encabezado-tabla": EncabezadoDocs
@@ -375,7 +376,7 @@ export default {
   },
   created() {
     this.$store
-      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: this.$store.state.empresaAccedida.id})
+      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: getEmpresa().id})
       .then(function(r) {
         this.bodegas = r.data
         this.cargarBodegasBusqueda();

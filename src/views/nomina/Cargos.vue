@@ -133,7 +133,7 @@
 
 <script>
 const { required } = require("vuelidate/lib/validators");
-import { getCurrentSubscriber } from "../../utils/index";
+import { getCurrentSubscriber, getEmpresa } from "../../utils/index";
 
 export default {
   data() {
@@ -244,7 +244,7 @@ export default {
       this.$store
         .dispatch("nomina/cargosPorEstado", {
           sub: getCurrentSubscriber().id,
-          emp: this.$store.state.empresaAccedida.id,
+          emp: getEmpresa().id,
           estado: est
         })
         .then(function(r) {
@@ -291,7 +291,7 @@ export default {
           { duration: 3000, permanent: false });
       } else {
         this.editable.subscripcion_id = getCurrentSubscriber().id;
-        this.editable.empresa_id = parseInt(this.$store.state.empresaAccedida.id);
+        this.editable.empresa_id = parseInt(getEmpresa().id);
         this.editable.remuneracion_valor = parseFloat(this.editable.remuneracion_valor);
         this.$store
           .dispatch("nomina/cargoGuardar", JSON.stringify(this.editable))

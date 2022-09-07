@@ -16,7 +16,18 @@
               {{ item.Denominacion }}
             </b-dropdown-item>
           </b-dropdown>
-          <!--b-button @click="imprimir()" class="float-right">Imprimir</b-button-->
+          <div class="search-sm d-inline-block float-md-left inline-vertical-middle"> 
+            <b-form-input v-model="filtro" placeholder="Filtrar items"/> 
+          </div>
+          <a 
+            class="d-inline-block float-md-left ml-3 view-icon boton-comando"
+            @click="filtro = null;"
+            v-b-tooltip.hover 
+            :title="$t('vista.comandos.quitar') + ' ' + $t('vista.busqueda.filtro')"
+          >
+            <i class="mdi mdi-24px mdi-filter-variant-remove"/>
+          </a>
+
           <a 
             class="d-inline-block float-md-left ml-3 view-icon boton-comando"
             @click="actualizar()"
@@ -29,7 +40,7 @@
             class="d-inline-block float-md-left ml-3 view-icon boton-comando;"
             @click="imprimir()"
             v-b-tooltip.hover 
-            :title="$t('vista.comandos.actualizar') + ' ' + $t('vista.busqueda.resultados')"
+            :title="$t('vista.comandos.imprimir')"
           >
             <i class="mdi mdi-24px mdi-printer"/>
           </a>
@@ -45,7 +56,15 @@
       </div>
     </b-colxx>
     <b-colxx id="prnExiste" xxs="12">
-      <b-table responsive :items="items" :busy="busquedaEjecutando" :fields="campos">
+      <b-table 
+        responsive 
+        :items="items" 
+        :busy="busquedaEjecutando" 
+        :fields="campos"
+        :filter="filtro"
+        :filter-included-fields="filtrarPor"
+        @filtered="onFiltered"
+      >
         <template #table-busy>
           <table-busy :mensaje="$t('vista.busqueda.ejecutandoq') + '...'" />
         </template>
@@ -64,6 +83,8 @@
   </b-row>    
 </template>
 <script>
+import { getEmpresa } from '../../utils';
+
 export default {
   data() {
     return {
@@ -94,7 +115,9 @@ export default {
           key: "Saldo",
           sortable: true
         }
-      ]
+      ],
+      filtro: null,
+      filtrarPor: [ 'Nombre' ]
     }
   },
   methods: {
@@ -122,11 +145,14 @@ export default {
           }
           this.busquedaEjecutando = false;
         }.bind(this));
+    },
+    onFiltered() {
+
     }
   },
-  created() {
+  mounted() {
     this.$store
-      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: this.$store.state.empresaAccedida.id})
+      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: getEmpresa().id})
       .then(function(r) {
         this.bodegas = r.data;
         this.bodegaId = r.data[0].Id;

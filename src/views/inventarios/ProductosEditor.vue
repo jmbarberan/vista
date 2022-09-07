@@ -3,7 +3,7 @@
     <b-row>
       <b-colxx xxs="12">
         <piaf-breadcrumb :heading="$t('vista.inventarios.productos.editor-titulo')"/>
-        <div class="separator mb-5"></div>
+        <div class="separator mb-5"/>
       </b-colxx>
     </b-row>
     <b-row>
@@ -159,6 +159,8 @@
 </template>
 
 <script>
+import { getEmpresa } from "../../utils";
+
 const { required } = require("vuelidate/lib/validators");
 export default {
   data() {
@@ -180,7 +182,7 @@ export default {
         Modelo: 0,
         PrecioOrigen: 0,
         EspecieId: 0,
-        EmpresaId: 1,
+        EmpresaId: getEmpresa().id,
         Exitencia: 0,
         Estado: 0,
         EmbalajeTipo: 0,
@@ -300,10 +302,10 @@ export default {
             .dispatch("inventarios/productoRegistrado", { 
               id: this.producto.Id, 
               codigo: this.producto.Codigo,  
-              nombre: this.producto.Nombre }) 
-            .then(function(res) { 
-              if (res.status == 200) { 
-                if (this.grabado)  { 
+              nombre: this.producto.Nombre })
+            .then(function(res) {
+              if (res.status == 200) {
+                if (this.grabado)  {
                   if (this.producto.relImposiciones.length <= 0) { 
                     this.producto.relImposiciones = [ 
                       {

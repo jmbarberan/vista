@@ -35,6 +35,7 @@ import {
 } from "@/rutas/clinica";
 import * as moment from 'moment';
 import axios from 'axios';
+import { getEmpresa } from "../../utils";
 
 const clinica = {
   namespaced: true,
@@ -280,7 +281,7 @@ const clinica = {
       return await dispatch("buscarPacienteMin", p);
     },
     async buscarPacienteMin(context, p) {
-      let emp = context.rootState.empresaAccedida.id;
+      let emp = getEmpresa().id;
       let ruta = this.$app.appConfig.apiUrl + pacientesBuscar(
         emp,
         p.tipo,

@@ -142,6 +142,7 @@ import { es } from 'vuejs-datepicker/dist/locale';
 import ProductoSeleccionar from "@/components/Inventarios/ProductoSeleccionar";
 import ProductoBuscador from "@/components/Inventarios/ProductoBuscador";
 import { mapGetters } from 'vuex'
+import { getEmpresa } from "../../utils";
 export default {
   components: {
     Datepicker,
@@ -379,7 +380,7 @@ export default {
   },
   created() {
     this.$store
-      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: this.$store.state.empresaAccedida.id})
+      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: getEmpresa().id})
       .then(function(r) {
         this.bodegas = r.data;
         if (this.bodegas.length > 0) {
@@ -388,7 +389,7 @@ export default {
         }
       }.bind(this));
     this.$store
-      .dispatch("ajustes/sucursalesEmpresa", this.$store.state.empresaAccedida.id)
+      .dispatch("ajustes/sucursalesEmpresa", getEmpresa().id)
       .then(function(r) {
         if (r) {
           this.sucursales = r.data;

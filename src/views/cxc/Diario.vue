@@ -130,6 +130,7 @@
 import Datepicker from "vuejs-datepicker";
 import {es} from 'vuejs-datepicker/dist/locale'
 import { tipoDenominacion } from "@/constants/tipos";
+import { getEmpresa } from "../../utils";
 export default {
   components: {
     Datepicker
@@ -244,7 +245,7 @@ export default {
   },
   mounted() {
     this.$store
-      .dispatch("ajustes/sucursalesEmpresa", this.$store.state.empresaAccedida.id)
+      .dispatch("ajustes/sucursalesEmpresa", getEmpresa().id)
       .then(function(r) {
         this.sucursales = r.data
         this.sucursalSel.id = r.data[0].Id

@@ -139,7 +139,7 @@
 
 <script>
 import EncabezadoDocs from "@/containers/views/EncabezadoDocumentos";
-import { getCurrentSubscriber } from "../../utils/index";
+import { getCurrentSubscriber, getEmpresa } from "../../utils/index";
 import moment from "moment";
 export default {
   components: {
@@ -258,7 +258,7 @@ export default {
       this.$store
         .dispatch("nomina/rolesBuscar", {
           sub: getCurrentSubscriber().id,
-          emp: this.$store.state.empresaAccedida.id,
+          emp: getEmpresa().id,
           tipo: this.$store.state.movimientoBuscador.extendida ? 1 : 0,
           filtro: txt,
           estado: this.$store.state.movimientoBuscador.eliminados ? 9 : 0,

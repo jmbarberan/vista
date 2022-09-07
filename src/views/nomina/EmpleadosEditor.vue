@@ -139,7 +139,7 @@
 </template>
 <script>
 //import { setTimeout } from 'timers'
-import { getCurrentSubscriber } from "../../utils/index";
+import { getCurrentSubscriber, getEmpresa } from "../../utils/index";
 import { cedulaValida } from '../../utils'
 import Datepicker from "vuejs-datepicker";
 import { es } from 'vuejs-datepicker/dist/locale';
@@ -155,7 +155,7 @@ export default {
       empleado: {
         id: 0,
         subscripcion_id: 0,
-        empresa_id: 0,
+        empresa_id: getEmpresa().id,
         cedula: "",
         nombres: "",
         direccion: "",
@@ -271,14 +271,14 @@ export default {
         this.$store
           .dispatch("nomina/empleadoRegistrado", { 
             sub: getCurrentSubscriber().id, 
-            emp: this.$store.state.empresaAccedida.id, 
+            emp: getEmpresa().id, 
             id: this.empleado.id, 
             cedula: this.empleado.cedula, 
             nombres: this.empleado.nombres 
           })
           .then(function(res) {
             this.empleado.subscripcion_id = getCurrentSubscriber().id;
-            this.empleado.empresa_id = this.$store.state.empresaAccedida.id;
+            this.empleado.empresa_id = getEmpresa().id;
             if (this.empleado.entrada_fecha != null) {
               this.empleado.entrada_fecha = moment(this.empleado.entrada_fecha).format("YYYY-MM-DD");
             }
@@ -346,7 +346,7 @@ export default {
             cedula: this.empleado.cedula,
             nombres: this.empleado.nombres,
             sub: getCurrentSubscriber().id,
-            emp: this.$store.state.empresaAccedida.id,
+            emp: getEmpresa().id,
           })
           .then(function(res) {
             this.consultandoCedula = false;  
@@ -374,7 +374,7 @@ export default {
     this.$store
       .dispatch("nomina/cargosPorEstado", {
         sub: getCurrentSubscriber().id,
-        emp: this.$store.state.empresaAccedida.id,
+        emp: getEmpresa().id,
         estado: 0
       }).then(function(r) {
         if (r.data != null) {
