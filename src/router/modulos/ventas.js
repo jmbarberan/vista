@@ -51,6 +51,20 @@ export default function ventasRutas() {
       meta: { roles: [UserRole.Admin, UserRole.Ventas] },
     },
     {
+      name: "clientes-modificar",
+      path: `${traducir("rutas.clientes")}/${traducir("rutas.clientes-modificar")}`,
+      component: () =>
+        import(/* webpackChunkName: "clientes-modificar" */ "@/views/ventas/ClientesEditor.vue"),
+      meta: { roles: [UserRole.Admin, UserRole.Ventas] },
+    },
+    {
+      name: "clientes-crear",
+      path: `${traducir("rutas.clientes")}/${traducir("rutas.clientes-nuevo")}`,
+      component: () =>
+        import(/* webpackChunkName: "clientes-crear" */ "@/views/ventas/ClientesEditor.vue"),
+      meta: { roles: [UserRole.Admin, UserRole.Ventas] },
+    },
+    {
       path: "diario",
       component: () =>
         import(/* webpackChunkName: "vdiario" */ "@/views/ventas/Diario.vue"),

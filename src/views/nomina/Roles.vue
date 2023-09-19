@@ -348,7 +348,7 @@ export default {
           this.buscar();
           this.$notify("success",
             "Liquidar " + this.$t('menu.nomina.roles.titulo').toLowerCase(),
-            r.data,
+            r.data.msj,
             { duration: 3000, permanent: false });
         }.bind(this))
         .catch(function(e) {

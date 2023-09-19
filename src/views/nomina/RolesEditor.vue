@@ -156,7 +156,7 @@
                 <span
                   v-else
                   class="span-comando pt-1"
-                  @click="imprimirItem(fila)"
+                  @click="imprimirPlanilla(fila)"
                   v-b-tooltip.hover
                   :title="$t('vista.comandos.imprimir') + ' rol personal'"
                 >
@@ -525,9 +525,12 @@ export default {
     },
     imprimir() {
       // imprimir rol
+      console.log("imprimir todo")
     },
     imprimirPlanilla(p) {
       // imprimir planilla individual
+      console.log("imprimir empleado")
+      console.log(p.item);
     },
     agregar() {
       // traer datos
