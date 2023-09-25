@@ -9,7 +9,8 @@ export const clientesPorNombre = function(estado, filtro, emp) {
 };
 
 export const clientesBuscar = function(p) {
-  return `${rutaBase}/clientes/estado/${p.estado}/atrib/${p.atrib}/filtro/${p.filtro}/emp/${p.emp}/buscar`;
+  
+  return `${rutaBase}/clientes/estado/${p.estado}/atrib/${p.atributo}/filtro/${p.texto}/emp/${p.empresa}/buscar`;
 };
 
 export const proveedorPorCedula = function(ced) {

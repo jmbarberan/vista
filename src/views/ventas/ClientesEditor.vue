@@ -16,8 +16,8 @@
                   <b-form-group :label="$t('vista.ventas.clientes.campos.tipo-identificacion')">
                     <b-form-select v-model="paciente.relCliente.identificacion_tipo"
                       :options="tiposIdentificacion"
-                      value-field="id"
-                      text-field="denominacion"
+                      value-field="Id"
+                      text-field="Denominacion"
                       size="xs"
                     />
                   </b-form-group>
@@ -84,53 +84,6 @@
                     <b-form-input type="text" v-model.trim="paciente.relCliente.cupo"/>
                   </b-form-group>
                 </!--b-colxx-->
-              </b-row>
-              <h6 class="mb-4">{{ $t('vista.clinica.pacientes.datos-medicos') }}</h6>
-              <b-row>
-                <b-colxx xxs="12" sm="6">
-                  <b-form-group :label="$t('vista.clinica.pacientes.campos.gsanguineo')">
-                    <b-form-select
-                      v-model="paciente.grupo_sanguineo" 
-                      :options="gruposSanguineos"
-                      value-field="id"
-                      text-field="denominacion"
-                      size="sm"
-                    />
-                  </b-form-group>
-                </b-colxx>
-                <b-colxx xxs="12" sm="6">
-                  <b-form-group :label="$t('vista.clinica.pacientes.campos.sexo')">
-                    <b-form-select
-                      v-model="paciente.sexo"
-                      :options="sexos"
-                      value-field="id"
-                      text-field="denominacion"
-                      size="sm"
-                    />
-                  </b-form-group>
-                </b-colxx>
-                <b-colxx xxs="12" sm="6">
-                  <b-form-group :label="$t('vista.clinica.pacientes.campos.ecivil')">
-                    <b-form-select 
-                      v-model="paciente.estado_civil" 
-                      :options="estadosCiviles"
-                      value-field="id"
-                      text-field="denominacion"
-                      size="sm"
-                    />
-                  </b-form-group>
-                </b-colxx>
-                <b-colxx xxs="12" sm="6">
-                  <b-form-group :label='$t("vista.clinica.pacientes.campos.nacimiento")'>
-                    <datepicker
-                      class="fecha-md"
-                      :bootstrap-styling="true"
-                      v-model="nacimiento"
-                      :language="es"
-                    ></datepicker>
-                    <b-form-invalid-feedback :state="!$v.paciente.fecha_nacimiento.$error">{{ $t('vista.clinica.consultas.validacion.fecha') }}</b-form-invalid-feedback>
-                  </b-form-group>
-                </b-colxx>
               </b-row>
               <div class="mt-4">
                 <b-overlay 

@@ -12,15 +12,15 @@ import modMaestros from "./modules/maestros";
 import modSubscripciones from "./modules/subscripciones";
 import modCxc from "./modules/cxc";
 import modNomina from "./modules/nomina";
-import { setCurrentLanguage, setEmpresa, getCurrentSubscriber } from '../utils'
+import { setCurrentLanguage, getEmpresa, setEmpresa, getCurrentSubscriber } from '../utils'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     empresaAccedida: {
-      id: 1,
-      nombre: "ViniaPro",
+      id: 0,
+      nombre: "",
     },
     subscripcion: {
       id: 0,
@@ -56,7 +56,17 @@ export default new Vuex.Store({
     buscaMovimientosControlItems: state => state.movimientoBuscador.controlItems,
     buscaMovimientosTipomov: state => state.movimientoBuscador.tipomov,
     remotoConfiguracion: state => state.remotoConfig,
-    subscriptor: state => state.subscripcion
+    subscriptor: state => state.subscripcion,
+    empresaAccedida (state) {      
+      if (state.empresaAccedida.id == 0) {
+        let empresaCache = getEmpresa();
+        console.log("Empresa cache", empresaCache);
+        if (empresaCache != null && empresaCache.id > 0) {
+          state.empresaAccedida = empresaCache;
+        }
+      }
+      return state.empresaAccedida
+    }
   },
   mutations: {
     changeLang(state, payload) {
@@ -83,6 +93,7 @@ export default new Vuex.Store({
         id: p.id,
         nombre: p.nombre
       }
+      console.log("Sesion", p.sesion)
       if (p.sesion) {
         setEmpresa(p);
       }

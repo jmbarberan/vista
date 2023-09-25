@@ -75,6 +75,7 @@ export default {
           setCurrentUser(r.data);
           r.data['Clave'] = "";
           commit('setUser', r.data);
+          payload.empresa.sesion = true;
           commit("setEmpresaAccedida", payload.empresa);
         })
         .catch(function(e) {

@@ -23,6 +23,8 @@
     "citas": "citas",
     "recetas": "recetas",
     "clientes": "clientes",
+    "clientes-nuevo": "nuevo",
+    "clientes-modificar": "modificar",
     "facturas": "facturas",
     "facturas-nuevo": "nuevo",
     "facturas-modificar": "modificar",

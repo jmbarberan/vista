@@ -1,5 +1,5 @@
 import datosCIE from "@/assets/data/cie10-2012.json";
-import { 
+import {
   pacientesBuscar, 
   pacientePorCedula,
   pacienteRegistrado, 

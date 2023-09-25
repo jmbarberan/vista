@@ -91,12 +91,10 @@
 </template>
 <script>
 import EncabezadoTablas from "@/containers/views/EncabezadoTablas";
-//import PacienteSeleccionar from "@/components/Clinica/PacienteSeleccionar";
 import { mapGetters } from "vuex"
 export default {
   components: {
     "encabezado-tabla": EncabezadoTablas,
-    //"paciente-seleccionar": PacienteSeleccionar
   },
   data() {
     return {
@@ -153,10 +151,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters("clinica", [
-      "selPaciente",
-      'selPacienteTexto'
-    ]),
     total() {
       if (!this.busquedaEjecutando) {
         return this.clientes.length;
@@ -216,6 +210,7 @@ export default {
           }
         }.bind(this))
         .catch(function(e) {
+          console.log(e);
           this.busquedaEjecutando = false;
           this.$notify("warning", 
             this.$t("vista.comandos.buscar") + " clientes", 
@@ -334,48 +329,48 @@ export default {
       this.$store.commit('clinica/setCacheBusquedaPacientesLista', []);
     }
     if (this.$store.state.clinica.pacientesBuscadorCache.texto.length > 0) {
-      this.$store.commit('clinica/setBuscaTablasTexto', this.$store.state.clinica.pacientesBuscadorCache.texto);
-      this.$store.commit('clinica/setCacheBusquedaPacientesTexto', '');
+      this.$store.commit('clinica/setBuscaTablasTexto', this.$store.state.ventas.clientesBuscadorCache.texto);
+      this.$store.commit('maestros/setCacheBusquedaClientesTexto', '');
     }
     if (this.$store.state.clinica.pacientesBuscadorCache.atributo.length > 0) {
-      this.$store.commit('clinica/setBusquedaAtributo', this.$store.state.clinica.pacientesBuscadorCache.atributo);
-      this.$store.commit('clinica/setCacheBusquedaPacientesAtributo', '');
+      this.$store.commit('clinica/setBusquedaAtributo', this.$store.state.ventas.clientesBuscadorCache.atributo);
+      this.$store.commit('maestros/setCacheBusquedaClientesAtributo', '');
     } else {
       this.$store.commit("clinica/setBusquedaAtributo", "Nombres");
     }
     if (this.$store.state.clinica.pacientesBuscadorCache.atributoIdx > 0) {
-      this.$store.commit('clinica/setBusquedaAtributoIdx', this.$store.state.clinica.pacientesBuscadorCache.atributoIdx);
-      this.$store.commit('clinica/setCacheBusquedaPacientesAtributoIdx', 0);
+      this.$store.commit('clinica/setBusquedaAtributoIdx', this.$store.state.ventas.clientesBuscadorCache.atributoIdx);
+      this.$store.commit('maestros/setCacheBusquedaClientesAtributoIdx', 0);
     }
     if (this.$store.state.clinica.pacientesBuscadorCache.extendida) {
-      this.$store.commit('clinica/setBuscaTablasExtendida', this.$store.state.clinica.pacientesBuscadorCache.extendida);
-      this.$store.commit('clinica/setCacheBusquedaPacientesExtendida', false);
+      this.$store.commit('clinica/setBuscaTablasExtendida', this.$store.state.ventas.clientesBuscadorCache.extendida);
+      this.$store.commit('maestros/setCacheBusquedaClientesExtendida', false);
     }
     if (this.$store.state.clinica.pacientesBuscadorCache.eliminados) {
-      this.$store.commit('clinica/setBuscaTablasEliminados', this.$store.state.clinica.pacientesBuscadorCache.eliminados);
-      this.$store.commit('clinica/setCacheBusquedaPacientesEliminados', false);
+      this.$store.commit('clinica/setBuscaTablasEliminados', this.$store.state.ventas.clientesBuscadorCache.eliminados);
+      this.$store.commit('maestros/setCacheBusquedaClientesEliminados', false);
     }
   },
   beforeDestroy() {
-    this.$store.commit('clinica/setCacheBusquedaPacientesLista', this.clientes);
+    this.$store.commit('maestros/setCacheBusquedaClientesLista', this.clientes);
     if (this.$store.state.clinica.tablasBuscador.texto.length > 0) {
-      this.$store.commit('clinica/setCacheBusquedaPacientesTexto', this.$store.state.clinica.tablasBuscador.texto);
+      this.$store.commit('maestros/setCacheBusquedaClientesTexto', this.$store.state.clinica.tablasBuscador.texto);
       this.$store.commit('clinica/setBuscaTablasTexto', '');
     }
     if (this.$store.state.clinica.tablasBuscador.atributo.length > 0) {
-      this.$store.commit('clinica/setCacheBusquedaPacientesAtributo', this.$store.state.clinica.tablasBuscador.atributo);
+      this.$store.commit('maestros/setCacheBusquedaClientesAtributo', this.$store.state.clinica.tablasBuscador.atributo);
       this.$store.commit('clinica/setBusquedaAtributo', '');
     }
     if (this.$store.state.clinica.tablasBuscador.atributoIdx > 0) {
-      this.$store.commit('clinica/setCacheBusquedaPacientesAtributoIdx', this.$store.state.clinica.tablasBuscador.atributoIdx);
+      this.$store.commit('maestros/setCacheBusquedaClientesAtributoIdx', this.$store.state.clinica.tablasBuscador.atributoIdx);
       this.$store.commit('clinica/setBusquedaAtributoIdx', 0);
     }
     if (this.$store.state.clinica.tablasBuscador.extendida) {
-      this.$store.commit('clinica/setCacheBusquedaPacientesExtendida', this.$store.state.clinica.tablasBuscador.extendida);
+      this.$store.commit('maestros/setCacheBusquedaClientesExtendida', this.$store.state.clinica.tablasBuscador.extendida);
       this.$store.commit('clinica/setBuscaTablasExtendida', false);
     }
     if (this.$store.state.clinica.tablasBuscador.eliminados) {
-      this.$store.commit('clinica/setCacheBusquedaPacientesEliminados', this.$store.state.clinica.tablasBuscador.eliminados);
+      this.$store.commit('maestros/setCacheBusquedaClientesEliminados', this.$store.state.clinica.tablasBuscador.eliminados);
       this.$store.commit('clinica/setBuscaTablasEliminados', false);
     }
   }
