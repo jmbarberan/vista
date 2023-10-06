@@ -112,9 +112,19 @@
               <b-colxx xxs="12" sm="12" md="12">
                 <h6 v-if="verDatosCliente" class="mb-2">Datos adicionales del cliente</h6>
               </b-colxx>
-              <b-colxx xxs="12" sm="6">
-                <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.direccion')" class="has-float-label">
-                  <b-form-input type="text" v-model="venta.relCliente.Direccion" :readonly="lectura"/>
+              <b-colxx xxs="12" sm="4">
+                <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.tipo-identificacion')" class="has-float-label">
+                  <b-form-select v-model="venta.relCliente.IdentificacionTipo"
+                    :options="tiposIdentificacion"
+                    value-field="Id"
+                    text-field="Denominacion"
+                    size="xs"
+                  />
+                </b-form-group>
+              </b-colxx>
+              <b-colxx xxs="12" sm="8">
+                <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.correo')" class="has-float-label">
+                  <b-form-input type="text" v-model="venta.relCliente.Email" :readonly="lectura"/>
                 </b-form-group>
               </b-colxx>
               <b-colxx xxs="12" sm="6">
@@ -122,11 +132,16 @@
                   <b-form-input type="text" v-model="venta.relCliente.Telefonos" :readonly="lectura"/>
                 </b-form-group>
               </b-colxx>
+              <b-colxx xxs="12" sm="6">
+                <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.direccion')" class="has-float-label">
+                  <b-form-input type="text" v-model="venta.relCliente.Direccion" :readonly="lectura"/>
+                </b-form-group>
+              </b-colxx>
             </b-row>  
             <h6 v-if="!lectura">Agregar productos</h6>
             <div v-if="!lectura">
               <b-row>
-                <b-colxx xxs="12" sm="8" md="12" lg="5">
+                <b-colxx xxs="12" sm="8" md="5" lg="5">
                   <b-form-group label="Buscar producto" class="has-float-label mb-4">
                     <producto-buscar ref="buscadorPrd" 
                       v-on:buscarProducto-encontrado="productoEncontrado()" 
@@ -135,7 +150,7 @@
                     />
                   </b-form-group>
                 </b-colxx>
-                <b-colxx xxs="6" sm="4" md="4" lg="2">
+                <b-colxx xxs="6" sm="4" md="2" lg="2">
                   <b-form-group :label="$t('vista.inventarios.movimientos.campos.cantidad')" class="has-float-label mb-4">
                     <b-input-group class="w-100">
                       <b-form-input ref="txCantidad" size="sm" 
@@ -150,12 +165,12 @@
                     </b-input-group>
                   </b-form-group>
                 </b-colxx>
-                <b-colxx xxs="6" sm="2" md="2" lg="2">
+                <b-colxx xxs="6" sm="4" md="2" lg="2">
                   <b-form-group :label="$t('vista.ventas.facturas.campos.descuento_porcentaje_min')" class="has-float-label mb-4">
                     <b-form-input ref="txDescuento" size="sm" v-model.number="productoSeleccion.descuento" @keyup.enter="pasarFocoPrecio()"/>
                   </b-form-group>
                 </b-colxx>
-                <b-colxx xxs="12" sm="6" md="6" lg="3">
+                <b-colxx xxs="12" sm="8" md="3" lg="3">
                   <div class="d-flex">
                     <b-form-group label="Precio" class="has-float-label mb-4">
                       <b-input-group>
@@ -168,7 +183,7 @@
                         <b-input-group-append>
                           <b-dropdown right size="sm" variant="outline-primary"  class="borde-recto" toggle-class="text-decoration-none" no-caret>
                             <template #button-content>
-                                <i class="span-comando mdi mdi-chevron-down"  @click="mostrarPrecios()"/>
+                                <i class="span-comando mdi mdi-chevron-down"/>
                             </template>
                             <b-dropdown-item v-for="(item, index) in productoSeleccion.precios" :key="index"  @click="seleccionarPrecio(item.Precio)">
                               <div style="text-align: right;">{{ item.Precio | dinero }}</div>
@@ -385,6 +400,7 @@ export default {
       sucursales: [],
       bodegas: [],
       operadores: [],
+      tiposIdentificacion: [],
       procesando: false,
       lectura: false,
       productoSeleccion: {
@@ -538,11 +554,8 @@ export default {
       return this.procesando || 
         this.venta.relItems.length <= 0 || 
         this.venta.BodegaId <= 0 || 
-        this.venta.ClienteId <= 0 || 
+        (this.venta.ClienteId <= 0 && (!this.verDatosCliente || this.venta.relCliente.Nombres.length <= 4)) || 
         this.venta.SucursalId <= 0;
-    },
-    verPrecios() {
-      //
     },
   },
   methods: {
@@ -644,6 +657,9 @@ export default {
         return item;
       });
       this.venta.relImpuestos = impuestosIns;
+      if (this.venta.relCliente.Id == 0) {
+        this.venta.relCliente.EmpresaId = getEmpresa().id;
+      }
       this.$store
         .dispatch("ventas/ventaGuardar", this.venta)
         .then(function(res) {
@@ -911,15 +927,16 @@ export default {
         this.productoSeleccion.precio = this.productoSeleccion.precios[0].Precio;
       } else {
         if (this.productoSeleccion.precios.length > 0) {
-          let ordenado = this.productoSeleccion.precios.sort(function (x, y) {
-            return y.VolumenCondicion - x.VolumenCondicion;
-          });
           let cantidad = this.productoSeleccion.cantidad;
-          let preItem = ordenado.filter(function(item) {
-            return item.VolumenCondicion < cantidad;
+          let preItem = this.productoSeleccion.precios.filter(function(item) {
+            return item.VolumenCondicion <= cantidad;
           })
           if (preItem.length > 0) {
-            this.productoSeleccion.precio = preItem[0].Precio;
+            const precioFiltrado = preItem.reduce(function(prev, current) {
+                return (prev && prev.y > current.y) ? prev : current
+            })
+            if (precioFiltrado != null)
+              this.productoSeleccion.precio = precioFiltrado.Precio;
           }
         }
       }
@@ -964,6 +981,14 @@ export default {
           }
         }
       }.bind(this));
+    this.$store
+      .dispatch("ajustes/registrosPorTabla", {
+        id: 12 // Tipos de identificacion
+      }).then(function(r) {
+        if (r) {
+          this.tiposIdentificacion = r.respuesta.data;
+        }
+      }.bind(this));  
     if (this.$route.params.id != undefined && this.$route.params.id > 0) {
       // traer venta por el id si el id es distinto a cero
       this.$store
@@ -1006,7 +1031,7 @@ export default {
             try {
               this.fechaProp = this.$moment(this.venta.Fecha).toDate();
             } catch(e) {
-              this.fechaProp = new moment.utc(this.venta.Fecha).toDate();
+              this.fechaProp = new momenverDatosClienteverDAtost.utc(this.venta.Fecha).toDate();
             }
           } else {
             this.venta.Fecha = null;

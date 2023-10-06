@@ -411,7 +411,7 @@ export default {
   created() {
     this.$store
       .dispatch("ajustes/registrosPorTabla", {
-        id: 3 // Tipos de identificacion
+        id: 3 // Tipos de producto
       }).then(function(r) {
         if (r.id == 1) {
           if (r.respuesta != null) {
