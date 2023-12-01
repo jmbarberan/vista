@@ -317,6 +317,7 @@
             </b-overlay>
             <!--b-button ref="btImprimir" :disabled="procesando" @click="guardarImprimir();" variant="primary" class="ml-4">{{ $t('vista.comandos.imprimir') }}</!b-button-->
             <b-button ref="btCancelar" :disabled="procesando" @click="cancelar();" variant="primary" class="ml-4">{{ $t('vista.comandos.cancelar') }}</b-button>
+            <!--b-button ref="btNuevo" :disabled="procesando" @click="nuevo();" variant="primary" class="ml-4">{{ $t('vista.comandos.nuevo') }}</b-button-->
           </div>
         </b-card>
       </b-colxx>
@@ -387,7 +388,11 @@ export default {
         relCliente: {
           Id: 0,
           Nombres: '',
-          Identificacion: ''
+          Identificacion: '',
+          TipoIdentificacion: 0,
+          Email: '',
+          Direccion: '',
+          Telefonos: ''
         },
         Comprobante: 0,
         Contado: 0,
@@ -518,30 +523,38 @@ export default {
       }
     },
     subtotal() {
-      if (this.venta.relItems.length > 0) {
-        return this.venta.relItems.reduce(
-          (acc, item) => acc + 
-            (
-              item.Descuento != undefined && parseFloat(item.Descuento) > 0 ? 
-              (item.Cantidad * item.Precio) * ((100 - item.Descuento) / 100) :
-              (item.Cantidad * item.Precio)
-            )  
-          , 0
-        );
+      if (this.lectura) {
+          return parseFloat(this.venta.Subtotal) + (this.venta.SubtotalEx != null ? parseFloat(this.venta.SubtotalEx) : 0.00);
       } else {
-        return 0
+        if (this.venta.relItems.length > 0) {
+          return this.venta.relItems.reduce(
+            (acc, item) => acc + 
+              (
+                item.Descuento != undefined && parseFloat(item.Descuento) > 0 ? 
+                (item.Cantidad * item.Precio) * ((100 - item.Descuento) / 100) :
+                (item.Cantidad * item.Precio)
+              )  
+            , 0
+          );
+        } else {
+          return 0.00
+        }
       }
     },
     totalImpuestos() {
       if (this.grabado) {
-        if (this.venta.relItems.length > 0) {
-          return this.venta.relItems.reduce(
-            (acc, item) => acc + 
-                item.impuestos
-            , 0
-          );
+        if (this.lectura) {
+          return this.venta.Impuestos;
         } else {
-          return 0;
+          if (this.venta.relItems.length > 0) {
+            return this.venta.relItems.reduce(
+              (acc, item) => acc + 
+                  item.impuestos
+              , 0
+            );
+          } else {
+            return 0;
+          }
         }
       } else {
         return  0;
@@ -660,6 +673,8 @@ export default {
       if (this.venta.relCliente.Id == 0) {
         this.venta.relCliente.EmpresaId = getEmpresa().id;
       }
+
+      console.log("Guardar venta: ", this.venta);
       this.$store
         .dispatch("ventas/ventaGuardar", this.venta)
         .then(function(res) {
@@ -836,6 +851,12 @@ export default {
     },
     validarCedula() {
       if (!this.lectura) {
+        this.venta.relCliente.Id = 0;
+        this.venta.relCliente.Nombres = '';
+        this.venta.relCliente.TipoIdentificacion = 0;
+        this.venta.relCliente.Email = '';
+        this.venta.relCliente.Direccion = '';
+        this.venta.relCliente.Telefonos = '';
         this.ocupadoCedula = true;
         this.$store
           .dispatch("maestros/clientePorCedula", this.venta.relCliente.Identificacion)
@@ -963,8 +984,9 @@ export default {
     }
   },
   created() {
+    let empresaId = getEmpresa().id
     this.$store
-      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: getEmpresa().id})
+      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: empresaId})
       .then(function(r) {
         this.bodegas = r.data;
         if (this.bodegas.length > 0) {
@@ -1047,7 +1069,7 @@ export default {
     } else {
       this.tipoId = this.$route.meta.tipo;
       this.venta.Tipo = this.tipoId;
-      this.grabado = this.$route.meta.impuestos;
+      this.grabado = this.$route.meta.grabado;
     }
   },
   mounted() {

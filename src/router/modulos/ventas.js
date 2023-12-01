@@ -15,14 +15,14 @@ export default function ventasRutas() {
       path: `${traducir("rutas.facturas")}/${traducir("rutas.facturas-modificar")}`,
       component: () =>
         import(/* webpackChunkName: "factura-modificar" */ "@/views/ventas/FacturasEditor.vue"),
-      meta: { roles: [UserRole.Admin, UserRole.Ventas], tipo: tipoFactura, titulo: 'Facturas', accion: "Modificar", impuestos: true },
+      meta: { roles: [UserRole.Admin, UserRole.Ventas], tipo: tipoFactura, titulo: 'Facturas', accion: "Modificar", grabado: true },
     },
     {
       name: "facturas-crear",
       path: `${traducir("rutas.facturas")}/${traducir("rutas.facturas-nuevo")}`,
       component: () =>
         import(/* webpackChunkName: "factura-nuevo" */ "@/views/ventas/FacturasEditor.vue"),
-      meta: { roles: [UserRole.Admin, UserRole.Ventas], tipo: tipoFactura, titulo: 'Facturas', accion: "Nuevo", impuestos: true },
+      meta: { roles: [UserRole.Admin, UserRole.Ventas], tipo: tipoFactura, titulo: 'Facturas', accion: "Nuevo", grabado: true },
     },
     {
       path: traducir("rutas.notas-venta"),
@@ -35,14 +35,14 @@ export default function ventasRutas() {
       path: `${traducir("rutas.notas-venta")}/${traducir("rutas.notas-venta-modificar")}`,
       component: () =>
         import(/* webpackChunkName: "factura-modificar" */ "@/views/ventas/FacturasEditor.vue"),
-      meta: { roles: [UserRole.Admin, UserRole.Ventas], tipo: tipoNotaVenta, titulo: 'Notas de venta', accion: "Modificar", impuestos: false },
+      meta: { roles: [UserRole.Admin, UserRole.Ventas], tipo: tipoNotaVenta, titulo: 'Notas de venta', accion: "Modificar", grabado: false },
     },
     {
       name: "notas-venta-crear",
       path: `${traducir("rutas.notas-venta")}/${traducir("rutas.notas-venta-nuevo")}`,
       component: () =>
         import(/* webpackChunkName: "factura-nuevo" */ "@/views/ventas/FacturasEditor.vue"),
-      meta: { roles: [UserRole.Admin, UserRole.Ventas], tipo: tipoNotaVenta, titulo: 'Notas de venta', accion: "Nuevo", impuestos: false },
+      meta: { roles: [UserRole.Admin, UserRole.Ventas], tipo: tipoNotaVenta, titulo: 'Notas de venta', accion: "Nuevo", grabado: false },
     },
     {
       path: traducir("rutas.clientes"),

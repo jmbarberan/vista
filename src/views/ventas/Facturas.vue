@@ -131,7 +131,7 @@
 
 <script>
 import EncabezadoDocs from "@/containers/views/EncabezadoDocumentos";
-import { tipoDenominacion } from "@/constants/tipos";
+import { tipoDenominacion, tipoFactura } from "@/constants/tipos";
 import { getEmpresa } from "../../utils";
 export default {
   components: {

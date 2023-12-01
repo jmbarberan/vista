@@ -93,7 +93,6 @@ export default new Vuex.Store({
         id: p.id,
         nombre: p.nombre
       }
-      console.log("Sesion", p.sesion)
       if (p.sesion) {
         setEmpresa(p);
       }
