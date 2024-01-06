@@ -476,7 +476,8 @@ export default {
       ocupadoCedula: false,
       verDatosCliente: false,
       grabado: false,
-      itemsIndice: 0
+      itemsIndice: 0,
+      ivaIncluido: false
     }
   },
   validations: {
@@ -674,7 +675,6 @@ export default {
         this.venta.relCliente.EmpresaId = getEmpresa().id;
       }
 
-      console.log("Guardar venta: ", this.venta);
       this.$store
         .dispatch("ventas/ventaGuardar", this.venta)
         .then(function(res) {
@@ -759,12 +759,23 @@ export default {
         this.productoSeleccion.cantidad > 0 && 
         this.productoSeleccion.precio > 0) {
         let imps = 0;
+        let precioProcesado = this.productoSeleccion.precio;
         if (this.grabado) {
           if (this.productoSeleccion.producto.relImposiciones != undefined) {
+            console.log("iva incluido", this.ivaIncluido);
+            if (this.ivaIncluido) {
+              let porcentajeImpuesto = 12;
+              if (this.productoSeleccion.producto.relImposiciones.length == 1) {
+                let imp = this.productoSeleccion.producto.relImposiciones.at(0);
+                porcentajeImpuesto = imp.relImpuesto.Porcentaje;
+              }
+              let res = (porcentajeImpuesto / 100) + 1;
+              precioProcesado /= res; // (p * res) / 100; // TODO Aplicar impuestos incluido en el precio otros impuestos solo
+            }
             this.productoSeleccion.producto.relImposiciones.forEach(imp => {
               if (imp.relImpuesto != null)
               {
-                imps += ((this.productoSeleccion.cantidad * this.productoSeleccion.precio) * imp.relImpuesto.Porcentaje) / 100;
+                imps += ((this.productoSeleccion.cantidad * precioProcesado) * imp.relImpuesto.Porcentaje) / 100;
               }
             });
           }
@@ -777,7 +788,7 @@ export default {
           ProductoId: this.productoSeleccion.id,
           Cantidad: this.productoSeleccion.cantidad,
           Despachado: 0,
-          Precio: this.productoSeleccion.precio,
+          Precio: precioProcesado,
           Costo: 0,
           Descuento: this.productoSeleccion.descuento,
           Adicional: 0,
@@ -932,8 +943,8 @@ export default {
         this.productoSeleccion.producto = this.selProducto;
         this.productoSeleccion.id = this.selProducto.Id;
         this.productoSeleccion.precios = this.selProducto.relPrecios;
-        if (this.selProducto.relPrecios.length == 1) {
-          this.productoSeleccion.precio = this.selProductoLista[0].relPrecios[0].Precio;
+        if (this.productoSeleccion.precios.length == 1) {
+          this.productoSeleccion.precio = this.productoSeleccion.precios[0].Precio;
         }
         this.enfocarCantidad();
       }
@@ -986,7 +997,7 @@ export default {
   created() {
     let empresaId = getEmpresa().id
     this.$store
-      .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: empresaId})
+       .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: empresaId})
       .then(function(r) {
         this.bodegas = r.data;
         if (this.bodegas.length > 0) {
@@ -1010,7 +1021,17 @@ export default {
         if (r) {
           this.tiposIdentificacion = r.respuesta.data;
         }
-      }.bind(this));  
+      }.bind(this)); 
+    this.$store
+      .dispatch("ajustes/registroPorTablaIndice", {
+        id: 5, // Configuraciones
+        indice: 17 // Precios incluyen iva
+      }).then(function(r) {
+        if (r) {
+          this.ivaIncluido = r.respuesta.data.Contenedor == 1;
+        }
+      }.bind(this)); 
+      
     if (this.$route.params.id != undefined && this.$route.params.id > 0) {
       // traer venta por el id si el id es distinto a cero
       this.$store

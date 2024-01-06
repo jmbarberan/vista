@@ -4,6 +4,10 @@ export const registrosPorTabla = function(id) {
   return `${rutaBase}/tablas/${id}/registros`;
 };
 
+export const registroPorTablaIndice = function(id, indice) {
+  return `${rutaBase}/tablas/${id}/registro/${indice}`;
+};
+
 export const registroPorId = function(id) {
   return `${rutaBase}/tablas/registros/${id}`;
 };

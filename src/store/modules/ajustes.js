@@ -1,9 +1,23 @@
-import { registrosPorTabla, sucursalesEmpresa, plantillaPorTipo, empresasPorEstado } from "@/rutas/ajustes";
+import { registrosPorTabla, sucursalesEmpresa, plantillaPorTipo, empresasPorEstado, registroPorTablaIndice } from "@/rutas/ajustes";
 import axios from 'axios';
 
 const ajustes = {
   namespaced: true,
   actions: {
+    async registroPorTablaIndice(context, p) {
+      let ruta = this.$app.appConfig.apiUrl + registroPorTablaIndice(p.id, p.indice);
+      const response = await axios.get(ruta)
+        .catch(e => {
+          return {
+            id: -1, 
+            respuesta: e
+          };
+        });
+        return {
+          id: 1,
+          respuesta: response
+        };
+    },
     async registrosPorTabla(context, p) {
       let ruta = this.$app.appConfig.apiUrl + registrosPorTabla(p.id);
       const response = await axios.get(ruta)
