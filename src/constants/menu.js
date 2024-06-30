@@ -34,6 +34,12 @@ const data = [
         roles: [UserRole.Admin, UserRole.Ventas], 
       },
       {
+        icon: "iconsminds-receipt-4",
+        label: "menu.ventas.comprobantes",
+        to: `/ventas/comprobantes`,
+        roles: [UserRole.Admin, UserRole.Ventas], 
+      },
+      {
         icon: "iconsminds-files",
         label: "menu.ventas.ventascostos",
         to: `/ventas/ventascostos`,

@@ -71,6 +71,12 @@ export default function ventasRutas() {
       meta: { roles: [UserRole.Admin] },
     },
     {
+      path: "comprobantes",
+      component: () =>
+        import(/* webpackChunkName: "vecomprobantes" */ "@/views/ventas/ComprobantesElectronicos.vue"),
+      meta: { roles: [UserRole.Admin] },
+    },
+    {
       path: "ventascosto",
       component: () =>
         import(/* webpackChunkName: "ventascostos" */ "@/views/ventas/VentasCostos.vue"),

@@ -50,6 +50,7 @@
         "modificar": "Modificar"
       },
       "diario": "Diario de ventas",
+      "comprobantes": "Comps. Electronicos",
       "ventascostos": "Ventas vs costos"
     },
     "cxc": {
@@ -531,15 +532,16 @@
           "2": "Eliminado",
           "null": "Desconocido",
           "colores": {
-            "0": "warning",
+            "0": "success",
             "1": "success",
             "2": "danger",
-            "null": "primary"
+            "null": "warning"
           },
           "iconos": {
             "0": "mdi-briefcase-outline",
             "1": "mdi-check-circle-outline",
-            "2": "mdi-delete-outline"
+            "2": "mdi-delete-outline",
+            "null": "mdi-help-circle-outline"
           }
         },
         "validacion": {

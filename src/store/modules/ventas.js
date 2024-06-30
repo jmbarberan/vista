@@ -1,4 +1,4 @@
-import { ventaPorNumero, ventaGuardar, ventasBuscar, ventaPorId, ventasDiario, ventaModificarEstado } from "@/rutas/ventas";
+import { ventaPorNumero, ventaGuardar, ventasBuscar, ventaPorId, ventasDiario, ventasDiarioCE, ventaModificarEstado } from "@/rutas/ventas";
 import { tipoFactura, tipoNotaVenta, tipoDevolucion } from "@/constants/tipos";
 import moment from 'moment'
 import axios from 'axios';
@@ -143,7 +143,29 @@ const ventas = {
       //let p = context.rootState.movimientoBuscador.atributo != null ? context.rootState.movimientoBuscador.atributo.id : 0;
       let ruta = this.$app.appConfig.apiUrl + ventasDiario(
         p.sucursal, // Sucursal
-        0, // Estado activo
+        2, // Estado activo
+        p.desde,
+        p.hasta
+      );
+      console.log(ruta);      
+      const response = await axios.get(ruta)
+        .catch(e => {
+          return { 
+            id: -1, 
+            respuesta: e
+          };
+        });
+      return {
+        id: 1,
+        respuesta: response
+      };
+    },
+    async ventasDiarioCE(context, p) {
+      p.desde = moment(p.desde).format('YYYY-MM-DD');
+      p.hasta = moment(p.hasta).format('YYYY-MM-DD');
+      let ruta = this.$app.appConfig.apiUrl + ventasDiarioCE(
+        p.sucursal,
+        0, // Estado traer desde el asunto
         p.desde,
         p.hasta
       );

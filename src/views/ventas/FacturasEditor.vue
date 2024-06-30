@@ -15,7 +15,10 @@
             <b-row>
               <b-colxx xxs="12" sm="4" md="3">
                 <b-form-group :label="$t('vista.transacciones.campos.numero')" class="has-float-label">
-                  <b-form-input type="text" v-model="venta.Numero" readonly/>
+                  <b-input-group>
+                    <b-form-input type="text" v-model="venta.Numero" readonly/>
+                    <b-form-input v-show="esSecuencial" type="text" v-model="venta.CERespuestaTipo" readonly/>
+                  </b-input-group>
                 </b-form-group>
               </b-colxx>
               <b-colxx xxs="12" sm="4" md="3">
@@ -293,7 +296,7 @@
                 <span class="font-weight-semibold mr-4">Subtotal</span>
                 <span class="font-weight-semibold mr-2">{{ subtotal | dinero }}</span>
               </div>
-              <div v-if="grabado" style="text-align: right; margin-top: 8px margin-bottom: 10px">
+              <div v-if="grabado" style="text-align: right; margin-top: 8px; margin-bottom: 10px">
                 <span class="font-weight-semibold mr-4">Impuestos</span>
                 <span class="font-weight-semibold mr-2">{{ totalImpuestos | dinero }}</span>
               </div>
@@ -316,7 +319,7 @@
               <b-button v-else ref="btModificar" @click="modificar();" variant="success" class="ml-4">{{ $t('vista.comandos.modificar') }}</b-button>
             </b-overlay>
             <!--b-button ref="btImprimir" :disabled="procesando" @click="guardarImprimir();" variant="primary" class="ml-4">{{ $t('vista.comandos.imprimir') }}</!b-button-->
-            <b-button ref="btCancelar" :disabled="procesando" @click="cancelar();" variant="primary" class="ml-4">{{ $t('vista.comandos.cancelar') }}</b-button>
+            <b-button v-if="!lectura" ref="btCancelar" :disabled="procesando" @click="cancelar();" variant="primary" class="ml-4">{{ $t('vista.comandos.cancelar') }}</b-button>
             <!--b-button ref="btNuevo" :disabled="procesando" @click="nuevo();" variant="primary" class="ml-4">{{ $t('vista.comandos.nuevo') }}</b-button-->
           </div>
         </b-card>
@@ -571,6 +574,9 @@ export default {
         (this.venta.ClienteId <= 0 && (!this.verDatosCliente || this.venta.relCliente.Nombres.length <= 4)) || 
         this.venta.SucursalId <= 0;
     },
+    esSecuencial() {
+      return this.venta.CEAutorizaFecha != null;
+    }
   },
   methods: {
     pulsaControl(ev) {
@@ -764,7 +770,7 @@ export default {
           if (this.productoSeleccion.producto.relImposiciones != undefined) {
             console.log("iva incluido", this.ivaIncluido);
             if (this.ivaIncluido) {
-              let porcentajeImpuesto = 12;
+              let porcentajeImpuesto = 15;
               if (this.productoSeleccion.producto.relImposiciones.length == 1) {
                 let imp = this.productoSeleccion.producto.relImposiciones.at(0);
                 porcentajeImpuesto = imp.relImpuesto.Porcentaje;
@@ -1032,7 +1038,7 @@ export default {
         }
       }.bind(this)); 
       
-    if (this.$route.params.id != undefined && this.$route.params.id > 0) {
+    if (this.$route.params.id != undefined && this.$route.params.id != null && this.$route.params.id > 0) {
       // traer venta por el id si el id es distinto a cero
       this.$store
       .dispatch("ventas/ventaPorId", this.$route.params.id)
@@ -1061,7 +1067,10 @@ export default {
             AbonosPf: r.data.AbonosPf, 
             Estado: r.data.Estado,
             BodegaId: r.data.BodegaId, 
-            Comprobante: r.data.Comprobante, 
+            Comprobante: r.data.Comprobante,
+            CEAutorizaFecha: r.data.CEAutorizaFecha,
+            CEClaveAcceso: r.data.CEClaveAcceso,
+            CERespuestaTipo: r.data.CERespuestaTipo,
             Operador: r.data.Operador,
             Estado: r.data.Estado,
             Contado: r.data.Contado,
@@ -1119,6 +1128,9 @@ export default {
         Estado: this.$route.params.dato.Estado,
         BodegaId: this.$route.params.dato.BodegaId, 
         Comprobante: this.$route.params.dato.Comprobante, 
+        CEAutorizaFecha: this.$route.params.dato.CEAutorizaFecha,
+        CEClaveAcceso: this.$route.params.dato.CEClaveAcceso,
+        CERespuestaTipo: this.$route.params.dato.CERespuestaTipo,
         Operador: this.$route.params.dato.Operador,
         Estado: this.$route.params.dato.Estado,
         Contado: this.$route.params.dato.Contado,
@@ -1138,7 +1150,9 @@ export default {
       }
       this.iniciarImpuestos();
     } else {
-      this.fechaProp = this.$moment().format('YYYY-MM-DD');
+      if (this.$route.params.id == 0) {
+        this.fechaProp = this.$moment().format('YYYY-MM-DD');
+      }
     } 
     if (this.$route.params.lectura != undefined) {
       this.lectura = this.$route.params.lectura;

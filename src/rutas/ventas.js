@@ -17,6 +17,10 @@ export const ventasDiario = function(sucursal, estado, desde, hasta) {
   return `${rutaBase}/comprobantes/sucursal/${sucursal}/estado/${estado}/desde/${desde}/hasta/${hasta}/diario`;
 };
 
+export const ventasDiarioCE = function(sucursal, estado, desde, hasta) {
+  return `${rutaBase}/comprobantes/sucursal/${sucursal}/estado/${estado}/desde/${desde}/hasta/${hasta}/electronicos`;
+};
+
 export const ventaGuardar = function() {
   return `${rutaBase}/comprobantes/guardar`;
 };
