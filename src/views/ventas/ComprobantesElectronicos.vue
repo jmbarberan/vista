@@ -215,12 +215,17 @@
           },
           {
             label: "Num. Sist.", 
-            key: "Numero", 
+            key: "Numero",
             sortable: false,
           },
           {
-            label: "Clave de acceso", 
-            key: "CEClaveAcceso", 
+            label: "Clave de acceso",
+            key: "CEClaveAcceso",
+            sortable: false,
+          },
+          {
+            label: "Mensaje",
+            key: "CERespuestaMsj",
             sortable: false,
           }
         ],

@@ -483,6 +483,12 @@ export default {
       ivaIncluido: false
     }
   },
+  watch: {
+    '$route.path': function(val, oldVal){
+      if (val != oldVal)
+        this.iniciarComponente();
+    }
+  },
   validations: {
     venta: {
       relCliente: {
@@ -985,6 +991,114 @@ export default {
       } catch (ex) {
         this.productoSeleccion.precio = 0;
       }
+    },
+    iniciarComponente() {
+      if (this.$route.params.dato != null) {
+        this.venta = {
+          Id: this.$route.params.dato.Id,
+          Tipo: this.$route.params.dato.Tipo,        
+          Numero: this.$route.params.dato.Numero,
+          Fecha: this.$route.params.dato.Fecha,
+          Notas: this.$route.params.dato.Notas,
+          SucursalId: this.$route.params.dato.SucursalId,
+          Especie: this.$route.params.dato.Especie,
+          Plazo: this.$route.params.dato.Plazo,
+          ClienteId: this.$route.params.dato.ClienteId,
+          VendedorId: this.$route.params.dato.VendedorId,
+          PorcentajeDescuento: this.$route.params.dato.PorcentajeDescuento,
+          PorcentajeVenta: this.$route.params.dato.PorcentajeVenta,
+          Subtotal: this.$route.params.dato.Subtotal, 
+          Subtotalex: this.$route.params.dato.Subtotalex, 
+          Descuento: this.$route.params.dato.Descuento, 
+          Recargo: this.$route.params.dato.Recargo, 
+          Flete: this.$route.params.dato.Flete, 
+          Impuestos: this.$route.params.dato.Impuestos, 
+          Abonos: this.$route.params.dato.Abonos, 
+          AbonosPf: this.$route.params.dato.AbonosPf, 
+          Estado: this.$route.params.dato.Estado,
+          BodegaId: this.$route.params.dato.BodegaId, 
+          Comprobante: this.$route.params.dato.Comprobante, 
+          CEAutorizaFecha: this.$route.params.dato.CEAutorizaFecha,
+          CEClaveAcceso: this.$route.params.dato.CEClaveAcceso,
+          CERespuestaTipo: this.$route.params.dato.CERespuestaTipo,
+          Operador: this.$route.params.dato.Operador,
+          Estado: this.$route.params.dato.Estado,
+          Contado: this.$route.params.dato.Contado,
+          relCliente: this.$route.params.dato.relCliente,
+          relItems: this.$route.params.dato.relItems,
+          relImpuestos: this.$route.params.dato.relImpuestos,
+          itemsEliminados: []
+        };
+        if (this.$route.params.dato.Fecha != undefined) {
+          try {
+            this.fechaProp = this.$moment(this.venta.Fecha).toDate();
+          } catch(e) {
+            this.fechaProp = new moment.utc(this.venta.Fecha).toDate();
+          }
+        } else {
+          this.venta.Fecha = null;
+        }
+        this.iniciarImpuestos();
+      } else {
+        if (this.$route.params.id == 0 || this.$route.params.id == undefined) {
+          this.venta = {
+            Id: 0,
+            Tipo: 11,
+            Numero: 0,
+            Fecha: null,
+            SucursalId: 1,
+            Plazo: 0,
+            ClienteId: 0,
+            VendedorId: 0,
+            Notas: '',
+            PorcentajeDescuento: 0,
+            PorcentajeVenta: 0,
+            Subtotal: 0, 
+            SubtotalEx: 0, 
+            Descuento: 0, 
+            Recargo: 0, 
+            Flete: 0, 
+            Impuestos: 0, 
+            Abonos: 0, 
+            AbonosPf: 0, 
+            Estado: 0,
+            Especie: 0, 
+            BodegaId: 0, 
+            Comprobante: 0,
+            Contado: 0, 
+            Operador: '',
+            CEClaveAcceso: '',
+            CEAutorizacion: '',
+            CEAutorizaFecha: null,
+            CEContenido: '',
+            CEEtapa: 0,
+            CERespuestaId: 0,
+            CERespuestaTipo: '',
+            CERespuestaMsj: '',
+            relCliente: {
+              Id: 0,
+              Nombres: '',
+              Identificacion: '',
+              TipoIdentificacion: 0,
+              Email: '',
+              Direccion: '',
+              Telefonos: ''
+            },
+            Comprobante: 0,
+            Contado: 0,
+            relItems: [],
+            relSucursal: null,
+            relImpuestos: [],
+            itemsEliminados: []
+          }
+          this.fechaProp = this.$moment().format('YYYY-MM-DD');
+        }
+      } 
+      if (this.$route.params.lectura != undefined) {
+        this.lectura = this.$route.params.lectura;
+      } else {
+        this.lectura = false;
+      }
     }
   },
   filters: {
@@ -1103,60 +1217,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.params.dato != null) {
-      this.venta = {
-        Id: this.$route.params.dato.Id,
-        Tipo: this.$route.params.dato.Tipo,        
-        Numero: this.$route.params.dato.Numero,
-        Fecha: this.$route.params.dato.Fecha,
-        Notas: this.$route.params.dato.Notas,
-        SucursalId: this.$route.params.dato.SucursalId,
-        Especie: this.$route.params.dato.Especie,
-        Plazo: this.$route.params.dato.Plazo,
-        ClienteId: this.$route.params.dato.ClienteId,
-        VendedorId: this.$route.params.dato.VendedorId,
-        PorcentajeDescuento: this.$route.params.dato.PorcentajeDescuento,
-        PorcentajeVenta: this.$route.params.dato.PorcentajeVenta,
-        Subtotal: this.$route.params.dato.Subtotal, 
-        Subtotalex: this.$route.params.dato.Subtotalex, 
-        Descuento: this.$route.params.dato.Descuento, 
-        Recargo: this.$route.params.dato.Recargo, 
-        Flete: this.$route.params.dato.Flete, 
-        Impuestos: this.$route.params.dato.Impuestos, 
-        Abonos: this.$route.params.dato.Abonos, 
-        AbonosPf: this.$route.params.dato.AbonosPf, 
-        Estado: this.$route.params.dato.Estado,
-        BodegaId: this.$route.params.dato.BodegaId, 
-        Comprobante: this.$route.params.dato.Comprobante, 
-        CEAutorizaFecha: this.$route.params.dato.CEAutorizaFecha,
-        CEClaveAcceso: this.$route.params.dato.CEClaveAcceso,
-        CERespuestaTipo: this.$route.params.dato.CERespuestaTipo,
-        Operador: this.$route.params.dato.Operador,
-        Estado: this.$route.params.dato.Estado,
-        Contado: this.$route.params.dato.Contado,
-        relCliente: this.$route.params.dato.relCliente,
-        relItems: this.$route.params.dato.relItems,
-        relImpuestos: this.$route.params.dato.relImpuestos,
-        itemsEliminados: []
-      };
-      if (this.$route.params.dato.Fecha != undefined) {
-        try {
-          this.fechaProp = this.$moment(this.venta.Fecha).toDate();
-        } catch(e) {
-          this.fechaProp = new moment.utc(this.venta.Fecha).toDate();
-        }
-      } else {
-        this.venta.Fecha = null;
-      }
-      this.iniciarImpuestos();
-    } else {
-      if (this.$route.params.id == 0) {
-        this.fechaProp = this.$moment().format('YYYY-MM-DD');
-      }
-    } 
-    if (this.$route.params.lectura != undefined) {
-      this.lectura = this.$route.params.lectura;
-    }
+    this.iniciarComponente();
   }
 }
 </script>

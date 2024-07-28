@@ -68,10 +68,14 @@ const ventas = {
     async ventaGuardar(context, p) {
       let ent = JSON.parse(JSON.stringify(p));
       ent.Fecha = moment(p.Fecha).format("YYYY-MM-DD");
+      let params = '';
+      if (ent.Tipo == 11) {
+        params = '?generarCA=true&autorizar=true';
+      }
       ent = JSON.stringify(ent)
       let config = {
         headers: context.rootState.remotoConfig.headers,
-        url: this.$app.appConfig.apiUrl + ventaGuardar(),
+        url: this.$app.appConfig.apiUrl + ventaGuardar() + params,
         data: ent,
         method: 'post',
         crossorigin: true

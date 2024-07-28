@@ -83,7 +83,7 @@
                       <i :class="thirdLevelSub.icon" />
                       <span>{{ $t(thirdLevelSub.label) }}</span>
                     </a>
-                    <router-link v-else :to="thirdLevelSub.to">
+                    <router-link v-else :to="thirdLevelSub.to" :key="thirdLevelSub.to">
                       <i :class="thirdLevelSub.icon" />
                       <span>{{ $t(thirdLevelSub.label) }}</span>
                     </router-link>
@@ -92,11 +92,11 @@
               </b-collapse>
             </template>
             <div v-else class="d-flex">
-              <router-link :to="sub.to" class="mr-2">
+              <router-link :to="sub.to" :key="sub.to" class="mr-2">
                 <i :class="sub.icon" />
                 <span>{{ $t(sub.label) }}</span>
               </router-link>
-              <router-link v-if="esCreable(sub)" :to="sub.crear" class="flex-inicio">
+              <router-link v-if="esCreable(sub)" :to="sub.crear" :key="sub.crear" class="flex-inicio">
                 <i class="mdi mdi-plus" />
               </router-link>
             </div>
