@@ -2,32 +2,6 @@ import { defaultDirection, defaultColor,
   themeSelectedColorStorageKey, themeRadiusStorageKey, 
   localeOptions, defaultLocale } from '../constants/config'
 
-export const getRequestConfig = (bkend) => {
-  return {
-    url: `${process.env.VUE_APP_ROOT_API}${bkend.ruta}`,
-    method: bkend.metodo,
-    crossorigin: true
-  }
-}
-
-export const getRequestwDataConfig = (bkend, datos) => {
-  return {
-    url: `${process.env.VUE_APP_ROOT_API}${bkend.ruta}`,
-    data: datos,
-    method: bkend.metodo,
-    crossorigin: true
-  }
-}
-
-export const getRequestwParamsConfig = (bkend, params) => {
-  return {
-    url: `${process.env.VUE_APP_ROOT_API}${bkend.ruta}`,
-    params: params,
-    method: bkend.metodo,
-    crossorigin: true
-  }
-}
-
 export const mapOrder = (array, order, key) => {
   array.sort(function (a, b) {
     var A = a[key]

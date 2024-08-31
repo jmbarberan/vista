@@ -72,6 +72,16 @@ Vue.mixin({
       }
     }
   },
+  created() {
+    fetch('/config.json')
+      .then(response => response.json())
+      .then(config => {
+        this.appConfig.apiUrl = config.apiUrl;
+      })
+      .catch(error => {
+        console.error('Error cargando config:', error);
+      });
+  },
   mounted() {
     let sub = getCurrentSubscriber();
     if (sub != undefined) {

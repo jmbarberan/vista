@@ -5,7 +5,7 @@ import { empleadosBuscar, empleadoRegistrado, empleadoGuardar,
   rubrosPorEstado, rubroModificarEstado, rubroGuardar,
   rolesBuscar, rolesGuardar, rolesModificarEstado, rolesLiquidar, rolesRubros
 } from "@/rutas/nomina";
-import { getRequestConfig, getRequestwDataConfig, getRequestwParamsConfig } from "../../utils/index";
+//import { getRequestConfig } from "../../utils/index";
 import axios from 'axios';
 import moment from 'moment'
 
@@ -249,6 +249,32 @@ const nomina = {
       return await axios(getRequestConfig(rolesLiquidar(p)));
     }
     // #endregion
+  }
+}
+
+const getRequestConfig = (bkend) => {
+  return {
+    url: `${this.$app.appConfig.apiUrl}${bkend.ruta}`,
+    method: bkend.metodo,
+    crossorigin: true
+  }
+}
+
+const getRequestwDataConfig = (bkend, datos) => {
+  return {
+    url: `${this.$app.appConfig.apiUrl}${bkend.ruta}`,
+    data: datos,
+    method: bkend.metodo,
+    crossorigin: true
+  }
+}
+
+const getRequestwParamsConfig = (bkend, params) => {
+  return {
+    url: `${this.$app.appConfig.apiUrl}${bkend.ruta}`,
+    params: params,
+    method: bkend.metodo,
+    crossorigin: true
   }
 }
 
