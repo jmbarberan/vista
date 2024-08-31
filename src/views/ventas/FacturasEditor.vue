@@ -887,9 +887,22 @@ export default {
             if (r.status == 200) {
               // presentar lista para elegir si hay mas de un resultado
               if (r.data.length == 1) {
-                this.venta.ClienteId = r.data[0].Id;
-                this.venta.relCliente = r.data[0];
-                this.verDatosCliente = false;
+                if (r.data[0].Id > 0) {
+                  this.venta.ClienteId = r.data[0].Id;
+                  this.venta.relCliente = r.data[0];
+                  this.verDatosCliente = false;
+                } else {
+                  if (r.data[0].Nombres.length > 0) {
+                    this.$notify(
+                      "warning",
+                      this.$t("vista.transacciones.atencion"),
+                      this.$t("vista.ventas.facturas.validacion.cedula-nuevo"),
+                      { duration: 3000, permanent: false }
+                    );
+                    this.ocupadoCedula = false;
+                    this.verDatosCliente = true;
+                  } 
+                }
               } else {
                 if (r.data.length > 0) {
                   this.$refs.cliSeleccionador.cargarClientes(r.data, true);
