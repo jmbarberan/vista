@@ -4,7 +4,7 @@ import axios from 'axios';
 const subscripciones = {
   namespaced: true,
   actions: {
-    async codigoValidar({ commit }, p) {
+    async codigoValidar(p) {
       // no requiere codigo de subscripcion
       let config = {
         url: this.$app.appConfig.apiUrl + codigoValidar(),
