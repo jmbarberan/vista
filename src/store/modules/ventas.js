@@ -66,11 +66,11 @@ const ventas = {
       return ret;
     },
     async ventaGuardar(context, p) {
-      let ent = JSON.parse(JSON.stringify(p));
-      ent.Fecha = moment(p.Fecha).format("YYYY-MM-DD");
+      let ent = JSON.parse(JSON.stringify(p.venta));
+      ent.Fecha = moment(p.venta.Fecha).format("YYYY-MM-DD");
       let params = '';
       if (ent.Tipo == 11) {
-        params = '?generarCA=true&autorizar=true';
+        params = `?generarCA=${p.generarCa}&autorizar=${p.autorizar}`;
       }
       ent = JSON.stringify(ent)
       let config = {
@@ -81,7 +81,6 @@ const ventas = {
         crossorigin: true
       };
       return await axios(config);
-      
     },
     async ventasBuscar(context) {
       //sucursal, clase, estado, desde, hasta, tipo, filtro

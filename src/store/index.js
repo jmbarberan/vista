@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import app from '../main';
+import app from '../index';
 import menu from './modules/menu';
 import user from './modules/user';
 import modClinica from "./modules/clinica";
@@ -60,7 +60,6 @@ export default new Vuex.Store({
     empresaAccedida (state) {      
       if (state.empresaAccedida.id == 0) {
         let empresaCache = getEmpresa();
-        console.log("Empresa cache", empresaCache);
         if (empresaCache != null && empresaCache.id > 0) {
           state.empresaAccedida = empresaCache;
         }

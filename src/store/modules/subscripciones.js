@@ -4,7 +4,7 @@ import axios from 'axios';
 const subscripciones = {
   namespaced: true,
   actions: {
-    async codigoValidar(p) {
+    async codigoValidar({commit}, p) {
       // no requiere codigo de subscripcion
       let config = {
         url: this.$app.appConfig.apiUrl + codigoValidar(),
@@ -14,7 +14,7 @@ const subscripciones = {
       };
       return await axios(config);
     },
-    async codigoReseteoSolicitar({ commit }, p) {
+    async codigoReseteoSolicitar({commit}, p) {
       // no requiere codigo de subscripcion
       let config = {
         url: this.$app.appConfig.apiUrl + codigoReseteoSolicitar(),
@@ -24,11 +24,11 @@ const subscripciones = {
       };
       return await axios(config);
     },
-    async codigoReseteoValidar({ commit }, p) {
+    async codigoReseteoValidar({commit}, p) {
       let ruta = this.$app.appConfig.apiUrl + codigoReseteoValidar(p);
       return await axios.get(ruta);
     },
-    async codigoResetear({ commit }, p) {
+    async codigoResetear({$commit}, p) {
       // no requiere codigo de subscripcion
       let config = {
         url: this.$app.appConfig.apiUrl + codigoResetear(),

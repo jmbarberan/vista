@@ -90,8 +90,8 @@ export default {
         usuario: "",
         clave: ""
       },
-              empresas: [],
-              empresaSeleccionado: null
+        empresas: [],
+        empresaSeleccionado: null
     };
   },
   mixins: [validationMixin],
@@ -118,12 +118,13 @@ export default {
       this.$v.$touch();
       this.$v.crendencial.$touch();
       if (!this.$v.crendencial.$anyError && this.empresaSeleccionado.Id > 0) {
+        let empresaSel = this.empresas.filter(item => item.Id = this.empresaSeleccionado.Id)
         this.login({
           usuario: this.crendencial.usuario,
           clave: this.crendencial.clave,
           empresa: {
             id: this.empresaSeleccionado.Id,
-            nombre: this.empresaSeleccionado.Nombre,
+            nombre: empresaSel.Nombre,
             sesion: true
           }
         });

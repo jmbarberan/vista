@@ -284,13 +284,29 @@
           </b-table>
           <hr/>
           <div class="d-flex espaciado">
-            <b-button
-              class="flex-inicio"
-              size="xs"
-              variant="outline-secondary"
-              @click="vaciarItems()" 
-              :disabled="lectura || venta.relItems.length <= 0"
-            ><i class="mdi mdi-delete-sweep"/> {{ $t('vista.transacciones.eliminar-todo') }}</b-button> 
+            <div class="flex-inicio">
+              <b-button
+                class="mr-4"
+                size="xs"
+                variant="outline-secondary"
+                @click="vaciarItems()" 
+                :disabled="lectura || venta.relItems.length <= 0"
+              >
+                <i class="mdi mdi-delete-sweep"/> {{ $t('vista.transacciones.eliminar-todo') }}
+              </b-button> 
+              <b-checkbox switch v-if="!lectura"
+                v-model="autorizarAlGuardar"
+                theme="custom"
+                color="primary-inverse"
+                class="vue-switcher-small d-md-inline-block align-middle mr-2"
+              >Autorizar</b-checkbox>
+              <b-checkbox switch v-if="!lectura"
+                v-model="imprimirAlGuardar"
+                theme="custom"
+                color="primary-inverse"
+                class="vue-switcher-small d-md-inline-block align-middle"
+              >Imprimir</b-checkbox>
+            </div>
             <div>
               <div v-if="grabado" style="text-align: right;">
                 <span class="font-weight-semibold mr-4">Subtotal</span>
@@ -480,7 +496,9 @@ export default {
       verDatosCliente: false,
       grabado: false,
       itemsIndice: 0,
-      ivaIncluido: false
+      ivaIncluido: false,
+      autorizarAlGuardar: false,
+      imprimirAlGuardar: false
     }
   },
   watch: {
@@ -686,15 +704,17 @@ export default {
       if (this.venta.relCliente.Id == 0) {
         this.venta.relCliente.EmpresaId = getEmpresa().id;
       }
-
       this.$store
-        .dispatch("ventas/ventaGuardar", this.venta)
+        .dispatch("ventas/ventaGuardar", { venta: this.venta, generarCa: this.autorizarAlGuardar, autorizar: this.autorizarAlGuardar })
         .then(function(res) {
           if (res.data.cid > 0)
             this.venta = res.data.ven;
           this.lectura = true;
           this.iniciarImpuestos();
           if (res.status <= 201) {
+            if (this.imprimirAlGuardar) {
+              this.imprimir();
+            }
             this.$notify(
               "success",
               this.$t("vista.transacciones.guardando") + ' ' + this.$t("vista.ventas.facturas.denominacion"),
@@ -733,6 +753,7 @@ export default {
     },
     imprimir() {
       if (this.venta.relItems.length > 0) {
+        // inyectar el html en la etiqueta prnFactura segun la plantilla en db
         this.$htmlToPaper("prnFactura");
       }
     },
@@ -774,7 +795,6 @@ export default {
         let precioProcesado = this.productoSeleccion.precio;
         if (this.grabado) {
           if (this.productoSeleccion.producto.relImposiciones != undefined) {
-            console.log("iva incluido", this.ivaIncluido);
             if (this.ivaIncluido) {
               let porcentajeImpuesto = 15;
               if (this.productoSeleccion.producto.relImposiciones.length == 1) {
@@ -888,7 +908,7 @@ export default {
               // presentar lista para elegir si hay mas de un resultado
               if (r.data.length == 1) {
                 if (r.data[0].Id > 0) {
-                  this.venta.ClienteId = r.data[0].Id;
+                  this.venta.ClienteId = r.data[0].Id;p
                   this.venta.relCliente = r.data[0];
                   this.verDatosCliente = false;
                 } else {
@@ -980,20 +1000,22 @@ export default {
       }
     },
     cargarPrecio(event) {
-      if (this.productoSeleccion.precios.length === 1) {
-        this.productoSeleccion.precio = this.productoSeleccion.precios[0].Precio;
-      } else {
-        if (this.productoSeleccion.precios.length > 0) {
-          let cantidad = this.productoSeleccion.cantidad;
-          let preItem = this.productoSeleccion.precios.filter(function(item) {
-            return item.VolumenCondicion <= cantidad;
-          })
-          if (preItem.length > 0) {
-            const precioFiltrado = preItem.reduce(function(prev, current) {
-                return (prev && prev.y > current.y) ? prev : current
+      if (this != null && !this.lectura) {
+        if (this.productoSeleccion.precios.length === 1) {
+          this.productoSeleccion.precio = this.productoSeleccion.precios[0].Precio;
+        } else {
+          if (this.productoSeleccion.precios.length > 0) {
+            let cantidad = this.productoSeleccion.cantidad;
+            let preItem = this.productoSeleccion.precios.filter(function(item) {
+              return item.VolumenCondicion <= cantidad;
             })
-            if (precioFiltrado != null)
-              this.productoSeleccion.precio = precioFiltrado.Precio;
+            if (preItem.length > 0) {
+              const precioFiltrado = preItem.reduce(function(prev, current) {
+                  return (prev && prev.y > current.y) ? prev : current
+              })
+              if (precioFiltrado != null)
+                this.productoSeleccion.precio = precioFiltrado.Precio;
+            }
           }
         }
       }
