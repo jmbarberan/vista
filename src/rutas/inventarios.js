@@ -23,6 +23,9 @@ export const productoGuardar = function() {
 export const productoModificarEstado = function(id, estado) {
   return `${rutaBase}/productos/${id}/modificar/estado/${estado}`
 }
+export const imagenProductoPorId = function(id) {
+  return `${rutaBase}/productos/imagen/${id}`
+}
 
 export const existenciasTodos = function(bodega) {
   return `${rutaBase}/productos/bodega/${bodega}/existencia`;

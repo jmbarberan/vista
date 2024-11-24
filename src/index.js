@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import axios from 'axios'
 import BootstrapVue from 'bootstrap-vue'
 import en from './locales/en.json'
 import es from './locales/es.json'
@@ -19,17 +18,17 @@ import { getCurrentLanguage, getCurrentSubscriber } from './utils'
 import 'vue-search-select/dist/VueSearchSelect.css'
 import Vuelidate from "vuelidate";
 import "@mdi/font/css/materialdesignicons.css";
-//import VueHtmlToPaper from "vue-html-to-paper";
+import VueHtmlToPaper from "vue-html-to-paper";
 import momentz from 'moment-timezone';
 
 momentz.tz.setDefault('America/Guayaquil');
-/*const printOpciones = {
+const printOpciones = {
   name: "_blank",
   specs: ["fullscreen=yes", "titlebar=yes", "scrollbars=yes"],
   styles: [
     `${process.env.BASE_URL}css/pointerp.css`
   ]
-};*/
+};
 
 const messages = { en: en, es: es };
 const locale = getCurrentLanguage();
@@ -49,7 +48,7 @@ Vue.use(require('vue-shortkey'));
 Vue.use(contentmenu);
 Vue.use(VueScrollTo);
 Vue.use(Vuelidate);
-//Vue.use(VueHtmlToPaper, printOpciones);
+Vue.use(VueHtmlToPaper, printOpciones);
  
 Vue.use(require('vue-moment'), {
     momentCfg
@@ -68,26 +67,27 @@ Vue.mixin({
       appConfig: {
         adminRoot: "viniapro",
         accedidoLocal: false,
-        apiUrl: process.env.VUE_APP_ROOT_API
+        apiUrl: ''
       }
     }
   },
-  created() {
+  /*created() {
     fetch('/config.json')
       .then(response => response.json())
       .then(config => {
         this.appConfig.apiUrl = config.apiUrl;
+        axios.defaults.baseURL = config.apiUrl;
       })
       .catch(error => {
         console.error('Error cargando config:', error);
       });
-  },
+  },*/
   mounted() {
     let sub = getCurrentSubscriber();
     if (sub != undefined) {
       if (sub.codigo != undefined && sub.codigo.length > 0) {
         this.accedido = true;
-        axios.defaults.headers.common['Authorization'] = sub.codigo;
+        //axios.defaults.headers.common['Authorization'] = sub.codigo;
       }
     }
   }

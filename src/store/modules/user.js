@@ -71,7 +71,6 @@ export default {
         "usr": payload.usuario,
         "cla": md5(payload.clave)
       });
-      console.log("Params: " + params)
       return await axios.post(this.$app.appConfig.apiUrl + apiSeguridad.usuariosAcceso(), params)
         .then(function(r) {
           setCurrentUser(r.data);

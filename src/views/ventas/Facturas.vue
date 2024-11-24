@@ -308,7 +308,7 @@ export default {
             comando + " " + this.$t('vista.ventas.facturas.denominacion'),
             r.data,
             { duration: 3000, permanent: false });
-          this.mensaje(r.data, comando + " " + tipo, "success");
+          //this.mensaje(r.data, comando + " " + this.tipoDenominacion, "success");
         }.bind(this))
         .catch(function(e) {
           console.log("Error");

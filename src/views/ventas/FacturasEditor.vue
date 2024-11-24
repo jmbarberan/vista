@@ -156,7 +156,7 @@
                 <b-colxx xxs="6" sm="4" md="2" lg="2">
                   <b-form-group :label="$t('vista.inventarios.movimientos.campos.cantidad')" class="has-float-label mb-4">
                     <b-input-group class="w-100">
-                      <b-form-input ref="txCantidad" size="sm" 
+                      <b-form-input ref="txCantidad" size="sm"
                         pattern="^\d*(\.\d{0,0})?$" 
                         v-model.number="productoSeleccion.cantidad" 
                         @keyup.enter="pasarFocoDescuento()"
@@ -282,45 +282,52 @@
               <h4>{{ $t('vista.transacciones.no-items') }}</h4>
             </template>
           </b-table>
-          <hr/>
+          <b-alert
+            variant="warning"
+            :show="errorAutorizacion"
+            dismissible
+          >{{ mensajeErrorAutorizacion }}</b-alert>
+          <hr/>          
           <div class="d-flex espaciado">
             <div class="flex-inicio">
               <b-button
-                class="mr-4"
+                class="mr-4 mb-3"
                 size="xs"
                 variant="outline-secondary"
                 @click="vaciarItems()" 
                 :disabled="lectura || venta.relItems.length <= 0"
               >
                 <i class="mdi mdi-delete-sweep"/> {{ $t('vista.transacciones.eliminar-todo') }}
-              </b-button> 
-              <b-checkbox switch v-if="!lectura"
+              </b-button>
+              <b-checkbox switch
+                v-if="!lectura"
+                v-show="!esSecuencial"
                 v-model="autorizarAlGuardar"
                 theme="custom"
                 color="primary-inverse"
                 class="vue-switcher-small d-md-inline-block align-middle mr-2"
               >Autorizar</b-checkbox>
-              <b-checkbox switch v-if="!lectura"
+              <!--b-checkbox switch v-if="!lectura"
                 v-model="imprimirAlGuardar"
                 theme="custom"
                 color="primary-inverse"
                 class="vue-switcher-small d-md-inline-block align-middle"
-              >Imprimir</b-checkbox>
+              >Imprimir</b-checkbox-->
             </div>
             <div>
               <div v-if="grabado" style="text-align: right;">
                 <span class="font-weight-semibold mr-4">Subtotal</span>
-                <span class="font-weight-semibold mr-2">{{ subtotal | dinero }}</span>
+                <span class="font-weight-semibold mr-2">{{ parseFloat(subtotal) | dinero }}</span>
               </div>
               <div v-if="grabado" style="text-align: right; margin-top: 8px; margin-bottom: 10px">
                 <span class="font-weight-semibold mr-4">Impuestos</span>
-                <span class="font-weight-semibold mr-2">{{ totalImpuestos | dinero }}</span>
+                <span class="font-weight-semibold mr-2">{{ parseFloat(totalImpuestos) | dinero }}</span>
               </div>
               <div style="text-align: right;">
                 <span class="font-weight-semibold mr-4">{{$t('vista.ventas.facturas.campos.total-may')}}</span>
-                <span class="font-weight-semibold mr-2">{{ total | dinero }}</span>
+                <span class="font-weight-semibold mr-2">{{ parseFloat(total) | dinero }}</span>
               </div>
-            </div>            
+            </div>
           </div>
           <div class="mt-2">
             <b-overlay
@@ -332,16 +339,75 @@
               @hidden="ocultaOverlay"
             >
               <b-button v-if="!lectura" ref="btGuardar" :disabled="guardarDesactivado" @click="guardar();" variant="success">{{ $t('vista.comandos.guardar') }}</b-button>
-              <b-button v-else ref="btModificar" @click="modificar();" variant="success" class="ml-4">{{ $t('vista.comandos.modificar') }}</b-button>
             </b-overlay>
-            <!--b-button ref="btImprimir" :disabled="procesando" @click="guardarImprimir();" variant="primary" class="ml-4">{{ $t('vista.comandos.imprimir') }}</!b-button-->
+            <b-button v-if="lectura"  ref="btModificar" @click="modificar();" variant="primary" class="ml-4">{{ $t('vista.comandos.modificar') }}</b-button>
+            <b-button v-if="lectura"  ref="btImprimir" :disabled="procesando" @click="imprimir();" variant="primary" class="ml-4">{{ $t('vista.comandos.imprimir') }}</b-button>
             <b-button v-if="!lectura" ref="btCancelar" :disabled="procesando" @click="cancelar();" variant="primary" class="ml-4">{{ $t('vista.comandos.cancelar') }}</b-button>
-            <!--b-button ref="btNuevo" :disabled="procesando" @click="nuevo();" variant="primary" class="ml-4">{{ $t('vista.comandos.nuevo') }}</b-button-->
+            <!--b-button v-if="lectura" ref="btNuevo" :disabled="procesando" @click="nuevo();" variant="primary" class="ml-4">{{ $t('vista.comandos.nuevo') }}</b-button-->
           </div>
         </b-card>
       </b-colxx>
     </b-row>
-    <div id="prnFactura">
+    <div id="prnFacturaTicket" class="invisible">
+      <div style="font-family: 'Courier New', Courier, monospace; width: 100%; padding: 1px;">
+        <!-- Header -->
+        <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 0px; margin-bottom: 5px;">
+            <h2 style="font-size: 40px; margin: 0;">ECOFERRO</h2>
+            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Telf.: 0990034547 / 0982506926</p>
+            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Factura No.: {{ this.venta.Numero }}</p>
+            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Emision: Normal</p>
+            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Ambiente: Produccion</p>
+            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Clave de acceso</p>
+            <p style="font-size: 30px; line-height: 1.2; margin: 2px 0;">{{ this.venta.CEClaveAcceso }}</p>
+        </div>
+        <div style="text-align: left; border-bottom: 1px dashed #000; padding-bottom: 0px; margin-bottom: 5px;">
+            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Factura No.: {{ this.venta.Numero }}</p>
+            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Fecha: {{ $moment(this.venta.Fecha).format("YYYY-MM-DD") }}</p>
+            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Nombre: <span>{{ this.venta.relCliente.Nombres }}</span></p>
+            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Cedula: <span>{{ this.venta.relCliente.Identificacion }}</span></p>
+            <p style="font-size: 34px; line-height: 1.2; margin: 0px 0;">Telef.: <span>{{ this.venta.relCliente.Telefonos }}</span></p>
+        </div>
+        <!-- Items -->
+        <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
+            <table style="width: 100%; font-size: 34px; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <td colspan="3" style="text-align: left; padding-bottom: 5px;">Descripcion/Producto</td>
+                    </tr>
+                    <tr style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 5px;">
+                        <td style="text-align:  left; padding-bottom: 5px;">Cantidad</td>
+                        <td style="text-align: right; padding-bottom: 5px;">Precio</td>
+                        <td style="text-align: right; padding-bottom: 5px;">Subtotal</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <div v-for="item in venta.relItems" :key="item.relProducto.id">
+                        <tr>
+                            <td colspan="3" style="text-align: left; padding-bottom: 2px;">{{ item.relProducto.Nombre }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; padding-bottom: 5px; width:15%;">{{ item.Cantidad }}</td>
+                            <td style="text-align: right; padding-bottom: 5px; width:30%;">${{ parseFloat(item.Precio) | dinero }}</td>
+                            <td style="text-align: right; padding-bottom: 5px; width:55%;">${{ parseFloat(item.Cantidad) * parseFloat(item.Precio) | dinero }}</td>
+                        </tr>
+                    </div>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totals -->
+        <div style="text-align: right; font-size: 34px; margin-bottom: 5px;">
+            <p style="display: flex; justify-content: space-between; margin: 0; margin-bottom: 2px;">Subtotal: <span>{{ parseFloat(subtotal) | dinero }}</span></p>
+            <p style="display: flex; justify-content: space-between; margin: 0; margin-bottom: 2px;">Iva: <span>{{ parseFloat(totalImpuestos) | dinero }}</span></p>
+            <p style="display: flex; justify-content: space-between; margin: 0;"><strong>TOTAL:</strong> <strong><span>{{ parseFloat(total) | dinero }}</span></strong></p>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; font-size: 30px; border-top: 1px dashed #000; padding-top: 0px; margin-top: 5px;">
+            <p style="margin: 5px 0;">¡Gracias por su compra!</p>
+            <p style="margin: 5px 0;">Salida la mercaderia no se aceptan devoluciones</p>
+        </div>
+    </div>
     </div>
   </div>
 </template>
@@ -354,7 +420,7 @@ import ProductoSeleccionar from "@/components/Inventarios/ProductoSeleccionar";
 import ProductoBuscador from "@/components/Inventarios/ProductoBuscador";
 import ClienteSeleccionar from "@/components/Maestros/ClienteSeleccionar";
 import { mapGetters } from 'vuex';
-import moment from 'moment'
+import moment from 'moment';
 import VRuntimeTemplate from "v-runtime-template";
 import { getEmpresa } from "../../utils";
 const { required } = require("vuelidate/lib/validators");
@@ -498,7 +564,9 @@ export default {
       itemsIndice: 0,
       ivaIncluido: false,
       autorizarAlGuardar: false,
-      imprimirAlGuardar: false
+      errorAutorizacion: false,
+      mensajeErrorAutorizacion: ''
+      //imprimirAlGuardar: false
     }
   },
   watch: {
@@ -711,10 +779,14 @@ export default {
             this.venta = res.data.ven;
           this.lectura = true;
           this.iniciarImpuestos();
+          if (res.data.aut != '' && !res.data.aut.includes('AUTORIZADO')) {
+            this.errorAutorizacion = true;
+            this.mensajeErrorAutorizacion = res.data.aut;
+          }
           if (res.status <= 201) {
-            if (this.imprimirAlGuardar) {
+            /*if (this.imprimirAlGuardar) {
               this.imprimir();
-            }
+            }*/
             this.$notify(
               "success",
               this.$t("vista.transacciones.guardando") + ' ' + this.$t("vista.ventas.facturas.denominacion"),
@@ -751,11 +823,13 @@ export default {
       );
       this.procesando = false;
     },
-    imprimir() {
-      if (this.venta.relItems.length > 0) {
-        // inyectar el html en la etiqueta prnFactura segun la plantilla en db
-        this.$htmlToPaper("prnFactura");
+    async imprimir() {
+      const printOptions = {
+        styles: [
+          '/ticket.css'
+        ]
       }
+      this.$htmlToPaper('prnFacturaTicket', printOptions);
     },
     enfocarCantidad() {
       this.$nextTick(function() {
@@ -908,7 +982,7 @@ export default {
               // presentar lista para elegir si hay mas de un resultado
               if (r.data.length == 1) {
                 if (r.data[0].Id > 0) {
-                  this.venta.ClienteId = r.data[0].Id;p
+                  this.venta.ClienteId = r.data[0].Id;
                   this.venta.relCliente = r.data[0];
                   this.verDatosCliente = false;
                 } else {
@@ -951,9 +1025,6 @@ export default {
     modificar() {
       this.original = this.venta;
       this.lectura = false;
-    },
-    imprimir() {
-      this.$htmlToPaper("prnFactura");
     },
     iniciarImpuestos() {
       let idx = 1;
@@ -1256,4 +1327,3 @@ export default {
   }
 }
 </script>
-

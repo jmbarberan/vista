@@ -309,7 +309,7 @@ const clinica = {
       ent.fecha_nacimiento = moment(p.fecha_nacimiento).format("YYYY-MM-DD HH:mm:ss");
       ent = JSON.stringify(ent);
       if (p.relCliente.id <= 0) {
-        p.relCliente.empresa_id = context.rootState.empresaAccedida.id;
+        p.relCliente.empresa_id = getEmpresa().id;
       }
       let config = {
         /*headers: {
@@ -389,7 +389,7 @@ const clinica = {
       return await dispatch("buscarMedicoMin", p);
     },
     async buscarMedicoMin(context, p) {
-      let emp = context.rootState.empresaAccedida.id;
+      let emp = getEmpresa().id;
       let ruta = this.$app.appConfig.apiUrl + medicosBuscar(
         emp, 
         p.tipo,

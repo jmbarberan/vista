@@ -7,7 +7,21 @@
       rounded="lg"
       opacity=0.75s
     >
-      <template #overlay>
+      <template v-if="mostrarFoto" #overlay>
+        <b-container fluid class="p-4 bg-dark">
+          <b-img thumbnail fluid :src="fotoProducto" alt="Foto del producto"></b-img>
+          <b-button
+            ref="cancel"
+            variant="outline-danger"
+            size="sm"
+            class="mt-4"
+            @click="mostrarFoto = false; busquedaEjecutando = false; fotoProducto='';"
+          >
+            Cerrar
+          </b-button>
+        </b-container>    
+      </template>
+      <template v-else #overlay>
         <div class="loading-with-text">
           <span class="loader"/>
         </div>
@@ -54,6 +68,13 @@
           :current-page="paginaActual"
           @row-selected="filaSeleccionada"
           @row-clicked="clickedRowsEvt">
+          <template #cell(acciones)="row">
+            <button v-if="hasImages(row.item)" @click="cargarImagen(row.item)" type="button" class="btn btn-primary"
+              style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+            >
+              Foto
+            </button>
+          </template>
         </b-table>
         <b-pagination
           ref="paginador"
@@ -89,7 +110,7 @@
       </b-collapse>
     </b-overlay>  
     <template #modal-footer="{ ok }">
-      <b-button variant="success" size="sm" @click="aceptar()" :disabled="seleccionado == null">
+      <b-button v-show="!mostrarFoto" variant="success" size="sm" @click="aceptar()" :disabled="seleccionado == null">
         {{ $t('vista.comandos.aceptar') }}
       </b-button>
     </template>  
@@ -97,6 +118,7 @@
 </template>
 
 <script>
+import { getEmpresa } from "../../utils";
 import { mapGetters } from "vuex";
 export default {
 
@@ -107,11 +129,14 @@ export default {
       seleccionado: null,
       campos: [
         { key: "Nombre", label: this.$t('vista.inventarios.productos.campos.nombre'), sortable: false },
-        { key: "Medida", label: this.$t('vista.inventarios.productos.campos.medida'), sortable:false }
+        { key: "Medida", label: this.$t('vista.inventarios.productos.campos.medida'), sortable:false },
+        { key: "acciones", label: 'Foto' }
       ],
       items: [],
       filasPagina: [],
       busquedaEjecutando: false,
+      mostrarFoto: false,
+      fotoProducto: '',
       porPagina: 5,
       selIndex: -1,
       controlPulsado: false
@@ -151,6 +176,9 @@ export default {
     }
   },
   methods: {
+    hasImages(pro) {
+      return pro.relImagenes.length > 0
+    },
     pulsaEnter() {
       if (!this.controlPulsado) {
         if (this.busquedaTexto.length > 0) 
@@ -271,6 +299,8 @@ export default {
     cancelarModal() {
       //this.$store.commit("inventarios/setSelProducto", null);
       this.$store.commit('inventarios/setSelProductoLista', []);
+      this.mostrarFoto = false;
+      this.busquedaEjecutando = false;
     },
     cargarLista(p) {
       if (this.selProductoLista.length > 0) {
@@ -293,6 +323,21 @@ export default {
       let tabla = this.$refs.tbItems;
       if (tabla != undefined && tabla.$el != undefined) {
         this.filasPagina = tabla.$el.getElementsByTagName('tbody')[0].getElementsByTagName('tr');  
+      }
+    },
+    cargarImagen(pro) {
+      if (pro.relImagenes.length > 0) {
+        const fotoId = pro.relImagenes[0].Id;
+        this.$store
+          .dispatch("inventarios/imagenProductoPorId", fotoId)
+          .then(function(r) {
+            let imgUrl = URL.createObjectURL(r.data);
+            console.log('Url img', imgUrl);
+            this.fotoProducto = imgUrl;
+            this.mostrarFoto = true;
+            this.busquedaEjecutando = true;
+          }.bind(this)
+        );
       }
     }
   }

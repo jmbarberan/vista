@@ -117,14 +117,19 @@ export default {
     formSubmit() {
       this.$v.$touch();
       this.$v.crendencial.$touch();
+      if (this.empresaSeleccionado.Id == null || this.empresaSeleccionado.Id <= 0) {
+        this.empresaSeleccionado = this.empresas[0];
+      }
       if (!this.$v.crendencial.$anyError && this.empresaSeleccionado.Id > 0) {
-        let empresaSel = this.empresas.filter(item => item.Id = this.empresaSeleccionado.Id)
+        if (this.empresaSeleccionado == null) {
+          this.empresaSeleccionado = this.empresas.filter(item => item.Id = this.empresaSeleccionado.Id)
+        }
         this.login({
           usuario: this.crendencial.usuario,
           clave: this.crendencial.clave,
           empresa: {
             id: this.empresaSeleccionado.Id,
-            nombre: empresaSel.Nombre,
+            nombre: this.empresaSeleccionado.Nombre,
             sesion: true
           }
         });
@@ -159,10 +164,12 @@ export default {
         this.empresas = r.data;
         if (this.empresas.length > 0) {
           let emp = getEmpresa();
-          if (emp && parseInt(emp.id) > 0) {                        
+          if (emp.id > 0) {        
             let res = this.empresas.filter(e => e.Id == emp.id)
             if (res.length > 0) {
               this.empresaSeleccionado = res[0]
+            } else {
+              this.empresaSeleccionado = this.empresas[0];
             }
           } else {
             this.empresaSeleccionado = this.empresas[0];

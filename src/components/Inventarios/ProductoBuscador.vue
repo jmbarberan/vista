@@ -94,9 +94,10 @@ export default {
           this.$emit("buscarProducto-saltar");
         } else {
           this.ocupado = true;
+          let oEmp = getEmpresa();
           let params = {
             ext: this.busquedaAvz ? 1 : 0,
-            emp: getEmpresa().id,
+            emp: oEmp.id,
             estado: 0,
             filtro: this.busquedaTexto
           }

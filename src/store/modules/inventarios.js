@@ -1,5 +1,6 @@
 import moment from 'moment'
 import axios from 'axios';
+import { getEmpresa } from '../../utils/index';
 import { 
   productoPorId,
   productosBuscar, 
@@ -16,7 +17,8 @@ import {
   comprasBuscar, 
   comprasGuardar, 
   compraModificarEstado,
-  existenciasCeroTodos
+  existenciasCeroTodos,
+  imagenProductoPorId
 } from "@/rutas/inventarios";
 
 const inventarios = {
@@ -257,6 +259,10 @@ const inventarios = {
       return await context.dispatch("productosBuscarMin", p);
     },
     async productoSeleccionar(context, p) {
+      if (p.emp == null || p.emp <= 0) {
+        let emp = getEmpresa().id;
+        p.emp = emp;
+      }
       let ruta = this.$app.appConfig.apiUrl + productoSeleccionar(p);
       const response = await axios.get(ruta)
         .catch(e => {
@@ -274,7 +280,7 @@ const inventarios = {
       return await axios.get(this.$app.appConfig.apiUrl + productoPorId(id));
     },
     async productosBuscarMin(context, p) {
-      let emp = context.rootState.empresaAccedida.id; 
+      let emp = getEmpresa().id; 
       let ruta = this.$app.appConfig.apiUrl + productosBuscar(
         emp,
         p.tipo,
@@ -325,6 +331,9 @@ const inventarios = {
     async productoModificarEstado(context, p) {
       return await axios.put(this.$app.appConfig.apiUrl + productoModificarEstado(p.id, p.estado));
     }, 
+    async imagenProductoPorId(context, id) {
+      return await axios.get(this.$app.appConfig.apiUrl + imagenProductoPorId(id), { responseType: 'blob' });
+    },
     // #endregion   
 
     // #region Movimientos
