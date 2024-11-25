@@ -354,7 +354,7 @@
         <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 0px; margin-bottom: 5px;">
             <h2 style="font-size: 40px; margin: 0;">ECOFERRO</h2>
             <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Telf.: 0990034547 / 0982506926</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Factura No.: {{ this.venta.Numero }}</p>
+            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Factura No.: {{ this.venta.CERespuestaId }}</p>
             <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Emision: Normal</p>
             <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Ambiente: Produccion</p>
             <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Clave de acceso</p>
@@ -365,7 +365,7 @@
             <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Fecha: {{ $moment(this.venta.Fecha).format("YYYY-MM-DD") }}</p>
             <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Nombre: <span>{{ this.venta.relCliente.Nombres }}</span></p>
             <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Cedula: <span>{{ this.venta.relCliente.Identificacion }}</span></p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 0px 0;">Telef.: <span>{{ this.venta.relCliente.Telefonos }}</span></p>
+            <p style="font-size: 34px; line-height: 1.2; margin: 0px 0;">Email: <span>{{ this.venta.relCliente.Email }}</span></p>
         </div>
         <!-- Items -->
         <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
