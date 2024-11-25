@@ -779,14 +779,11 @@ export default {
             this.venta = res.data.ven;
           this.lectura = true;
           this.iniciarImpuestos();
-          if (res.data.aut != '' && !res.data.aut.includes('AUTORIZADO')) {
+          if (res.data.aut != undefined && !res.data.aut.includes('AUTORIZADO')) {
             this.errorAutorizacion = true;
             this.mensajeErrorAutorizacion = res.data.aut;
           }
           if (res.status <= 201) {
-            /*if (this.imprimirAlGuardar) {
-              this.imprimir();
-            }*/
             this.$notify(
               "success",
               this.$t("vista.transacciones.guardando") + ' ' + this.$t("vista.ventas.facturas.denominacion"),

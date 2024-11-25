@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import axios from 'axios'
 import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import en from './locales/en.json'
@@ -67,7 +68,7 @@ Vue.mixin({
       appConfig: {
         adminRoot: "viniapro",
         accedidoLocal: false,
-        apiUrl: ''
+        apiUrl: process.env.VUE_APP_ROOT_API
       }
     }
   },
@@ -87,7 +88,7 @@ Vue.mixin({
     if (sub != undefined) {
       if (sub.codigo != undefined && sub.codigo.length > 0) {
         this.accedido = true;
-        //axios.defaults.headers.common['Authorization'] = sub.codigo;
+        axios.defaults.headers.common['Authorization'] = sub.codigo;
       }
     }
   }
