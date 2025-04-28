@@ -447,58 +447,6 @@
                   </tbody>
               </table>
           </div>
-<<<<<<< HEAD
-=======
-        </b-card>
-      </b-colxx>
-    </b-row>
-    <div id="prnFacturaTicket" class="invisible">
-      <div style="font-family: 'Courier New', Courier, monospace; width: 100%; padding: 1px;">
-        <!-- Header -->
-        <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 0px; margin-bottom: 5px;">
-            <h2 style="font-size: 40px; margin: 0;">ECOFERRO</h2>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Telf.: 0990034547 / 0982506926</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Factura No.: {{ this.venta.CERespuestaId }}</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Emision: Normal</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Ambiente: Produccion</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Clave de acceso</p>
-            <p style="font-size: 30px; line-height: 1.2; margin: 2px 0;">{{ this.venta.CEClaveAcceso }}</p>
-        </div>
-        <div style="text-align: left; border-bottom: 1px dashed #000; padding-bottom: 0px; margin-bottom: 5px;">
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Factura No.: {{ this.venta.Numero }}</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Fecha: {{ $moment(this.venta.Fecha).format("YYYY-MM-DD") }}</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Nombre: <span>{{ this.venta.relCliente.Nombres }}</span></p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Cedula: <span>{{ this.venta.relCliente.Identificacion }}</span></p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 0px 0;">Email: <span>{{ this.venta.relCliente.Email }}</span></p>
-        </div>
-        <!-- Items -->
-        <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-            <table style="width: 100%; font-size: 34px; border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <td colspan="3" style="text-align: left; padding-bottom: 5px;">Descripcion/Producto</td>
-                    </tr>
-                    <tr style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 5px;">
-                        <td style="text-align:  left; padding-bottom: 5px;">Cantidad</td>
-                        <td style="text-align: right; padding-bottom: 5px;">Precio</td>
-                        <td style="text-align: right; padding-bottom: 5px;">Subtotal</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <div v-for="item in venta.relItems" :key="item.relProducto.id">
-                        <tr>
-                            <td colspan="3" style="text-align: left; padding-bottom: 2px;">{{ item.relProducto.Nombre }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; padding-bottom: 5px; width:15%;">{{ item.Cantidad }}</td>
-                            <td style="text-align: right; padding-bottom: 5px; width:30%;">${{ parseFloat(item.Precio) | dinero }}</td>
-                            <td style="text-align: right; padding-bottom: 5px; width:55%;">${{ parseFloat(item.Cantidad) * parseFloat(item.Precio) | dinero }}</td>
-                        </tr>
-                    </div>
-                </tbody>
-            </table>
-        </div>
->>>>>>> 4b587288970e832b4db3feb635472c54ee98dc2d
 
           <!-- Totals -->
           <div style="text-align: right; font-size: 34px; margin-bottom: 5px;">
