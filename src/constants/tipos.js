@@ -63,4 +63,5 @@ export const tipoBodegaIngreso = 6;
 export const tipoBodegaEgreso = 7;
 export const tipoCompra = 19;
 export const tipoNotasIngreso = 20;
+export const tipoValeCaja = 31;
 export const tipoNominaAdelanto = 49;

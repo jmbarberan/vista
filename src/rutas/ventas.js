@@ -28,3 +28,19 @@ export const ventaGuardar = function() {
 export const ventaModificarEstado = function(id, estado) {
   return `${rutaBase}/comprobantes/${id}/estado/${estado}/modificar`;
 };
+
+export const ventaEnviarCorreo = function(id) {
+  return `${rutaBase}/comprobantes/${id}/enviar-correo`;
+}
+
+export const ventaAutorizar = function(id) {
+  return `${rutaBase}/comprobantes/${id}/autorizar`;
+}
+
+export const ventaVerificar = function(id) {
+  return `${rutaBase}/comprobantes/${id}/verificar`;
+}
+
+export const cajasPorUsuario = function(params) {
+  return `${rutaBase}/cajas/empresa/${params.empresa}/usuario/${params.usuario}`;
+}

@@ -3,7 +3,6 @@
     <b-row>
       <b-colxx xxs="12">
         <piaf-breadcrumb heading="Datos del empleado"/>
-        <div class="separator mb-5"></div>
       </b-colxx>
     </b-row>
     <b-row>

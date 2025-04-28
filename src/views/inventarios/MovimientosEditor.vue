@@ -4,7 +4,6 @@
     <b-row>
       <b-colxx xxs="12">
         <piaf-breadcrumb :heading="this.$route.meta.titulo"/>
-        <div class="separator mb-5"></div>
       </b-colxx>
     </b-row>
     <b-row>
@@ -244,7 +243,7 @@ export default {
     },
     guardar() {
       if (this.movimiento.BodegaId == null || this.movimiento.BodegaId <= 0) {
-        this.$notify("danger",
+        this.$notify("error",
           this.$t("vista.comandos.guardar"),
           this.$t("vista.inventarios.sel-bodega"),
           { duration: 3000, permanent: false });
@@ -292,7 +291,7 @@ export default {
           console.log(e)
           if (e.response.data.msj != undefined);
             msj = e.response.data.msj;
-          this.$notify("danger",
+          this.$notify("error",
             this.$t("vista.comandos.guardar"),
             msj,
             { duration: 3000, permanent: false });  

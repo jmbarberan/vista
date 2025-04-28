@@ -3,7 +3,6 @@
     <b-row>
       <b-colxx xxs="12">
         <piaf-breadcrumb heading="Editor de rubros" />
-        <div class="separator mb-5"></div>
       </b-colxx>
     </b-row>
     <b-row>
@@ -321,7 +320,7 @@ export default {
               } else {
                 if (e.message) msj = e.message;
               }
-              this.$notify("danger", this.$t("vista.comandos.guardar"), msj, {
+              this.$notify("error", this.$t("vista.comandos.guardar"), msj, {
                 duration: 3000,
                 permanent: false,
               });

@@ -40,13 +40,31 @@
                 v-b-tooltip.hover
                 :title="$t('vista.comandos.ver')"
               />
-              <span v-if="row.item.Estado == 0"
+              <span v-if="esModificable(row)"
                 class="span-comando mdi mdi-pen mdi-18px mr-2"
                 @click="modificar(row)"
                 v-b-tooltip.hover
                 :title="$t('vista.comandos.modificar')"
               />
-              <span v-if="row.item.Estado == 0"
+              <span v-if="estaAutorizado(row.item)"
+                class="span-comando mdi mdi-send mdi-18px mr-2"
+                @click="enviar(row)"
+                v-b-tooltip.hover
+                title="Enviar correo"
+              />
+              <span v-if="estaAutorizado(row.item)"
+                class="span-comando mdi mdi-search-web mdi-18px mr-2"
+                @click="verificar(row)"
+                v-b-tooltip.hover
+                title="Verificar"
+              />
+              <span v-else
+                class="span-comando mdi mdi-certificate mdi-18px mr-2"
+                @click="autorizar(row)"
+                v-b-tooltip.hover
+                title="Autorizar"
+              />
+              <span v-if="esModificable(row)"
                 class="span-comando mdi mdi-trash-can-outline mdi-18px" 
                 @click="eliminar(row)"
                 v-b-tooltip.hover
@@ -60,7 +78,7 @@
               />
             </template>
             <template #cell(Fecha)="fila">
-              {{ formatearFecha(fila.item.fecha) }}
+              {{ formatearFecha(fila.item.Fecha) }}
             </template>
             <template #cell(Estado)="fila">
               <b-badge :variant="$t('vista.ventas.facturas.estados.colores.' + fila.item.Estado)">
@@ -205,9 +223,12 @@ export default {
     },
     paginas() {
       return Math.ceil(this.total / this.porPagina)
-    }
+    },
   },
   methods: {
+    estaAutorizado(vta) {
+      return vta.CERespuestaMsj == 'AUTORIZADO' || (vta.CEAutorizacion != null && vta.CEAutorizacion.length > 0);
+    },
     cambiarPagina(p) {
       this.porPagina = p;
     },
@@ -286,6 +307,69 @@ export default {
         }
       });
     },
+    enviar(p) {
+      this.busquedaEjecutando = true;
+      this.$store
+        .dispatch("ventas/ventaEnviarCorreo", p.item.Id)
+        .then(function(r) {
+          this.busquedaEjecutando = false;
+          this.$notify("success",
+            "Enviar correo",
+            r.data.msj,
+            { duration: 3000, permanent: false });
+        }.bind(this))
+        .catch(function(e) {
+          console.log("Error al enviar")
+          console.log(e.response.data);
+          this.busquedaEjecutando = false;
+          this.$notify("warning",
+            "Enviar correo",
+            e.message,
+            { duration: 3000, permanent: false });
+        }.bind(this));
+    },
+    autorizar(p) {
+      this.busquedaEjecutando = true;
+      this.$store
+        .dispatch("ventas/ventaAutorizar", p.item.Id)
+        .then(function(r) {
+          this.busquedaEjecutando = false;
+          this.$notify("success",
+            "Autorizar comprobante",
+            r.data.msj,
+            { duration: 3000, permanent: false });
+        }.bind(this))
+        .catch(function(e) {
+          console.log("Error al enviar")
+          console.log(e.response);
+          this.busquedaEjecutando = false;
+          this.$notify("warning",
+            "Enviar correo",
+            e.message,
+            { duration: 3000, permanent: false });
+        }.bind(this));
+    },
+    verificar(p) {
+      this.busquedaEjecutando = true;
+      this.$store
+        .dispatch("ventas/ventaVerificar", p.item.Id)
+        .then(function(r) {
+          this.busquedaEjecutando = false;
+          this.$notify("success",
+            "Verificar comprobante",
+            r.data.msj,
+            { duration: 3000, permanent: false });
+        }.bind(this))
+        .catch(function(e) {
+          console.log("Error al verificar")
+          console.log(e);
+          this.busquedaEjecutando = false;
+          this.$notify("warning",
+            "Verificar comprobante",
+            e.message,
+            { duration: 3000, permanent: false });
+        }.bind(this));
+    },
     restaurar(p) {
       this.modificarEstado(p.item.Id, 0);
     },
@@ -321,6 +405,7 @@ export default {
       this.busquedaEjecutando = false;
     },
     formatearFecha(f) {
+      console.log(f);
       return this.$moment(f).format('YYYY-MM-DD');
     },
     cargarTipo(p) {
@@ -405,6 +490,10 @@ export default {
       });
       this.$store.commit('setBuscaMovimientosControItems', sucs);
       this.$store.commit("setBuscaMovimientosAtributo", sucs[0]);
+    },
+    esModificable(p) {
+      return (p.item.CEAutorizacion == null || p.item.CEAutorizacion == '') &&
+        p.item.Estado == 0
     }
   },
   filters: {

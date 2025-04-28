@@ -3,7 +3,6 @@
   <b-row>
     <b-colxx xxs="12">
       <piaf-breadcrumb :heading="$t('vista.clinica.consultas.mediciones')"/>
-      <div class="separator mb-5"></div>
     </b-colxx>
   </b-row>
   <b-row>
@@ -237,7 +236,7 @@ export default {
           let msj = this.$t('vista.transacciones.guardar-error');
           if (e.response.data.msj != undefined);
             msj = e.response.data.msj;
-          this.$notify("danger", 
+          this.$notify("error", 
             this.$t('vista.transacciones.guardando') + ' ' + this.$t('vista.clinica.consultas.campos.mediciones-med'), 
             msj, 
             { duration: 3000, permanent: false });

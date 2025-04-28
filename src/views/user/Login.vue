@@ -164,7 +164,7 @@ export default {
         this.empresas = r.data;
         if (this.empresas.length > 0) {
           let emp = getEmpresa();
-          if (emp.id > 0) {        
+          if (emp && emp.id > 0) {        
             let res = this.empresas.filter(e => e.Id == emp.id)
             if (res.length > 0) {
               this.empresaSeleccionado = res[0]

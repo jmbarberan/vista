@@ -981,7 +981,7 @@ export default {
           console.log(e);
           this.procesando = false;
           let msj = "No se puede guardar por error relacionado al servidor";
-          this.$notify("danger", "Guardar registro", msj, { duration: 3000, permanent: false });
+          this.$notify("error", "Guardar registro", msj, { duration: 3000, permanent: false });
         }.bind(this)
       );
       this.procesando = false;

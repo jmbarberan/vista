@@ -203,7 +203,7 @@ export default {
                 if (e.response.data != undefined)
                   msg = e.response.data;
                 this.procesando = false;
-                this.$notify("danger", 
+                this.$notify("error", 
                     this.$t('vista.transaccion.guardar-canot'), 
                     msg, 
                     { duration: 3000, permanent: false });
@@ -247,7 +247,7 @@ export default {
           let msj = "No se puede guardar por error en el servidor";
           if (e.response.data.msj != undefined);
             msj = e.response.data.msj;
-          this.$notify("danger", 
+          this.$notify("error", 
             this.$t('vista.comandos.guardar') + " " + this.$t('vista.clinica.consultas.campos.medico'), 
             msj, 
             { duration: 3000, permanent: false });

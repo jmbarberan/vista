@@ -15,7 +15,6 @@
     <b-row>
       <b-colxx xxs="12">
         <piaf-breadcrumb :heading="this.$route.meta.titulo"/>
-        <div class="separator mb-5"></div>
       </b-colxx>
     </b-row>
     <b-row>
@@ -248,7 +247,7 @@
                 <span class="font-weight-semibold mr-4">Subtotal</span>
                 <span class="font-weight-semibold mr-2">{{ subtotal | dinero }}</span>
               </div>
-              <div v-if="grabado" style="text-align: right; margin-top: 8px margin-bottom: 10px">
+              <div v-if="grabado" style="text-align: right; margin-top: 8px; margin-bottom: 10px">
                 <span class="font-weight-semibold mr-4">Impuestos</span>
                 <span class="font-weight-semibold mr-2">{{ totalImpuestos | dinero }}</span>
               </div>
@@ -585,7 +584,7 @@ export default {
             }
           }
           this.$notify(
-            "danger",
+            "error",
             this.$t("vista.transacciones.guardando-reg"),
             msj,
             { duration: 3000, permanent: false }

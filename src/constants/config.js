@@ -15,7 +15,7 @@ export const localeOptions = [
 ]
 export const slogan = "Repuestos, herramientas y accesorios";
 
-export const isAuthGuardActive = true;
+export const isAuthGuardActive = false;
 export const themeRadiusStorageKey = 'theme_radius';
 export const themeSelectedColorStorageKey = 'theme_selected_color';
 export const defaultColor = 'light.blueolympic';

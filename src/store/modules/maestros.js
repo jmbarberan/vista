@@ -1,5 +1,7 @@
 
-import { clientePorCedula, clientesPorNombre, proveedorPorCedula, proveedoresPorNombre, clientesBuscar } from "@/rutas/maestros";
+import { clientePorCedula, clientesPorNombre, clientesBuscar, clienteGuardar,
+  proveedorPorCedula, proveedoresPorNombre 
+} from "@/rutas/maestros";
 import axios from 'axios';
 
 const maestros = {
@@ -82,6 +84,16 @@ const maestros = {
         emp: context.rootState.empresaAccedida.id
       };
       return await axios.get(this.$app.appConfig.apiUrl + clientesBuscar(p));
+    },
+    async clienteGuardar(context, p) {
+      let config = {
+        headers: context.rootState.remotoConfig.headers,
+        url: this.$app.appConfig.apiUrl + clienteGuardar(),
+        data: JSON.stringify(p),
+        method: 'post',
+        crossorigin: true
+      };
+      return await axios(config);
     },
     async proveedorPorCedula(context, ced) {
       return await axios.get(this.$app.appConfig.apiUrl + proveedorPorCedula(ced));

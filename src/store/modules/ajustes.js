@@ -1,4 +1,7 @@
-import { registrosPorTabla, sucursalesEmpresa, plantillaPorTipo, empresasPorEstado, registroPorTablaIndice } from "@/rutas/ajustes";
+import { 
+  registrosPorTabla, sucursalesEmpresa, plantillaPorTipo, empresasPorEstado, registroPorTablaIndice ,
+  parametrosPorEmpresa
+} from "@/rutas/ajustes";
 import axios from 'axios';
 
 const ajustes = {
@@ -45,6 +48,10 @@ const ajustes = {
     },
     async encabezados(context, p) {
       return await axios.get(this.$app.appConfig.apiUrl + "/ajustes/encabezados", p);
+    },
+    async parametrosPorEmpresa(context, p) {
+      let ruta = this.$app.appConfig.apiUrl + parametrosPorEmpresa(p);
+      return await axios.get(ruta);
     }
   }
 }

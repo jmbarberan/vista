@@ -332,7 +332,6 @@ export default {
           .dispatch("inventarios/imagenProductoPorId", fotoId)
           .then(function(r) {
             let imgUrl = URL.createObjectURL(r.data);
-            console.log('Url img', imgUrl);
             this.fotoProducto = imgUrl;
             this.mostrarFoto = true;
             this.busquedaEjecutando = true;

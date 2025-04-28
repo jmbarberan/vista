@@ -3,7 +3,6 @@
   <b-row>
     <b-colxx xxs="12">
       <piaf-breadcrumb :heading="$t('vista.clinica.pacientes.editor-titulo')"/>
-      <div class="separator mb-5"></div>
     </b-colxx>
   </b-row>
   <b-row>
@@ -14,7 +13,7 @@
               <b-row>
                 <b-colxx xxs="12" sm="6">
                   <b-form-group :label="$t('vista.ventas.clientes.campos.tipo-identificacion')">
-                    <b-form-select v-model="paciente.relCliente.identificacion_tipo"
+                    <b-form-select v-model="paciente.relCliente.IdentificacionTipo"
                       :options="tiposIdentificacion"
                       value-field="Id"
                       text-field="Denominacion"
@@ -36,9 +35,9 @@
                           </div>
                         </template>
                         <b-form-input 
-                          type="text" v-model.trim="paciente.relCliente.identificacion" 
+                          type="text" v-model.trim="paciente.relCliente.Identificacion" 
                           @keyup.enter="validarCedula()" class="fondo-transparente-min" 
-                          :state="!$v.paciente.relCliente.identificacion.$error"
+                          :state="!$v.paciente.relCliente.Identificacion.$error"
                           :placeholder="$t('vista.busqueda.digitar-enter')"/>
                         <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.cedula') }}</b-form-invalid-feedback>
                       </b-overlay>
@@ -47,36 +46,36 @@
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
                   <b-form-group :label="$t('vista.ventas.clientes.campos.nombres')">
-                    <b-form-input type="text" v-model="paciente.relCliente.nombres" :state="!$v.paciente.relCliente.nombres.$error"/>
+                    <b-form-input type="text" v-model="paciente.relCliente.Nombres" :state="!$v.paciente.relCliente.Nombres.$error"/>
                     <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.nombres') }}</b-form-invalid-feedback>
                   </b-form-group>
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
                   <b-form-group :label="$t('vista.ventas.clientes.campos.direccion')">
-                    <b-form-input type="text" v-model.trim="paciente.relCliente.direccion" :state="!$v.paciente.relCliente.direccion.$error"/>
+                    <b-form-input type="text" v-model.trim="paciente.relCliente.Direccion" :state="!$v.paciente.relCliente.Direccion.$error"/>
                     <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.direccion') }}</b-form-invalid-feedback>
                   </b-form-group>
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
                   <b-form-group :label="$t('vista.ventas.clientes.campos.telefonos')">
-                    <b-form-input type="text" v-model.trim="paciente.relCliente.telefonos" :state="!$v.paciente.relCliente.telefonos.$error"/>
+                    <b-form-input type="text" v-model.trim="paciente.relCliente.Telefonos" :state="!$v.paciente.relCliente.Telefonos.$error"/>
                     <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.telefonos') }}</b-form-invalid-feedback>
                   </b-form-group>
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
                   <b-form-group :label="$t('vista.ventas.clientes.campos.correo')">
-                    <b-form-input type="text" v-model.trim="paciente.relCliente.email"  :state="!$v.paciente.relCliente.email.$error"/>
+                    <b-form-input type="text" v-model.trim="paciente.relCliente.Email"  :state="!$v.paciente.relCliente.Email.$error"/>
                     <b-form-invalid-feedback>{{ $t('vista.ventas.clientes.validacion.email') }}</b-form-invalid-feedback>
                   </b-form-group>
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
-                  <b-form-group :label="$t('vista.ventas.clientes.campos.representante-nom')">
-                    <b-form-input type="text" v-model.trim="paciente.relCliente.representante_nom"/>
+                  <b-form-group label="Representante">
+                    <b-form-input type="text" v-model.trim="paciente.relCliente.Representante"/>
                   </b-form-group>
                 </b-colxx>
                 <b-colxx xxs="12" sm="6">
-                  <b-form-group :label="$t('vista.ventas.clientes.campos.representante-ref')">
-                    <b-form-input type="text" v-model.trim="paciente.relCliente.representante_ced"/>
+                  <b-form-group label="Referencias">
+                    <b-form-input type="text" v-model.trim="paciente.relCliente.Referencias"/>
                   </b-form-group>
                 </b-colxx>
                 <!--b-colxx xxs="12" sm="6">
@@ -161,24 +160,19 @@ export default {
   validations: {
     paciente: {
       relCliente: {
-        nombres: {
+        Nombres: {
           required
         },
-        identificacion: {
+        Identificacion: {
           minLength: minLength(10),
           maxLength: maxLength(13),
           valido(val) {
             return val.length <= 10 ? cedulaValida(val) : (val.length == 13 ? true : false);
           }
         },
-        telefonos: { numeric, maxLength: maxLength(15) },
-        direccion: { required },
-        email: { email }
-      },
-      fecha_nacimiento: {
-        maxValue(val) {
-          return new Date(val) <= new Date();
-        },
+        Telefonos: { numeric, maxLength: maxLength(15) },
+        Direccion: { required },
+        Email: { email }
       }
     }
   },
@@ -210,7 +204,8 @@ export default {
           this.$t("vista.transacciones.guardar-invalido"),
           { duration: 3000, permanent: false });
       } else {
-        this.procesando = true;
+        this.procesarGuardado();
+        /*this.procesando = true;
         if (this.paciente.id == 0) {
           // Validar paciente existe
           this.$store
@@ -220,7 +215,7 @@ export default {
               nombres: this.paciente.relCliente.nombres })
             .then(function(res) {
               if (res.status == 200) {  
-                this.procesarGuardado();
+                
               } else {
                 this.$notify("warning", 
                   this.$t("vista.transacciones.guardar-canot"),
@@ -243,7 +238,7 @@ export default {
         } else {
           this.procesarGuardado();
           this.procesando = false;
-        }
+        }*/
       }
     },
     ocultaOverlay() {
@@ -278,17 +273,17 @@ export default {
     procesarGuardado() {
       this.procesando = true;
       this.$store
-        .dispatch("clinica/pacienteGuardar", this.paciente)
+        .dispatch("maestros/clienteGuardar", this.paciente.relCliente)
         .then(function(res) {
           if (res.status <= 201) {
             this.$notify("success", 
-              this.$t("vista.comandos.guardar") + " " + this.$t("vista.clinica.pacientes.denominacion"),
+              "Guadar cliente",
               res.data.msj,
               { duration: 3000, permanent: false });
             this.$router.back();
           } else {
             this.$notify("warning", 
-              this.$t("vista.comandos.guardar") + " " + this.$t("vista.clinica.pacientes.denominacion"),
+              "Guadar cliente",
               res.data.msj,
               { duration: 3000, permanent: false });
           }
@@ -297,11 +292,11 @@ export default {
         .catch(function(e) {
           this.procesando = false;
           let msj = this.$t('vista.transacciones.guardar-error');
-          console.log(e);
-          /*if (e.response.data.msj != undefined);
+          /*console.log(e);
+          if (e.response.data.msj != undefined);
             msj = e.response.data.msj;*/
-          this.$notify("danger", 
-            this.$t("vista.comandos.guardar") + " " + this.$t("vista.clinica.pacientes.denominacion"),
+          this.$notify("error", 
+            "Guadar cliente",
             msj,
             { duration: 3000, permanent: false });  
         }.bind(this)
@@ -309,7 +304,7 @@ export default {
     }
   },
   mounted() {
-    this.$store
+    /*this.$store
       .dispatch("clinica/registrosPorTabla", {
         id: 1 // Sexos biologicos
       }).then(function(r) {
@@ -338,7 +333,7 @@ export default {
             this.gruposSanguineos = r.respuesta.data;
           }
         }
-      }.bind(this));
+      }.bind(this));*/
     this.$store
       .dispatch("ajustes/registrosPorTabla", {
         id: 12 // Tipos de identificacion
@@ -349,10 +344,10 @@ export default {
           }
         }
       }.bind(this));
-    if (this.$route.params.id > 0) {
+    if (this.$route.params.dato.Id > 0) {
       this.paciente = {
-        id: this.$route.params.dato.id,
-        cliente_id: this.$route.params.dato.cliente_id,
+        //id: this.$route.params.dato.id,
+        /*cliente_id: this.$route.params.dato.cliente_id,
         fecha_nacimiento: this.$route.params.dato.fecha_nacimiento,
         sexo: this.$route.params.dato.sexo,
         estado_civil: this.$route.params.dato.estado_civil,
@@ -361,13 +356,13 @@ export default {
         alergias: this.$route.params.dato.alergias,
         antecedentes_familiares: this.$route.params.dato.antecedentes_familiares,
         antecedentes_personales: this.$route.params.dato.antecedentes_personales,
-        estado: this.$route.params.dato.estado,
-        relCliente: this.$route.params.dato.relCliente,
-        relEstadoCivil: this.$route.params.dato.relEstadoCivil,
+        estado: this.$route.params.dato.estado,*/
+        relCliente: this.$route.params.dato,
+        /*relEstadoCivil: this.$route.params.dato.relEstadoCivil,
         relSexo: this.$route.params.dato.relSexo,
-        relGrupoSanguineo: this.$route.params.dato.relGrupoSanguineo
+        relGrupoSanguineo: this.$route.params.dato.relGrupoSanguineo*/
       };
-      if (this.paciente.fecha_nacimiento != undefined) {
+      /*if (this.paciente.fecha_nacimiento != undefined) {
         try {
           const f = this.paciente.fecha_nacimiento.split();
           this.paciente.fecha_nacimiento = new moment(f[0], f[1], f[2]).toDate();
@@ -376,7 +371,7 @@ export default {
         }
       } else {
         this.paciente.fecha_nacimiento = null;
-      }
+      }*/
     }
   }
 }

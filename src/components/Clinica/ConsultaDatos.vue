@@ -3,7 +3,6 @@
     <b-row v-if="!esPublico">
       <b-colxx xxs="12">
         <piaf-breadcrumb :heading="$t('vista.clinica.consultas.editor-titulo')"/>
-        <div class="separator mb-5"></div>
       </b-colxx>
     </b-row>
     <b-modal v-model="selPacienteVer" title="Seleccionar paciente" v-on:ok="seleccionadoPaciente()">
@@ -518,7 +517,7 @@ export default {
           console.log(">>>> ConsultaDatos.vue : ProcesarGuardado -> error", e)
           this.procesando = false;
           this.$notify(
-            "danger", 
+            "error", 
             this.$t('vista.transacciones.guardando-reg'), 
             this.$t('vista.transacciones.guardar-error') + ": " + e.message,
             { duration: 3000, permanent: false }
@@ -676,7 +675,7 @@ export default {
           .then(function(r) {
             if (r.respuesta.length == 28) {
               this.$notify(
-                "danger", 
+                "error", 
                 "Agendar cita", 
                 "No hay horarios disponibles para este medico",
                 { duration: 3000, permanent: false }

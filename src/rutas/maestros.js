@@ -17,6 +17,10 @@ export const proveedorPorCedula = function(ced) {
   return `${rutaBase}/proveedores/cedula/${ced}`;
 };
 
+export const clienteGuardar = function() {
+  return `${rutaBase}/clientes/guardar`
+}
+
 export const proveedoresPorNombre = function(estado, filtro, emp) {
   return `${rutaBase}/proveedores/estado/${estado}/filtro/${filtro}/emp/${emp}/buscar`;
 };

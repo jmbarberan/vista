@@ -316,7 +316,7 @@ export default {
               e.message ? 
                 e.message : 
                 this.$t("vista.transacciones.guardar-error");
-            this.$notify("danger",
+            this.$notify("error",
               this.$t("vista.comandos.guardar") + " cargo",
               msj,
               { duration: 3000, permanent: false });

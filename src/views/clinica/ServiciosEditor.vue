@@ -191,7 +191,7 @@ export default {
               if (e.response.data != undefined)
                 msg = e.response.data;
               this.procesando = false;
-              this.$notify("danger",
+              this.$notify("error",
                 this.$t("vista.comandos.guardar") + " " + this.$t("vista.clinica.servicios.denominacion"),
                 msg,
                 { duration: 3000, permanent: false });
@@ -227,7 +227,7 @@ export default {
           console.log(e)
           if (e.response.data.msj != undefined);
             msj = e.response.data.msj;
-          this.$notify("danger",
+          this.$notify("error",
             this.$t("vista.comandos.guardar") + " " + this.$t("vista.clinica.servicios.denominacion"),
             msj,
             { duration: 3000, permanent: false });  

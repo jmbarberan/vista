@@ -1,4 +1,4 @@
 {
   "adminRoot": "viniapro",
-  "apiUrl": "http:///192.168.3.77:8091/api/v4"
+  "apiUrl": "http:///localhost:8091/api/v4"
 }

@@ -761,7 +761,7 @@ export default {
         .catch(function(e) {
           console.log(e);
           this.procesando = false;
-          this.$notify("danger", "Guardar registro", 
+          this.$notify("error", "Guardar registro", 
             this.$t('vista.transacciones.guardar-error'), 
             { duration: 3000, permanent: false });
         }.bind(this)

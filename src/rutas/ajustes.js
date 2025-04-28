@@ -23,3 +23,7 @@ export const empresasPorEstado = function(p) {
 export const plantillaPorTipo = function(p) {
   return `${rutaBase}/plantillas/tipo/${p}`;
 };
+
+export const parametrosPorEmpresa = function(p) {
+  return `${rutaBase}/empresa/${p}/parametros`;
+};

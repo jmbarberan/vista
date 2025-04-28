@@ -344,7 +344,7 @@ export default {
             let msj = this.$t("vista.transacciones.guardar-error");
             if (e.response.data != undefined);
               msj = e.response.data;
-            this.$notify("danger", 
+            this.$notify("error", 
               this.$t("vista.comandos.guardar") + this.$t("vista.seguridad.usuarios.denominacion"), 
               msj, 
               { duration: 3000, permanent: false });

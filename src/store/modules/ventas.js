@@ -1,4 +1,8 @@
-import { ventaPorNumero, ventaGuardar, ventasBuscar, ventaPorId, ventasDiario, ventasDiarioCE, ventaModificarEstado } from "@/rutas/ventas";
+import { 
+  ventaPorNumero, ventaGuardar, ventasBuscar, ventaPorId, ventasDiario, ventasDiarioCE, 
+  ventaModificarEstado, ventaEnviarCorreo, ventaAutorizar, ventaVerificar,
+  cajasPorUsuario
+} from "@/rutas/ventas";
 import { tipoFactura, tipoNotaVenta, tipoDevolucion } from "@/constants/tipos";
 import moment from 'moment'
 import axios from 'axios';
@@ -69,8 +73,12 @@ const ventas = {
       let ent = JSON.parse(JSON.stringify(p.venta));
       ent.Fecha = moment(p.venta.Fecha).format("YYYY-MM-DD");
       let params = '';
+      console.log("Cajero ", p.caja, p.cajero)
+      if (p.caja > 0 && p.cajero > 0) {
+        params = `?caja=${p.caja}&cajero=${p.cajero}`
+      }
       if (ent.Tipo == 11) {
-        params = `?generarCA=${p.generarCa}&autorizar=${p.autorizar}`;
+        params += `&generarCA=${p.generarCa}&autorizar=${p.autorizar}&enviar=${p.enviar}`;
       }
       ent = JSON.stringify(ent)
       let config = {
@@ -187,6 +195,18 @@ const ventas = {
     async ventaModificarEstado(context, p) {
       return await axios.put(this.$app.appConfig.apiUrl + ventaModificarEstado(p.id, p.estado));
     },
+    async ventaEnviarCorreo(context, p) {
+      return await axios.get(this.$app.appConfig.apiUrl + ventaEnviarCorreo(p));
+    },
+    async ventaAutorizar(context, p) {
+      return await axios.get(this.$app.appConfig.apiUrl + ventaAutorizar(p));
+    },
+    async ventaVerificar(context, p) {
+      return await axios.get(this.$app.appConfig.apiUrl + ventaVerificar(p));
+    },
+    async cajasPorUsuario(context, p) {
+      return await axios.get(this.$app.appConfig.apiUrl + cajasPorUsuario(p));
+    }
   },
   mutations: {
     // Cache de busqueda de ventas

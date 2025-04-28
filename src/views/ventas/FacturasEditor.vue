@@ -1,419 +1,473 @@
 <template>
-  <div>
-    <producto-seleccionar ref="prdSeleccionador" v-on:buscadorProd-seleccionado="productoSeleccionado()"/>
-    <cliente-seleccionar  ref="cliSeleccionador" v-on:buscadorCli-seleccionado="clienteSeleccionado"/>
-    <b-row>
-      <b-colxx xxs="12">
-        <piaf-breadcrumb :heading="this.$route.meta.titulo"/>
-        <div class="separator mb-5"></div>
-      </b-colxx>
-    </b-row>
-    <b-row>
-      <b-colxx xxs="12">
-        <b-card class="mb-4" :title="tituloAccion" >
-          <b-form class="av-tooltip mb-2 tooltip-label-right">
-            <b-row>
-              <b-colxx xxs="12" sm="4" md="3">
-                <b-form-group :label="$t('vista.transacciones.campos.numero')" class="has-float-label">
-                  <b-input-group>
-                    <b-form-input type="text" v-model="venta.Numero" readonly/>
-                    <b-form-input v-show="esSecuencial" type="text" v-model="venta.CERespuestaTipo" readonly/>
-                  </b-input-group>
-                </b-form-group>
-              </b-colxx>
-              <b-colxx xxs="12" sm="4" md="3">
-                <b-form-group :label='$t("vista.transacciones.campos.fecha")' class="has-float-label zindex8">
-                  <datepicker
-                    class="fecha-md"
-                    :bootstrap-styling="true"
-                    v-model="fechaProp"
-                    :language="es"
-                    :disabled="lectura"
-                  ></datepicker>
-                </b-form-group>
-              </b-colxx>
-              <b-colxx xxs="12" sm="4" md="3">
-                <b-form-group :label="$t('vista.inventarios.movimientos.campos.bodega')" class="has-float-label">
-                  <b-form-select
-                    v-model="venta.BodegaId"
-                    :options="bodegas"
-                    value-field="Id"
-                    text-field="Denominacion"
-                    size="sm"
-                    :disabled="lectura"
-                  />
-                </b-form-group>
-              </b-colxx>
-              <b-colxx xxs="12" sm="4" md="3">
-                <b-form-group :label="$t('vista.ventas.facturas.campos.sucursal')" class="has-float-label">
-                  <b-form-select
-                    v-model="venta.SucursalId"
-                    :options="sucursales"
-                    value-field="Id"
-                    text-field="Nombre"
-                    size="sm"
-                    :disabled="lectura"
-                  />
-                </b-form-group>
-              </b-colxx>
-              <b-colxx xxs="12" sm="8" md="12">
-                <b-form-group :label="$t('vista.transacciones.campos.concepto')" class="has-float-label">
-                  <b-form-input type="text" v-model.trim="venta.Notas" :readonly="lectura"/>
-                </b-form-group>
-              </b-colxx>
-              <b-colxx xxs="12" sm="4" md="4" lg="4">
-                <b-form-group :label="$t('vista.ventas.clientes.campos.cedula')" class="has-float-label">
-                  <div>
-                    <b-overlay :show="ocupadoCedula" rounded="lg" opacity="0.6">
-                      <template #overlay>
-                        <div class="d-flex align-items-center">
-                          <b-spinner small type="grow" variant="secondary"></b-spinner>
-                          <b-spinner type="grow" variant="dark"></b-spinner>
-                          <b-spinner small type="grow" variant="secondary"></b-spinner>
-                          <!-- SR para lectores de pantallas -->
-                          <span class="sr-only">{{ $t('vista.busqueda.espere-porfa') + '...' }}</span>
-                        </div>
-                      </template>
-                      <b-input-group>
-                        <b-form-input type="text" 
-                          v-model="venta.relCliente.Identificacion" 
-                          @keyup.enter="validarCedula()" 
-                          :placeholder="$t('vista.busqueda.digitar-enter') + ' ' + $t('vista.busqueda.por') + ' ' + $t('vista.ventas.clientes.campos.cedula')"
-                          :readonly="lectura"/>
-                        <b-input-group-append v-show="!lectura">
-                          <b-button variant="outline-primary" class="borde-recto" @click="validarCedula()" title="Ejecutar busqueda">
-                            <i class="mdi mdi-magnify"/>
-                          </b-button>
-                        </b-input-group-append>
-                      </b-input-group>
-                    </b-overlay>
-                  </div>
-                </b-form-group>
-              </b-colxx>
-              <b-colxx xxs="12" sm="8" md="8" lg="8">
-                <b-form-group :label="$t('vista.ventas.clientes.campos.nombres')" class="has-float-label">
-                  <b-input-group>
-                    <b-form-input type="text" 
-                      v-model="venta.relCliente.Nombres" 
-                      :state="!$v.venta.relCliente.Nombres.$error" 
-                      :readonly="lectura" 
-                      @keyup.enter="buscarCliente()" 
-                      @keyup.ctrl.stop.prevent="pulsaControl"
-                      :placeholder="$t('vista.busqueda.digitar-enter') + ' ' + $t('vista.busqueda.por') + ' ' + $t('vista.ventas.clientes.campos.nombres')"/>
-                    <b-input-group-append is-text v-show="!lectura">
-                      <input size="sm" type="checkbox" v-model="busquedaClienteAvz" title="Busqueda extendida"/>
-                    </b-input-group-append>
-                    <b-input-group-append v-show="!lectura">
-                      <b-button variant="outline-primary" class="borde-recto" @click="buscarCliente()">
-                        <i class="mdi mdi-magnify"/>
-                      </b-button>
-                    </b-input-group-append>
-                  </b-input-group>
-                  <b-form-invalid-feedback>{{ $t('vista.ventas.facturas.validacion.cliente') }}</b-form-invalid-feedback>
-                </b-form-group>
-              </b-colxx>
-              <b-colxx xxs="12" sm="12" md="12">
-                <h6 v-if="verDatosCliente" class="mb-2">Datos adicionales del cliente</h6>
-              </b-colxx>
-              <b-colxx xxs="12" sm="4">
-                <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.tipo-identificacion')" class="has-float-label">
-                  <b-form-select v-model="venta.relCliente.IdentificacionTipo"
-                    :options="tiposIdentificacion"
-                    value-field="Id"
-                    text-field="Denominacion"
-                    size="xs"
-                  />
-                </b-form-group>
-              </b-colxx>
-              <b-colxx xxs="12" sm="8">
-                <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.correo')" class="has-float-label">
-                  <b-form-input type="text" v-model="venta.relCliente.Email" :readonly="lectura"/>
-                </b-form-group>
-              </b-colxx>
-              <b-colxx xxs="12" sm="6">
-                <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.telefonos')" class="has-float-label">
-                  <b-form-input type="text" v-model="venta.relCliente.Telefonos" :readonly="lectura"/>
-                </b-form-group>
-              </b-colxx>
-              <b-colxx xxs="12" sm="6">
-                <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.direccion')" class="has-float-label">
-                  <b-form-input type="text" v-model="venta.relCliente.Direccion" :readonly="lectura"/>
-                </b-form-group>
-              </b-colxx>
-            </b-row>  
-            <h6 v-if="!lectura">Agregar productos</h6>
-            <div v-if="!lectura">
+  <b-overlay
+    :show="procesando" 
+    opacity=0.75
+    spinner-medium
+    spinner-variant="primary"
+    @hidden="ocultaOverlay"
+  >
+    <div>
+      <producto-seleccionar ref="prdSeleccionador" v-on:buscadorProd-seleccionado="productoSeleccionado()"/>
+      <cliente-seleccionar  ref="cliSeleccionador" v-on:buscadorCli-seleccionado="clienteSeleccionado"/>
+      <b-row>
+        <b-colxx xxs="12">
+          <piaf-breadcrumb :heading="this.$route.meta.titulo"/>
+        </b-colxx>
+      </b-row>
+      <b-row>
+        <b-colxx xxs="12">
+          <b-card class="mb-4" :title="tituloAccion" >
+            <b-form class="av-tooltip mb-2 tooltip-label-right">
               <b-row>
-                <b-colxx xxs="12" sm="8" md="5" lg="5">
-                  <b-form-group label="Buscar producto" class="has-float-label mb-4">
-                    <producto-buscar ref="buscadorPrd" 
-                      v-on:buscarProducto-encontrado="productoEncontrado()" 
-                      v-on:buscarProducto-saltar="enfocarCantidad()"
-                      v-on:buscarProductos-encontrados="productosEncontrados()"
-                    />
-                  </b-form-group>
-                </b-colxx>
-                <b-colxx xxs="6" sm="4" md="2" lg="2">
-                  <b-form-group :label="$t('vista.inventarios.movimientos.campos.cantidad')" class="has-float-label mb-4">
-                    <b-input-group class="w-100">
-                      <b-form-input ref="txCantidad" size="sm"
-                        pattern="^\d*(\.\d{0,0})?$" 
-                        v-model.number="productoSeleccion.cantidad" 
-                        @keyup.enter="pasarFocoDescuento()"
-                        @blur="cargarPrecio($event)"
-                      />
-                      <b-input-group-append is-text>
-                        {{ productoSeleccion.existencia }}
-                      </b-input-group-append>
+                <b-colxx xxs="12" sm="4" md="3">
+                  <b-form-group :label="$t('vista.transacciones.campos.numero')" class="has-float-label">
+                    <b-input-group>
+                      <b-form-input type="text" v-model="venta.Numero" readonly/>
+                      <b-form-input v-show="esSecuencial" type="text" v-model="venta.CERespuestaTipo" readonly/>
                     </b-input-group>
                   </b-form-group>
                 </b-colxx>
-                <b-colxx xxs="6" sm="4" md="2" lg="2">
-                  <b-form-group :label="$t('vista.ventas.facturas.campos.descuento_porcentaje_min')" class="has-float-label mb-4">
-                    <b-form-input ref="txDescuento" size="sm" v-model.number="productoSeleccion.descuento" @keyup.enter="pasarFocoPrecio()"/>
+                <b-colxx xxs="12" sm="4" md="3">
+                  <b-form-group :label='$t("vista.transacciones.campos.fecha")' class="has-float-label zindex8">
+                    <datepicker
+                      class="fecha-md"
+                      :bootstrap-styling="true"
+                      v-model="fechaProp"
+                      :language="es"
+                      :disabled="lectura"
+                    ></datepicker>
                   </b-form-group>
                 </b-colxx>
-                <b-colxx xxs="12" sm="8" md="3" lg="3">
-                  <div class="d-flex">
-                    <b-form-group label="Precio" class="has-float-label mb-4">
-                      <b-input-group>
-                        <b-form-input ref="txPrecio" 
-                          type="number" size="sm" 
-                          pattern="^\d*(\.\d{0,2})?$" 
-                          v-model.number="productoSeleccion.precio" 
-                          @keyup.enter="agregarItem()"
+                <b-colxx xxs="12" sm="4" md="3">
+                  <b-form-group :label="$t('vista.inventarios.movimientos.campos.bodega')" class="has-float-label">
+                    <b-form-select
+                      v-model="venta.BodegaId"
+                      :options="bodegas"
+                      value-field="Id"
+                      text-field="Denominacion"
+                      size="sm"
+                      :disabled="lectura"
+                    />
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="4" md="3">
+                  <b-form-group :label="$t('vista.ventas.facturas.campos.sucursal')" class="has-float-label">
+                    <b-form-select
+                      v-model="venta.SucursalId"
+                      :options="sucursales"
+                      value-field="Id"
+                      text-field="Nombre"
+                      size="sm"
+                      :disabled="lectura"
+                    />
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="8" md="12">
+                  <b-form-group :label="$t('vista.transacciones.campos.concepto')" class="has-float-label">
+                    <b-form-input type="text" v-model.trim="venta.Notas" :readonly="lectura"/>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="4" md="4" lg="4">
+                  <b-form-group :label="$t('vista.ventas.clientes.campos.cedula')" class="has-float-label">
+                    <div>
+                      <b-overlay :show="ocupadoCedula" rounded="lg" opacity="0.6">
+                        <template #overlay>
+                          <div class="d-flex align-items-center">
+                            <b-spinner small type="grow" variant="secondary"></b-spinner>
+                            <b-spinner type="grow" variant="dark"></b-spinner>
+                            <b-spinner small type="grow" variant="secondary"></b-spinner>
+                            <!-- SR para lectores de pantallas -->
+                            <span class="sr-only">{{ $t('vista.busqueda.espere-porfa') + '...' }}</span>
+                          </div>
+                        </template>
+                        <b-input-group>
+                          <b-form-input type="text" 
+                            v-model="venta.relCliente.Identificacion" 
+                            @keyup.enter="validarCedula()" 
+                            :placeholder="$t('vista.busqueda.digitar-enter') + ' ' + $t('vista.busqueda.por') + ' ' + $t('vista.ventas.clientes.campos.cedula')"
+                            :readonly="lectura"/>
+                          <b-input-group-append v-show="!lectura">
+                            <b-button variant="outline-primary" class="borde-recto" @click="validarCedula()" title="Ejecutar busqueda">
+                              <i class="mdi mdi-magnify"/>
+                            </b-button>
+                          </b-input-group-append>
+                        </b-input-group>
+                      </b-overlay>
+                    </div>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="8" md="8" lg="8">
+                  <b-form-group :label="$t('vista.ventas.clientes.campos.nombres')" class="has-float-label">
+                    <b-input-group>
+                      <b-form-input type="text" 
+                        v-model="venta.relCliente.Nombres" 
+                        :state="!$v.venta.relCliente.Nombres.$error" 
+                        :readonly="lectura" 
+                        @keyup.enter="buscarCliente()" 
+                        @keyup.ctrl.stop.prevent="pulsaControl"
+                        :placeholder="$t('vista.busqueda.digitar-enter') + ' ' + $t('vista.busqueda.por') + ' ' + $t('vista.ventas.clientes.campos.nombres')"/>
+                      <b-input-group-append is-text v-show="!lectura">
+                        <input size="sm" type="checkbox" v-model="busquedaClienteAvz" title="Busqueda extendida"/>
+                      </b-input-group-append>
+                      <b-input-group-append v-show="!lectura">
+                        <b-button variant="outline-primary" class="borde-recto" @click="buscarCliente()">
+                          <i class="mdi mdi-magnify"/>
+                        </b-button>
+                      </b-input-group-append>
+                    </b-input-group>
+                    <b-form-invalid-feedback>{{ $t('vista.ventas.facturas.validacion.cliente') }}</b-form-invalid-feedback>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="12" md="12">
+                  <h6 v-if="verDatosCliente" class="mb-2">Datos adicionales del cliente</h6>
+                </b-colxx>
+                <b-colxx xxs="12" sm="4">
+                  <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.tipo-identificacion')" class="has-float-label">
+                    <b-form-select v-model="venta.relCliente.IdentificacionTipo"
+                      :options="tiposIdentificacion"
+                      value-field="Id"
+                      text-field="Denominacion"
+                      size="xs"
+                    />
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="8">
+                  <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.correo')" class="has-float-label">
+                    <b-form-input type="text" v-model="venta.relCliente.Email" :readonly="lectura"/>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.telefonos')" class="has-float-label">
+                    <b-form-input type="text" v-model="venta.relCliente.Telefonos" :readonly="lectura"/>
+                  </b-form-group>
+                </b-colxx>
+                <b-colxx xxs="12" sm="6">
+                  <b-form-group v-if="verDatosCliente" :label="$t('vista.ventas.clientes.campos.direccion')" class="has-float-label">
+                    <b-form-input type="text" v-model="venta.relCliente.Direccion" :readonly="lectura"/>
+                  </b-form-group>
+                </b-colxx>
+              </b-row>  
+              <h6 v-if="!lectura">Agregar productos</h6>
+              <div v-if="!lectura">
+                <b-row>
+                  <b-colxx xxs="12" sm="8" md="5" lg="5">
+                    <b-form-group label="Buscar producto" class="has-float-label mb-4">
+                      <producto-buscar ref="buscadorPrd" 
+                        v-on:buscarProducto-encontrado="productoEncontrado()" 
+                        v-on:buscarProducto-saltar="enfocarCantidad()"
+                        v-on:buscarProductos-encontrados="productosEncontrados()"
+                      />
+                    </b-form-group>
+                  </b-colxx>
+                  <b-colxx xxs="6" sm="4" md="2" lg="2">
+                    <b-form-group :label="$t('vista.inventarios.movimientos.campos.cantidad')" class="has-float-label mb-4">
+                      <b-input-group class="w-100">
+                        <b-form-input ref="txCantidad" size="sm"
+                          pattern="^\d*(\.\d{0,0})?$" 
+                          v-model.number="productoSeleccion.cantidad" 
+                          @keyup.enter="pasarFocoDescuento()"
+                          @blur="cargarPrecio($event)"
                         />
-                        <b-input-group-append>
-                          <b-dropdown right size="sm" variant="outline-primary"  class="borde-recto" toggle-class="text-decoration-none" no-caret>
-                            <template #button-content>
-                                <i class="span-comando mdi mdi-chevron-down"/>
-                            </template>
-                            <b-dropdown-item v-for="(item, index) in productoSeleccion.precios" :key="index"  @click="seleccionarPrecio(item.Precio)">
-                              <div style="text-align: right;">{{ item.Precio | dinero }}</div>
-                            </b-dropdown-item>
-                          </b-dropdown>
-                        </b-input-group-append>
-                        <b-input-group-append>
-                          <b-button variant="outline-primary" class="borde-recto" @click="agregarItem()" title="Agregar item seleccionado" :disabled="itemIncompleto">
-                            <i class="mdi mdi-plus"/>
-                          </b-button>
+                        <b-input-group-append is-text>
+                          {{ productoSeleccion.existencia }}
                         </b-input-group-append>
                       </b-input-group>
                     </b-form-group>
-                  </div>  
-                </b-colxx>
-              </b-row>
+                  </b-colxx>
+                  <b-colxx xxs="6" sm="4" md="2" lg="2">
+                    <b-form-group :label="$t('vista.ventas.facturas.campos.descuento_porcentaje_min')" class="has-float-label mb-4">
+                      <b-form-input ref="txDescuento" size="sm" v-model.number="productoSeleccion.descuento" @keyup.enter="pasarFocoPrecio()"/>
+                    </b-form-group>
+                  </b-colxx>
+                  <b-colxx xxs="12" sm="8" md="3" lg="3">
+                    <div class="d-flex">
+                      <b-form-group label="Precio" class="has-float-label mb-4">
+                        <b-input-group>
+                          <b-form-input ref="txPrecio" 
+                            type="number" size="sm" 
+                            pattern="^\d*(\.\d{0,2})?$" 
+                            v-model.number="productoSeleccion.precio" 
+                            @keyup.enter="agregarItem()"
+                          />
+                          <b-input-group-append>
+                            <b-dropdown right size="sm" variant="outline-primary"  class="borde-recto" toggle-class="text-decoration-none" no-caret>
+                              <template #button-content>
+                                  <i class="span-comando mdi mdi-chevron-down"/>
+                              </template>
+                              <b-dropdown-item v-for="(item, index) in productoSeleccion.precios" :key="index"  @click="seleccionarPrecio(item.Precio)">
+                                <div style="text-align: right;">{{ item.Precio | dinero }}</div>
+                              </b-dropdown-item>
+                            </b-dropdown>
+                          </b-input-group-append>
+                          <b-input-group-append>
+                            <b-button variant="outline-primary" class="borde-recto" @click="agregarItem()" title="Agregar item seleccionado" :disabled="itemIncompleto">
+                              <i class="mdi mdi-plus"/>
+                            </b-button>
+                          </b-input-group-append>
+                        </b-input-group>
+                      </b-form-group>
+                    </div>  
+                  </b-colxx>
+                </b-row>
+              </div>
+            </b-form>
+            <b-table responsive :items="venta.relItems" :fields="itemCampos">
+              <template #cell(Acciones)="fila">
+                <span v-if="!lectura"
+                  class="span-comando"
+                  @click="eliminarItem(fila)"
+                  v-b-tooltip.hover
+                  title="Eliminar item"
+                >
+                  <i class="mdi mdi-trash-can mdi-18px"/>
+                </span>
+                <div v-else class="invisible"/>
+              </template>
+              <template #cell(Cantidad)="fila">
+                <div v-if="lectura" style="text-align: right;">
+                  <span>
+                    {{ fila.item.Cantidad }}
+                  </span>
+                </div>
+                <b-form-input v-else type="text" pattern="^\d*(\.\d{0,0})?$" 
+                  class="input-tabla-celda text-right" size="sm" v-model.number="fila.item.Cantidad"
+                />
+              </template>            
+              <template #cell(Descuento)="fila">
+                <div v-if="lectura" style="text-align: right;">
+                  <span>
+                    {{ fila.item.Descuento }}%
+                  </span>
+                </div>
+                <b-form-input v-else class="input-tabla-celda text-right" size="sm" v-model="fila.item.Descuento"/>
+              </template>
+              <template #cell(Precio)="fila">
+                <div v-if="lectura" style="text-align: right;">
+                  <span>
+                    {{ parseFloat(fila.item.Precio) | dinero }}
+                  </span>
+                </div>
+                <b-form-input v-else type="text" pattern="^\d*(\.\d{0,2})?$" 
+                  class="input-tabla-celda text-right" size="sm" v-model.number="fila.item.Precio"
+                />
+              </template>
+              <template #cell(Subtotal)="fila">
+                <div style="text-align: right;">
+                  <span v-if="fila.item.Descuento != undefined && parseFloat(fila.item.Descuento) > 0">
+                    {{ (parseFloat(fila.item.Cantidad) * parseFloat(fila.item.Precio)) * ((100 - parseFloat(fila.item.Descuento)) / 100) | dinero }}
+                  </span>
+                  <span v-else>
+                    {{ parseFloat(fila.item.Cantidad) * parseFloat(fila.item.Precio) | dinero }}
+                  </span>
+                </div>
+              </template>
+              <template v-if="lectura" #head(Acciones)="data">
+                <div class="invisible"/>
+              </template>
+              <template #head(Cantidad)="data">
+                <div style="text-align: right;">
+                  <span class="input-tabla-encabezado">{{ data.label }}</span>
+                </div>
+              </template>
+              <template #head(Precio)="data">
+                <div style="text-align: right;">
+                  <span class="input-tabla-encabezado">{{ data.label }}</span>
+                </div>
+              </template>
+              <template #head(Descuento)="data">
+                <div style="text-align: right;">
+                  <span class="input-tabla-encabezado">{{ data.label }}</span>
+                </div>
+              </template>
+              <template #head(Subtotal)="data">
+                <div style="text-align: right;">
+                  {{ data.label }}
+                </div>
+              </template>
+              <template #empty>
+                <h4>{{ $t('vista.transacciones.no-items') }}</h4>
+              </template>
+            </b-table>
+            <b-alert
+              variant="warning"
+              :show="errorAutorizacion"
+              dismissible
+            >{{ mensajeErrorAutorizacion }}</b-alert>
+            <hr/>          
+            <div class="d-flex espaciado">
+              <div class="flex-inicio">
+                <div>
+                  <b-button
+                    v-if="!lectura"
+                    class="mr-4 mb-3"
+                    size="xs"
+                    variant="outline-danger"
+                    @click="vaciarItems()" 
+                    style="vertical-align: revert;"
+                    v-b-tooltip.hover
+                    title="Eliminar todos los items"
+                  >
+                    <i class="mdi mdi-delete-sweep"/>
+                  </b-button>
+                  <b-checkbox switch
+                    v-if="esCajero && !lectura"
+                    v-model="cobrarAlGuardar"
+                    theme="custom"
+                    color="primary-inverse"
+                    class="vue-switcher-small d-md-inline-block align-middle mr-2"
+                  >Cobrar efectivo</b-checkbox>
+                  <b-checkbox switch
+                    v-if="editandoFactura"
+                    v-model="autorizarAlGuardar"
+                    theme="custom"
+                    color="primary-inverse"
+                    class="vue-switcher-small d-md-inline-block align-middle mr-2"
+                  >Autorizar</b-checkbox>
+                  <b-checkbox switch
+                    v-if="autorizarAlGuardar && tieneCorreo"
+                    v-model="enviarEmail"
+                    theme="custom"
+                    color="primary-inverse"
+                    class="vue-switcher-small d-md-inline-block align-middle mr-2"
+                  >Enviar correo</b-checkbox>
+                </div>
+                <div v-show="autorizarAlGuardar" style="display: flex; flex-direction: column; align-items: baseline;">
+                  <label>Forma de pago</label>
+                  <b-dropdown
+                    id="ddFormaPago"
+                    :text="formaDePagoTexto"
+                    variant="outline-primary"
+                    class="d-md-inline-block align-middle btn-group, ml-2"
+                    size="xs"
+                  >
+                    <b-dropdown-item v-for="item in formasDePago" :key="item.Id" @click="cambiarFormaDePago(item)">
+                      {{ item.Denominacion }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </div>
+                <div v-show="multiplesCajas" style="display: flex; flex-direction: column; align-items: baseline;">
+                  <label>Caja</label>
+                  <b-dropdown
+                    id="ddCajas"
+                    :text="cajaDenominacion"
+                    variant="outline-primary"
+                    class="d-md-inline-block align-middle btn-group, ml-2"
+                    size="xs"
+                  >
+                    <b-dropdown-item v-for="itemCaja in cajas" :key="itemCaja.Id" @click="cambiarCaja(itemCaja)">
+                      {{ itemCaja.Descripcion }}
+                    </b-dropdown-item>
+                  </b-dropdown>
+                </div>
+              </div>
+              <div>
+                <div v-if="grabado" style="text-align: right;">
+                  <span class="font-weight-semibold mr-4">Subtotal</span>
+                  <span class="font-weight-semibold mr-2">{{ parseFloat(subtotal) | dinero }}</span>
+                </div>
+                <div v-if="grabado" style="text-align: right; margin-top: 8px; margin-bottom: 10px">
+                  <span class="font-weight-semibold mr-4">Impuestos</span>
+                  <span class="font-weight-semibold mr-2">{{ parseFloat(totalImpuestos) | dinero }}</span>
+                </div>
+                <div style="text-align: right;">
+                  <span class="font-weight-semibold mr-4">{{$t('vista.ventas.facturas.campos.total-may')}}</span>
+                  <span class="font-weight-semibold mr-2">{{ parseFloat(total) | dinero }}</span>
+                </div>
+              </div>
             </div>
-          </b-form>
-          <b-table responsive :items="venta.relItems" :fields="itemCampos">
-            <template #cell(Acciones)="fila">
-              <span v-if="!lectura"
-                class="span-comando"
-                @click="eliminarItem(fila)"
-                v-b-tooltip.hover
-                title="Eliminar item"
-              >
-                <i class="mdi mdi-trash-can mdi-18px"/>
-              </span>
-              <div v-else class="invisible"/>
-            </template>
-            <template #cell(Cantidad)="fila">
-              <div v-if="lectura" style="text-align: right;">
-                <span>
-                  {{ fila.item.Cantidad }}
-                </span>
-              </div>
-              <b-form-input v-else type="text" pattern="^\d*(\.\d{0,0})?$" 
-                class="input-tabla-celda text-right" size="sm" v-model.number="fila.item.Cantidad"
-              />
-            </template>            
-            <template #cell(Descuento)="fila">
-              <div v-if="lectura" style="text-align: right;">
-                <span>
-                  {{ fila.item.Descuento }}%
-                </span>
-              </div>
-              <b-form-input v-else class="input-tabla-celda text-right" size="sm" v-model="fila.item.Descuento"/>
-            </template>
-            <template #cell(Precio)="fila">
-              <div v-if="lectura" style="text-align: right;">
-                <span>
-                  {{ parseFloat(fila.item.Precio) | dinero }}
-                </span>
-              </div>
-              <b-form-input v-else type="text" pattern="^\d*(\.\d{0,2})?$" 
-                class="input-tabla-celda text-right" size="sm" v-model.number="fila.item.Precio"
-              />
-            </template>
-            <template #cell(Subtotal)="fila">
-              <div style="text-align: right;">
-                <span v-if="fila.item.Descuento != undefined && parseFloat(fila.item.Descuento) > 0">
-                  {{ (parseFloat(fila.item.Cantidad) * parseFloat(fila.item.Precio)) * ((100 - parseFloat(fila.item.Descuento)) / 100) | dinero }}
-                </span>
-                <span v-else>
-                  {{ parseFloat(fila.item.Cantidad) * parseFloat(fila.item.Precio) | dinero }}
-                </span>
-              </div>
-            </template>
-            <template v-if="lectura" #head(Acciones)="data">
-              <div class="invisible"/>
-            </template>
-            <template #head(Cantidad)="data">
-              <div style="text-align: right;">
-                <span class="input-tabla-encabezado">{{ data.label }}</span>
-              </div>
-            </template>
-            <template #head(Precio)="data">
-              <div style="text-align: right;">
-                <span class="input-tabla-encabezado">{{ data.label }}</span>
-              </div>
-            </template>
-            <template #head(Descuento)="data">
-              <div style="text-align: right;">
-                <span class="input-tabla-encabezado">{{ data.label }}</span>
-              </div>
-            </template>
-            <template #head(Subtotal)="data">
-              <div style="text-align: right;">
-                {{ data.label }}
-              </div>
-            </template>
-            <template #empty>
-              <h4>{{ $t('vista.transacciones.no-items') }}</h4>
-            </template>
-          </b-table>
-          <b-alert
-            variant="warning"
-            :show="errorAutorizacion"
-            dismissible
-          >{{ mensajeErrorAutorizacion }}</b-alert>
-          <hr/>          
-          <div class="d-flex espaciado">
-            <div class="flex-inicio">
-              <b-button
-                class="mr-4 mb-3"
-                size="xs"
-                variant="outline-secondary"
-                @click="vaciarItems()" 
-                :disabled="lectura || venta.relItems.length <= 0"
-              >
-                <i class="mdi mdi-delete-sweep"/> {{ $t('vista.transacciones.eliminar-todo') }}
-              </b-button>
-              <b-checkbox switch
-                v-if="!lectura"
-                v-show="!esSecuencial"
-                v-model="autorizarAlGuardar"
-                theme="custom"
-                color="primary-inverse"
-                class="vue-switcher-small d-md-inline-block align-middle mr-2"
-              >Autorizar</b-checkbox>
-              <!--b-checkbox switch v-if="!lectura"
-                v-model="imprimirAlGuardar"
-                theme="custom"
-                color="primary-inverse"
-                class="vue-switcher-small d-md-inline-block align-middle"
-              >Imprimir</b-checkbox-->
+            <div class="row mt-4">            
+              <b-button v-if="!lectura" 
+                ref="btGuardar" 
+                :disabled="guardarDesactivado"
+                @click="guardar();" 
+                variant="success"
+              >{{ $t('vista.comandos.guardar') }}</b-button>
+              <b-button v-else
+                ref="btNuevo" 
+                :disabled="procesando"
+                @click="nuevo();" 
+                variant="success"
+              >{{ $t('vista.comandos.nuevo') }}</b-button>
+              <b-button v-if="lectura"
+                :disabled="esModificable"
+                ref="btModificar" 
+                @click="modificar();" 
+                variant="primary" 
+                class="ml-4"
+              >{{ $t('vista.comandos.modificar') }}</b-button>
+              <b-button v-if="lectura" ref="btImprimir" :disabled="procesando" @click="imprimir();" variant="primary" class="ml-4">{{ $t('vista.comandos.imprimir') }}</b-button>
+              <b-button v-if="!lectura" ref="btCancelar" :disabled="procesando" @click="cancelar();" variant="primary" class="ml-4">{{ $t('vista.comandos.cancelar') }}</b-button>            
             </div>
-            <div>
-              <div v-if="grabado" style="text-align: right;">
-                <span class="font-weight-semibold mr-4">Subtotal</span>
-                <span class="font-weight-semibold mr-2">{{ parseFloat(subtotal) | dinero }}</span>
-              </div>
-              <div v-if="grabado" style="text-align: right; margin-top: 8px; margin-bottom: 10px">
-                <span class="font-weight-semibold mr-4">Impuestos</span>
-                <span class="font-weight-semibold mr-2">{{ parseFloat(totalImpuestos) | dinero }}</span>
-              </div>
-              <div style="text-align: right;">
-                <span class="font-weight-semibold mr-4">{{$t('vista.ventas.facturas.campos.total-may')}}</span>
-                <span class="font-weight-semibold mr-2">{{ parseFloat(total) | dinero }}</span>
-              </div>
-            </div>
+          </b-card>
+        </b-colxx>
+      </b-row>
+      <div id="prnFacturaTicket" class="invisible">
+        <div style="font-family: 'Courier New', Courier, monospace; width: 100%; padding: 1px;">
+          <!-- Header -->
+          <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 0px; margin-bottom: 5px;">
+              <h2 style="font-size: 40px; margin: 0;">ECOFERRO</h2>
+              <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Telf.: 0990034547 / 0982506926</p>
+              <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Factura No.: {{ this.venta.Numero }}</p>
+              <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Emision: Normal</p>
+              <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Ambiente: Produccion</p>
+              <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Clave de acceso</p>
+              <p style="font-size: 30px; line-height: 1.2; margin: 2px 0;">{{ this.venta.CEClaveAcceso }}</p>
           </div>
-          <div class="mt-2">
-            <b-overlay
-              :show="procesando" 
-              opacity=0.6
-              spinner-small
-              spinner-variant="primary"
-              class="d-inline-block"
-              @hidden="ocultaOverlay"
-            >
-              <b-button v-if="!lectura" ref="btGuardar" :disabled="guardarDesactivado" @click="guardar();" variant="success">{{ $t('vista.comandos.guardar') }}</b-button>
-            </b-overlay>
-            <b-button v-if="lectura"  ref="btModificar" @click="modificar();" variant="primary" class="ml-4">{{ $t('vista.comandos.modificar') }}</b-button>
-            <b-button v-if="lectura"  ref="btImprimir" :disabled="procesando" @click="imprimir();" variant="primary" class="ml-4">{{ $t('vista.comandos.imprimir') }}</b-button>
-            <b-button v-if="!lectura" ref="btCancelar" :disabled="procesando" @click="cancelar();" variant="primary" class="ml-4">{{ $t('vista.comandos.cancelar') }}</b-button>
-            <!--b-button v-if="lectura" ref="btNuevo" :disabled="procesando" @click="nuevo();" variant="primary" class="ml-4">{{ $t('vista.comandos.nuevo') }}</b-button-->
+          <div style="text-align: left; border-bottom: 1px dashed #000; padding-bottom: 0px; margin-bottom: 5px;">
+              <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Factura No.: {{ this.venta.Numero }}</p>
+              <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Fecha: {{ $moment(this.venta.Fecha).format("YYYY-MM-DD") }}</p>
+              <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Nombre: <span>{{ this.venta.relCliente.Nombres }}</span></p>
+              <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Cedula: <span>{{ this.venta.relCliente.Identificacion }}</span></p>
+              <p style="font-size: 34px; line-height: 1.2; margin: 0px 0;">Telef.: <span>{{ this.venta.relCliente.Telefonos }}</span></p>
           </div>
-        </b-card>
-      </b-colxx>
-    </b-row>
-    <div id="prnFacturaTicket" class="invisible">
-      <div style="font-family: 'Courier New', Courier, monospace; width: 100%; padding: 1px;">
-        <!-- Header -->
-        <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 0px; margin-bottom: 5px;">
-            <h2 style="font-size: 40px; margin: 0;">ECOFERRO</h2>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Telf.: 0990034547 / 0982506926</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Factura No.: {{ this.venta.Numero }}</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Emision: Normal</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Ambiente: Produccion</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Clave de acceso</p>
-            <p style="font-size: 30px; line-height: 1.2; margin: 2px 0;">{{ this.venta.CEClaveAcceso }}</p>
-        </div>
-        <div style="text-align: left; border-bottom: 1px dashed #000; padding-bottom: 0px; margin-bottom: 5px;">
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Factura No.: {{ this.venta.Numero }}</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Fecha: {{ $moment(this.venta.Fecha).format("YYYY-MM-DD") }}</p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Nombre: <span>{{ this.venta.relCliente.Nombres }}</span></p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 2px 0;">Cedula: <span>{{ this.venta.relCliente.Identificacion }}</span></p>
-            <p style="font-size: 34px; line-height: 1.2; margin: 0px 0;">Telef.: <span>{{ this.venta.relCliente.Telefonos }}</span></p>
-        </div>
-        <!-- Items -->
-        <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-            <table style="width: 100%; font-size: 34px; border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <td colspan="3" style="text-align: left; padding-bottom: 5px;">Descripcion/Producto</td>
-                    </tr>
-                    <tr style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 5px;">
-                        <td style="text-align:  left; padding-bottom: 5px;">Cantidad</td>
-                        <td style="text-align: right; padding-bottom: 5px;">Precio</td>
-                        <td style="text-align: right; padding-bottom: 5px;">Subtotal</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <div v-for="item in venta.relItems" :key="item.relProducto.id">
-                        <tr>
-                            <td colspan="3" style="text-align: left; padding-bottom: 2px;">{{ item.relProducto.Nombre }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; padding-bottom: 5px; width:15%;">{{ item.Cantidad }}</td>
-                            <td style="text-align: right; padding-bottom: 5px; width:30%;">${{ parseFloat(item.Precio) | dinero }}</td>
-                            <td style="text-align: right; padding-bottom: 5px; width:55%;">${{ parseFloat(item.Cantidad) * parseFloat(item.Precio) | dinero }}</td>
-                        </tr>
-                    </div>
-                </tbody>
-            </table>
-        </div>
+          <!-- Items -->
+          <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
+              <table style="width: 100%; font-size: 34px; border-collapse: collapse;">
+                  <thead>
+                      <tr>
+                          <td colspan="3" style="text-align: left; padding-bottom: 5px;">Descripcion/Producto</td>
+                      </tr>
+                      <tr style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 5px;">
+                          <td style="text-align:  left; padding-bottom: 5px;">Cantidad</td>
+                          <td style="text-align: right; padding-bottom: 5px;">Precio</td>
+                          <td style="text-align: right; padding-bottom: 5px;">Subtotal</td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <div v-for="item in venta.relItems" :key="item.relProducto.id">
+                          <tr>
+                              <td colspan="3" style="text-align: left; padding-bottom: 2px;">{{ item.relProducto.Nombre }}</td>
+                          </tr>
+                          <tr>
+                              <td style="text-align: left; padding-bottom: 5px; width:15%;">{{ item.Cantidad }}</td>
+                              <td style="text-align: right; padding-bottom: 5px; width:30%;">${{ parseFloat(item.Precio) | dinero }}</td>
+                              <td style="text-align: right; padding-bottom: 5px; width:55%;">${{ parseFloat(item.Cantidad) * parseFloat(item.Precio) | dinero }}</td>
+                          </tr>
+                      </div>
+                  </tbody>
+              </table>
+          </div>
 
-        <!-- Totals -->
-        <div style="text-align: right; font-size: 34px; margin-bottom: 5px;">
-            <p style="display: flex; justify-content: space-between; margin: 0; margin-bottom: 2px;">Subtotal: <span>{{ parseFloat(subtotal) | dinero }}</span></p>
-            <p style="display: flex; justify-content: space-between; margin: 0; margin-bottom: 2px;">Iva: <span>{{ parseFloat(totalImpuestos) | dinero }}</span></p>
-            <p style="display: flex; justify-content: space-between; margin: 0;"><strong>TOTAL:</strong> <strong><span>{{ parseFloat(total) | dinero }}</span></strong></p>
-        </div>
+          <!-- Totals -->
+          <div style="text-align: right; font-size: 34px; margin-bottom: 5px;">
+              <p style="display: flex; justify-content: space-between; margin: 0; margin-bottom: 2px;">Subtotal: <span>{{ parseFloat(subtotal) | dinero }}</span></p>
+              <p style="display: flex; justify-content: space-between; margin: 0; margin-bottom: 2px;">Iva: <span>{{ parseFloat(totalImpuestos) | dinero }}</span></p>
+              <p style="display: flex; justify-content: space-between; margin: 0;"><strong>TOTAL:</strong> <strong><span>{{ parseFloat(total) | dinero }}</span></strong></p>
+          </div>
 
-        <!-- Footer -->
-        <div style="text-align: center; font-size: 30px; border-top: 1px dashed #000; padding-top: 0px; margin-top: 5px;">
-            <p style="margin: 5px 0;">¡Gracias por su compra!</p>
-            <p style="margin: 5px 0;">Salida la mercaderia no se aceptan devoluciones</p>
-        </div>
+          <!-- Footer -->
+          <div style="text-align: center; font-size: 30px; border-top: 1px dashed #000; padding-top: 0px; margin-top: 5px;">
+              <p style="margin: 5px 0;">¡Gracias por su compra!</p>
+              <p style="margin: 5px 0;">Salida la mercaderia no se aceptan devoluciones</p>
+          </div>
+      </div>
+      </div>
     </div>
-    </div>
-  </div>
+  </b-overlay>
 </template>
 
 <script>
-import { tipoFactura } from "@/constants/tipos";
+import { tipoFactura, tipoNotaVenta } from "@/constants/tipos";
 import Datepicker from "vuejs-datepicker";
 import { es } from 'vuejs-datepicker/dist/locale';
 import ProductoSeleccionar from "@/components/Inventarios/ProductoSeleccionar";
@@ -422,7 +476,7 @@ import ClienteSeleccionar from "@/components/Maestros/ClienteSeleccionar";
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 import VRuntimeTemplate from "v-runtime-template";
-import { getEmpresa } from "../../utils";
+import { getEmpresa, getCurrentUser } from "../../utils";
 const { required } = require("vuelidate/lib/validators");
 
 export default {
@@ -438,7 +492,7 @@ export default {
       es: es,
       venta: {
         Id: 0,
-        Tipo: 11,
+        Tipo: tipoFactura,
         Numero: 0,
         Fecha: null,
         SucursalId: 1,
@@ -491,8 +545,13 @@ export default {
       bodegas: [],
       operadores: [],
       tiposIdentificacion: [],
+      cajas: [],
+      cajaSel: null,
+      formasDePago: [],
+      formaDePagoSel: null,
       procesando: false,
-      lectura: false,
+      lectura: null,
+      editandoFactura: false,
       productoSeleccion: {
         id: 0,
         nombre: "",
@@ -515,7 +574,6 @@ export default {
       plantilla: "",
       plantillaCompilada: "",
       selClienteVer: false,
-      tipoId: tipoFactura,
       itemCampos: [
         {
           label: this.$t("vista.comandos.acciones"), 
@@ -564,8 +622,10 @@ export default {
       itemsIndice: 0,
       ivaIncluido: false,
       autorizarAlGuardar: false,
+      enviarEmail: false,
       errorAutorizacion: false,
-      mensajeErrorAutorizacion: ''
+      mensajeErrorAutorizacion: '',
+      cobrarAlGuardar: false,
       //imprimirAlGuardar: false
     }
   },
@@ -573,6 +633,10 @@ export default {
     '$route.path': function(val, oldVal){
       if (val != oldVal)
         this.iniciarComponente();
+    },
+    lectura: function(val, oldVal) {
+      let tipoComprobante = this.$route.path.includes('/notas-venta') ? tipoNotaVenta : tipoFactura;
+      this.editandoFactura = !val && (tipoComprobante == tipoFactura)
     }
   },
   validations: {
@@ -591,7 +655,7 @@ export default {
     ]),
     ...mapGetters("maestros", [
       "selCliente"
-    ]),    
+    ]),
     productoNoSeleccionado() {
       return this.selProducto == null;
     },
@@ -663,11 +727,43 @@ export default {
       return this.procesando || 
         this.venta.relItems.length <= 0 || 
         this.venta.BodegaId <= 0 || 
+        (this.autorizar && this.venta.CERespuestaId == 0) ||
         (this.venta.ClienteId <= 0 && (!this.verDatosCliente || this.venta.relCliente.Nombres.length <= 4)) || 
         this.venta.SucursalId <= 0;
     },
     esSecuencial() {
       return this.venta.CEAutorizaFecha != null;
+    },
+    formaDePagoTexto: {
+      get () {
+        if (this.formaDePagoSel != null)
+          return this.formaDePagoSel.Denominacion;
+        else
+          return "Seleccionar..."  
+      }
+    },
+    esModificable() {
+      return this.venta.CEAutorizaFecha != null && this.venta.Estado == 0
+    },
+    tieneCorreo() {
+      if (this.venta != null && this.venta.relCliente != null) {
+        return this.venta.relCliente.Email != null && this.venta.relCliente.Email.length > 0; 
+      }
+      return false;
+    },
+    cajaDenominacion: {
+      get () {
+        if (this.cajaSel != null)
+          return this.cajaSel.Descripcion;
+        else
+          return "Seleccionar..."  
+      }
+    },
+    esCajero() {
+      return this.cajas.length > 0;
+    },
+    multiplesCajas() {
+      return this.cajas.length > 1;
     }
   },
   methods: {
@@ -722,103 +818,129 @@ export default {
       // Validar cupo de credito
     },
     guardar() {
-      this.procesando = true;
-      if (this.venta.Tipo <= 0 || this.venta.Tipo == undefined)
-        this.venta.Tipo = this.tipoId;
-      this.venta.SubtotalEx = 0;  
-      this.venta.Subtotal = this.subtotal;
-      this.venta.Impuestos = this.totalImpuestos;
-      let imposiciones = [];
-      this.venta.relItems.forEach(function(itemVenta) {
-        itemVenta.relProducto.relImposiciones.forEach(function(imposicion){
-          let itemImpuesto = {
-            impuestoId: imposicion.ImpuestoId,
-            porcentaje: imposicion.relImpuesto.Porcentaje,
-            base: parseFloat(itemVenta.Cantidad) * parseFloat(itemVenta.Precio),
-            valor: ((parseFloat(itemVenta.Cantidad) * parseFloat(itemVenta.Precio)) * parseFloat(imposicion.relImpuesto.Porcentaje)) / 100
-          }
-          imposiciones.push(itemImpuesto);
-        });
-      });
-      var ventaImpuestos = [];
-      imposiciones.reduce(function(res, value) {
-        if (!res[value.impuestoId]) {
-          res[value.impuestoId] = { 
-            impuestoId: value.impuestoId, 
-            porcentaje: value.porcentaje,
-            base: 0,
-            valor: 0,
-          };
-          ventaImpuestos.push(res[value.impuestoId])
-        }
-        res[value.impuestoId].base += value.base;
-        res[value.impuestoId].valor += value.valor;
-        return res;
-      }, {});
-
-      let impuestosIns= [];
-      impuestosIns = this.venta.relImpuestos.map(item => {
-        var ret = ventaImpuestos.filter(x => {
-          return x.impuestoId == item.ImpuestoId;
-        });
-        if (ret.length > 0) {
-          item.Porcentaje = ret[0].porcentaje,
-          item.base = ret[0].base,
-          item.Valor = ret[0].valor
-        }
-        return item;
-      });
-      this.venta.relImpuestos = impuestosIns;
-      if (this.venta.relCliente.Id == 0) {
-        this.venta.relCliente.EmpresaId = getEmpresa().id;
-      }
-      this.$store
-        .dispatch("ventas/ventaGuardar", { venta: this.venta, generarCa: this.autorizarAlGuardar, autorizar: this.autorizarAlGuardar })
-        .then(function(res) {
-          if (res.data.cid > 0)
-            this.venta = res.data.ven;
-          this.lectura = true;
-          this.iniciarImpuestos();
-          if (res.data.aut != undefined && !res.data.aut.includes('AUTORIZADO')) {
-            this.errorAutorizacion = true;
-            this.mensajeErrorAutorizacion = res.data.aut;
-          }
-          if (res.status <= 201) {
-            this.$notify(
-              "success",
-              this.$t("vista.transacciones.guardando") + ' ' + this.$t("vista.ventas.facturas.denominacion"),
-              res.data.msj,
-              { duration: 3000, permanent: false }
-            );
-          } else {
-            this.$notify(
+      let valido = true;
+      if (this.autorizarAlGuardar && this.venta.CERespuestaId <= 0) {
+        valido = false;
+        this.$notify(
               "warning",
               this.$t("vista.transacciones.guardando") + ' ' + this.$t("vista.ventas.facturas.denominacion"),
-              res.data.msj,
+              "Para autorizar debe seleccionar la forma de pago",
               { duration: 3000, permanent: false }
             );
-          }
-          this.procesando = false;
-        }.bind(this))
-        .catch(function(e) {
-          this.procesando = false;
-          let msj = this.$t("vista.transacciones.guardar-error");
-          if (e.response != undefined && e.response.data != undefined && e.response.data.msj != undefined)
-            msj = e.response.msj;
-          else {
-            if (e.message != undefined) {
-              msj = e.message;
+      }
+      if (valido) {
+        let tipoComprobante = this.$route.path.includes('/notas-venta') ? tipoNotaVenta : tipoFactura;
+        this.procesando = true;
+        if (this.venta.Tipo <= 0 || this.venta.Tipo == undefined)
+          this.venta.Tipo = tipoComprobante;
+        this.venta.SubtotalEx = 0;
+        this.venta.Subtotal = this.subtotal;
+        this.venta.Impuestos = this.totalImpuestos;
+        let imposiciones = [];
+        this.venta.relItems.forEach(function(itemVenta) {
+          itemVenta.relProducto.relImposiciones.forEach(function(imposicion) {
+            let itemImpuesto = {
+              impuestoId: imposicion.ImpuestoId,
+              porcentaje: imposicion.relImpuesto.Porcentaje,
+              base: parseFloat(itemVenta.Cantidad) * parseFloat(itemVenta.Precio),
+              valor: ((parseFloat(itemVenta.Cantidad) * parseFloat(itemVenta.Precio)) * parseFloat(imposicion.relImpuesto.Porcentaje)) / 100
             }
+            imposiciones.push(itemImpuesto);
+          });
+        });
+        var ventaImpuestos = [];
+        imposiciones.reduce(function(res, value) {
+          if (!res[value.impuestoId]) {
+            res[value.impuestoId] = {
+              impuestoId: value.impuestoId,
+              porcentaje: value.porcentaje,
+              base: 0,
+              valor: 0,
+            };
+            ventaImpuestos.push(res[value.impuestoId])
           }
-          this.$notify(
-            "danger",
-            this.$t("vista.transacciones.guardando") + ' ' + this.$t("vista.ventas.facturas.denominacion"),
-            msj,
-            { duration: 3000, permanent: false }
-          );
-        }.bind(this)
-      );
-      this.procesando = false;
+          res[value.impuestoId].base += value.base;
+          res[value.impuestoId].valor += value.valor;
+          return res;
+        }, {});
+
+        let impuestosIns= [];
+        impuestosIns = this.venta.relImpuestos.map(item => {
+          var ret = ventaImpuestos.filter(x => {
+            return x.impuestoId == item.ImpuestoId;
+          });
+          if (ret.length > 0) {
+            item.Porcentaje = ret[0].porcentaje,
+            item.base = ret[0].base,
+            item.Valor = ret[0].valor
+          }
+          return item;
+        });
+        this.venta.relImpuestos = impuestosIns;
+        if (this.venta.relCliente.Id == 0) {
+          this.venta.relCliente.EmpresaId = getEmpresa().id;
+        }
+        let caja = this.cajaSel != null ? this.cajaSel.Id : 0;
+        let cajero = this.cobrarAlGuardar ? getCurrentUser().Id : 0;
+        this.$store
+          .dispatch("ventas/ventaGuardar", { 
+            venta: this.venta, 
+            generarCa: this.autorizarAlGuardar, 
+            autorizar: this.autorizarAlGuardar, 
+            enviar: this.enviarEmail,
+            caja: caja,
+            cajero: cajero
+           })
+          .then(function(res) {
+            if (res.data.cid > 0)
+              this.venta = res.data.ven;
+            this.lectura = true;
+            this.iniciarImpuestos();
+            if (res.data.aut != undefined && res.data.aut != "" && !res.data.aut.includes('AUTORIZADO')) {
+              this.errorAutorizacion = true;
+              this.mensajeErrorAutorizacion = res.data.aut;
+            }
+            if (res.status <= 201) {
+              this.$notify(
+                "success",
+                this.$t("vista.transacciones.guardando") + ' ' + this.$t("vista.ventas.facturas.denominacion"),
+                res.data.msj,
+                { duration: 3000, permanent: false }
+              );
+            } else {
+              this.$notify(
+                "warning",
+                this.$t("vista.transacciones.guardando") + ' ' + this.$t("vista.ventas.facturas.denominacion"),
+                res.data.msj,
+                { duration: 3000, permanent: false }
+              );
+            }
+            this.autorizarAlGuardar = false;
+            this.enviarEmail = false;
+            this.formaDePagoSel = null;
+            this.procesando = false;
+          }.bind(this))
+          .catch(function(e) {
+            this.procesando = false;
+            let msj = this.$t("vista.transacciones.guardar-error");
+            if (e.response != undefined && e.response.data != undefined && e.response.data.msj != undefined)
+              msj = e.response.msj;
+            else {
+              if (e.message != undefined) {
+                msj = e.message;
+              }
+            }
+            this.$notify(
+              "error",
+              this.$t("vista.transacciones.guardando") + ' ' + this.$t("vista.ventas.facturas.denominacion"),
+              msj,
+              { duration: 3000, permanent: false }
+            );
+            this.procesando = false;
+          }.bind(this)
+        );
+      }
+      
     },
     async imprimir() {
       const printOptions = {
@@ -843,13 +965,13 @@ export default {
       this.$refs.txPrecio.$el.select();
     },
     ocultaOverlay() {
-      this.$refs.btGuardar.focus();
+      //this.$refs.btGuardar.focus();
     },
     cancelar() {
       if (this.original != null) {        
         this.venta = this.original;
         this.original = null;
-        this.lectura = true; 
+        this.lectura = true;
       }
       if (this.original == null || 
         this.$route.params.retornable != undefined) 
@@ -867,7 +989,7 @@ export default {
         if (this.grabado) {
           if (this.productoSeleccion.producto.relImposiciones != undefined) {
             if (this.ivaIncluido) {
-              let porcentajeImpuesto = 15;
+              let porcentajeImpuesto = 0;
               if (this.productoSeleccion.producto.relImposiciones.length == 1) {
                 let imp = this.productoSeleccion.producto.relImposiciones.at(0);
                 porcentajeImpuesto = imp.relImpuesto.Porcentaje;
@@ -961,7 +1083,9 @@ export default {
       }
     },
     vaciarItems() {
-      this.venta.relItems = [];
+      if (this.venta != null) {
+        this.venta.relItems = [];
+      }
     },
     validarCedula() {
       if (!this.lectura) {
@@ -1144,9 +1268,10 @@ export default {
         this.iniciarImpuestos();
       } else {
         if (this.$route.params.id == 0 || this.$route.params.id == undefined) {
+          let tipoComprobante = this.$route.path.includes('/notas-venta') ? tipoNotaVenta : tipoFactura;
           this.venta = {
             Id: 0,
-            Tipo: 11,
+            Tipo: tipoComprobante,
             Numero: 0,
             Fecha: null,
             SucursalId: 1,
@@ -1202,6 +1327,48 @@ export default {
       } else {
         this.lectura = false;
       }
+    },
+    cambiarFormaDePago(item) {
+      this.venta.CERespuestaId = item.Id;
+      this.formaDePagoSel = item;
+    },
+    cambiarCaja(item) {
+      this.cajaSel = item;
+    },
+    nuevo() {
+      this.$route.params.dato = null;
+      this.$route.params.id = 0;
+      this.iniciarComponente();
+      this.lectura = false;
+      if (this.sucursales.length > 0) {
+        this.venta.SucursalId = this.sucursales[0].Id;
+      }
+      if (this.bodegas.length > 0) {
+        this.venta.BodegaId = this.bodegas[0].Id;
+      }
+    },
+    iniciarItems() {
+      this.venta.relItems.forEach(item => {
+        if (item.relProducto != null) {
+          if (item.relProducto.relImposiciones != undefined) {
+            let sumaImps = 0;
+            /*let porcentajeImpuesto = 0;
+            if (item.relProducto.relImposiciones.length == 1) {
+              let imp = item.relProducto.relImposiciones.at(0);
+              porcentajeImpuesto = imp.relImpuesto.Porcentaje;
+            }
+            let res = (porcentajeImpuesto / 100) + 1;
+            precioProcesado /= res; // (p * res) / 100; // TODO Aplicar impuestos incluido en el precio otros impuestos solo
+            imps += ((this.productoSeleccion.cantidad * precioProcesado) * imp.relImpuesto.Porcentaje) / 100;*/
+            item.relProducto.relImposiciones.forEach(imp => {
+              if (imp.relImpuesto != null) {
+                sumaImps += ((item.Cantidad * item.Precio) * imp.relImpuesto.Porcentaje) / 100;
+              }
+            })
+            item.impuestos = sumaImps;
+          }
+        }
+      });
     }
   },
   filters: {
@@ -1218,6 +1385,7 @@ export default {
     }
   },
   created() {
+    this.procesando = true;
     let empresaId = getEmpresa().id
     this.$store
        .dispatch("inventarios/bodegasPorEstado", { estado: 0, empresa: empresaId})
@@ -1254,7 +1422,27 @@ export default {
           this.ivaIncluido = r.respuesta.data.Contenedor == 1;
         }
       }.bind(this)); 
-      
+      this.$store
+      .dispatch("ajustes/registrosPorTabla", {
+        id: 19 // Formas de pago
+      }).then(function(r) {
+        if (r) {
+          this.formasDePago = r.respuesta.data;
+          let n = 1;
+        }
+      }.bind(this)); 
+    this.$store
+      .dispatch("ventas/cajasPorUsuario", { 
+        empresa: getEmpresa().id,
+        usuario: getCurrentUser().Id })
+      .then(function(r) {
+        if (r) {
+          this.cajas = r.data;
+          if (this.cajas.length == 1) {
+            this.cajaSel = this.cajas[0];
+          }
+        }
+      }.bind(this));    
     if (this.$route.params.id != undefined && this.$route.params.id != null && this.$route.params.id > 0) {
       // traer venta por el id si el id es distinto a cero
       this.$store
@@ -1305,17 +1493,19 @@ export default {
           } else {
             this.venta.Fecha = null;
           }
-          this.tipoId = r.data.Tipo;
-          this.grabado = this.tipoId == tipoFactura;
-          this.iniciarImpuestos();
+          let tipoComprobante = this.$route.path.includes('/notas-venta') ? tipoNotaVenta : tipoFactura;
+          this.grabado = tipoComprobante == tipoFactura;
+          this.iniciarItems();
         }
+        this.procesando = false;
       }.bind(this))
       .catch((e) => {
         console.log(e);
       });
     } else {
-      this.tipoId = this.$route.meta.tipo;
-      this.venta.Tipo = this.tipoId;
+      this.procesando = false;
+      let tipoComprobante = this.$route.path.includes('/notas-venta') ? tipoNotaVenta : tipoFactura;
+      this.venta.Tipo = tipoComprobante;
       this.grabado = this.$route.meta.grabado;
     }
   },
@@ -1324,3 +1514,9 @@ export default {
   }
 }
 </script>
+<style>
+#ddFormaPago__BV_toggle_ {
+  max-width: 140px;
+  overflow: hidden;
+}
+</style>

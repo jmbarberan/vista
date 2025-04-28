@@ -41,14 +41,15 @@
                 v-b-tooltip.hover 
                 :title="$t('vista.comandos.modificar')"
               />
-              <span
+              <!--span
                 class="span-comando mdi mdi-paperclip mdi-18px" 
                 @click="acUnificar(row)"
                 v-b-tooltip.hover
                 :title="$t('vista.comandos.unificar')"
-              />
+              /-->
               <span
                 class="span-comando mdi mdi-trash-can-outline mdi-18px" 
+                style="color:brown;"
                 @click="eliminar(row)"
                 v-b-tooltip.hover
                 :title="$t('vista.comandos.eliminar')"

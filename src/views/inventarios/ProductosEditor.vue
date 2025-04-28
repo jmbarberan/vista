@@ -66,7 +66,7 @@
               </b-colxx>
               <b-colxx xxs="12" sm="6">
                 <b-form-group label="Grabado con IVA">
-                  <b-checkbox switch v-model.trim="grabado"/>
+                  <b-checkbox switch v-model="grabado"/>
                 </b-form-group>
               </b-colxx>
               <b-colxx xxs="12" sm="12">
@@ -193,7 +193,6 @@ export default {
         relPreciosEliminados: [],
         relImposiciones: []
       },
-      grabado: true,
       categorias: [],
       tiposProducto: [],
       itemCampos: [
@@ -305,7 +304,8 @@ export default {
               nombre: this.producto.Nombre })
             .then(function(res) {
               if (res.status == 200) {
-                if (this.grabado)  {
+                /*if (this.grabado)  {
+                  this.producto.Marca = 1;
                   if (this.producto.relImposiciones.length <= 0) { 
                     this.producto.relImposiciones = [ 
                       {
@@ -316,10 +316,11 @@ export default {
                     ]
                   }
                 } else {
+                  this.producto.Marca = 0;
                   if (this.producto.relImposiciones.length > 0) {
                     this.producto.relImposiciones = []
                   }
-                }
+                }*/
                 this.producto.relPrecios.map(function(pre) {
                   if (pre.MinimoCondicion > 0) {
                     pre.MinimoCondicion = 0;
@@ -385,7 +386,7 @@ export default {
           if (e.response.data.msj != undefined);
             msj = e.response.data.msj;
           this.$notify(
-            "danger", 
+            "error", 
             this.$t("vista.comandos.guardar") + " " + this.$t("vista.inventarios.productos.denominacion"), 
             msj,
             { duration: 3000, permanent: false }
@@ -406,7 +407,15 @@ export default {
       if (this.producto.Id > 0) 
         res = this.$t('vista.comandos.modificar');
       return res;
-    }
+    },
+    grabado: {
+      get () {
+        return this.producto.Marca == 1;
+      },
+      set (value) {
+        this.producto.Marca = (value ? 1 : 0);
+      }
+    },
   },
   created() {
     this.$store
@@ -434,11 +443,6 @@ export default {
     if (this.$route.params.id > 0) {
       if (this.$route.params.dato.Codigo.length > 0) {
         this.codigoGenerar = false;
-      }
-      if (this.$route.params.dato.relImposiciones.length > 0) {
-        this.grabado = true;
-      } else {
-        this.grabado = false;
       }
       if (this.$route.params.dato.relPrecios.length > 0) {
         this.secuenciaPrecio = this.$route.params.dato.relPrecios.length;

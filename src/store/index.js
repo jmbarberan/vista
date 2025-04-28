@@ -13,6 +13,8 @@ import modSubscripciones from "./modules/subscripciones";
 import modCxc from "./modules/cxc";
 import modNomina from "./modules/nomina";
 import { setCurrentLanguage, getEmpresa, setEmpresa, getCurrentSubscriber } from '../utils'
+import { parametrosPorEmpresa } from "@/rutas/ajustes";
+import axios from 'axios';
 
 Vue.use(Vuex)
 
@@ -87,11 +89,17 @@ export default new Vuex.Store({
     setSubscripcionLogoRuta(state, p) {
       state.subscripcion.logo = p;
     },
-    setEmpresaAccedida(state, p) {
+    async setEmpresaAccedida(state, p) {
+      let respParams = { data: [] }
+      if (p.id > 0)
+        respParams = await axios.get(this.$app.appConfig.apiUrl + parametrosPorEmpresa(p.id));
+      p.parametros = respParams.data;
       state.empresaAccedida = {
         id: p.id,
-        nombre: p.nombre
+        nombre: p.nombre,
+        parametros: p.parametros
       }
+      
       if (p.sesion) {
         setEmpresa(p);
       }
