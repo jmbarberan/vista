@@ -9,8 +9,8 @@ export const ventaPorNumero = function(tipo, num) {
   return `${rutaBase}/comprobantes/tipo/${tipo}/numero/${num}`;
 };
 
-export const ventasBuscar = function(sucursal, clase, estado, desde, hasta, tipo, filtro) {
-  return `${rutaBase}/comprobantes/sucursal/${sucursal}/clase/${clase}/estado/${estado}/desde/${desde}/hasta/${hasta}/tipo/${tipo}/filtro/${filtro}/buscar`;
+export const ventasBuscar = function(sucursal, clase, estado, desde, hasta, tipo, filtro, doctype) {
+  return `${rutaBase}/comprobantes/sucursal/${sucursal}/clase/${clase}/estado/${estado}/desde/${desde}/hasta/${hasta}/tipo/${tipo}/filtro/${filtro}/buscar?doctype=${doctype}`;
 };
 
 export const ventasDiario = function(sucursal, estado, desde, hasta) {

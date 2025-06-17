@@ -157,7 +157,7 @@ export default {
         Numero: 0,
         Fecha: null,
         BodegaId: 0,
-        SucursalId: 1,
+        SucursalId: 0,
         Descripcion: "",        
         Referencia: 0,
         Concepto: 0, 
@@ -303,16 +303,22 @@ export default {
         this.productoSeleccion.producto != null && 
         this.productoSeleccion.cantidad > 0)  
       {
-        let item = {
-          Id: 0,
-          KardexId: this.movimiento.Id,
-          ProductoId: this.productoSeleccion.id,
-          Cantidad: this.productoSeleccion.cantidad,
-          Costo: 0,
-          relProducto: this.productoSeleccion.producto,
-          indice: this.itemsIndice + 1
-        };
-        this.movimiento.relItems.push(item);
+        let itemExistente = this.movimiento.relItems.find(obj => obj.ProductoId === this.productoSeleccion.id);
+        if (itemExistente) {
+          itemExistente.Cantidad = parseFloat(itemExistente.Cantidad) + parseFloat(this.productoSeleccion.cantidad);
+        } else {
+          let itemNuevo = {
+            Id: 0,
+            KardexId: this.movimiento.Id,
+            ProductoId: this.productoSeleccion.id,
+            Cantidad: this.productoSeleccion.cantidad,
+            Costo: 0,
+            relProducto: this.productoSeleccion.producto,
+            indice: this.itemsIndice + 1
+          };
+          this.movimiento.relItems.push(itemNuevo);
+        }
+        
         this.productoSeleccion = {
           cantidad: 0,
           nombre: "",

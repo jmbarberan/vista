@@ -105,6 +105,12 @@ export default function inventariosRutas() {
       meta: { roles: [UserRole.Admin, UserRole.Bodega], tipo: 8, titulo: 'Inventario fisico' },
     },
     {
+      name: "fisico-comparativo",
+      path: `${traducir("rutas.fisico")}/:id/comparativo`,
+      component: () =>
+        import(/* webpackChunkName: "fisico-ccomparativo" */ "@/views/inventarios/FisicoComparativo.vue")
+    },
+    {
       path: "productos",
       component: () =>
         import(/* webpackChunkName: "productos" */ "@/views/inventarios/Productos.vue"),

@@ -477,7 +477,7 @@ export default {
         return  0;
       }
     },
-    total() {      
+    total() {
       return parseFloat(this.subtotal) + parseFloat(this.totalImpuestos);
     },
     guardarDesactivado() {
@@ -637,24 +637,30 @@ export default {
           }
           this.compra.Impuestos += imps;
         }
-        let item = {
-          Id: 0,
-          CompraId: this.compra.Id,
-          ProductoId:this.productoSeleccion.id,
-          Cantidad: this.productoSeleccion.cantidad,
-          Costo: this.productoSeleccion.costo,
-          Descuento: this.productoSeleccion.descuento,
-          Bodega: this.compra.BodegaId,
-          Adicional: 0,
-          Bultos: 0,
-          Lote: "",
-          Expiracion: null,
-          BultoCosto: 0,
-          relProducto: this.productoSeleccion.producto,
-          impuestos: imps,
-          indice: this.itemsIndice + 1
-        };        
-        this.compra.relItems.push(item);
+        let itemExistente = this.compra.relItems.find(obj => obj.ProductoId === this.productoSeleccion.id);
+        if (itemExistente) {
+          itemExistente.Cantidad = parseFloat(itemExistente.Cantidad) + parseFloat(this.productoSeleccion.cantidad);
+        } else {
+          let itemNuevo = {
+            Id: 0,
+            CompraId: this.compra.Id,
+            ProductoId:this.productoSeleccion.id,
+            Cantidad: this.productoSeleccion.cantidad,
+            Costo: this.productoSeleccion.costo,
+            Descuento: this.productoSeleccion.descuento,
+            Bodega: this.compra.BodegaId,
+            Adicional: 0,
+            Bultos: 0,
+            Lote: "",
+            Expiracion: null,
+            BultoCosto: 0,
+            relProducto: this.productoSeleccion.producto,
+            impuestos: imps,
+            indice: this.itemsIndice + 1
+          };
+          this.compra.relItems.push(itemNuevo);
+        }
+        
         this.productoSeleccion = {
           id: 0,
           nombre: "",

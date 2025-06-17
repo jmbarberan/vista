@@ -51,6 +51,14 @@ export const movimientoModificarEstado = function(id, estado) {
 export const movimientosGuardar = function() {
   return `${rutaBase}/movimientos/guardar`;
 }
+
+export const fisicoAjustar = function(id) {
+  return `${rutaBase}/movimientos/fisico/${id}/ajustar`;
+}
+
+export const fisicoComparativo = function(id) {
+  return `${rutaBase}/movimientos/fisico/${id}/comparativo`;
+}
 // #endregion
 
 // #region Compras

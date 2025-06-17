@@ -90,7 +90,7 @@ const ventas = {
       };
       return await axios(config);
     },
-    async ventasBuscar(context) {
+    async ventasBuscar(context, doctype) {
       //sucursal, clase, estado, desde, hasta, tipo, filtro
       let des = moment(context.rootState.movimientoBuscador.desde).format("YYYY-MM-DD");
       let has = moment(context.rootState.movimientoBuscador.hasta).format("YYYY-MM-DD");
@@ -109,7 +109,8 @@ const ventas = {
         des,
         has,
         tipo,
-        txt
+        txt,
+        doctype
       );
       const response = await axios.get(ruta)
         .catch(e => {

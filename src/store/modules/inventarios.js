@@ -18,7 +18,9 @@ import {
   comprasGuardar, 
   compraModificarEstado,
   existenciasCeroTodos,
-  imagenProductoPorId
+  imagenProductoPorId,
+  fisicoAjustar,
+  fisicoComparativo
 } from "@/rutas/inventarios";
 
 const inventarios = {
@@ -330,7 +332,7 @@ const inventarios = {
     },
     async productoModificarEstado(context, p) {
       return await axios.put(this.$app.appConfig.apiUrl + productoModificarEstado(p.id, p.estado));
-    }, 
+    },
     async imagenProductoPorId(context, id) {
       return await axios.get(this.$app.appConfig.apiUrl + imagenProductoPorId(id), { responseType: 'blob' });
     },
@@ -385,6 +387,12 @@ const inventarios = {
     },
     async movimientoModificarEstado(context, p) {
       return await axios.put(this.$app.appConfig.apiUrl + movimientoModificarEstado(p.id, p.estado));
+    },
+    async inventarioFisicoAjustar(context, p) {
+      return await axios.post(this.$app.appConfig.apiUrl + fisicoAjustar(p.id));
+    },
+    async inventarioFisicoComparativo(context, p) {
+      return await axios.get(this.$app.appConfig.apiUrl + fisicoComparativo(p.id));
     },
     // #endregion
 

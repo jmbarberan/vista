@@ -59,13 +59,25 @@
                 v-b-tooltip.hover
                 title="Restaurar"
               />
+              <span v-if="tipoId != null && tipoId == 8 && row.item.Estado == 0"
+                class="span-comando mdi mdi-calculator mdi-18px ml-2" 
+                @click="verComparativo(row)"
+                v-b-tooltip.hover
+                title="Ver comparativo"
+              />
+              <span v-if="tipoId != null && tipoId == 8 && row.item.Estado == 0"
+                class="span-comando mdi mdi-file-document-edit-outline mdi-18px ml-2" 
+                @click="ajustarFisico(row)"
+                v-b-tooltip.hover
+                title="Ajustar"
+              />
             </template>
             <template #cell(Fecha)="fila">
               {{ formatearFecha(fila.item.Fecha) }}
             </template>
             <template #cell(Estado)="fila">
-              <b-badge :variant="$t('vista.estados.colores.' + fila.item.Estado)">
-                {{ $t('vista.estados.' + fila.item.Estado) }}
+              <b-badge :variant="$t('vista.inventarios.fisicos.estados.colores.' + fila.item.Estado)">
+                {{ $t('vista.inventarios.fisicos.estados.' + fila.item.Estado) }}
               </b-badge>
             </template>
           </b-table>
@@ -267,6 +279,40 @@ export default {
         }.bind(this));
       this.busquedaEjecutando = false;
     },
+    ajustarFisico(pFila) {
+      if (pFila.item.Id > 0) {
+        this.busquedaEjecutando = true;
+        this.$store
+          .dispatch("inventarios/inventarioFisicoAjustar", {
+            id: pFila.item.Id
+          })
+          .then(function(r) {
+            this.buscar();
+            this.$notify("success",
+              "Ajustar inventario físico",
+              r.mensaje,
+              { duration: 3000, permanent: false });
+            this.busquedaEjecutando = false;  
+          }.bind(this))
+          .catch(function(e) {
+            console.log("Error");
+            console.log(e);
+            this.$notify("warning",
+              "Ajustar inventario físico",
+              "Se produjo un error al intentar ajustar el inventario físico",
+              { duration: 3000, permanent: false });
+            this.busquedaEjecutando = false;  
+          }.bind(this));
+      }
+    },
+    verComparativo(p) {
+      this.$router.push({
+        name: 'fisico-comparativo',
+        params: {
+          id: p.item.Id
+        }
+      });
+    },
     mensaje(contenido, titulo, variante) {
       this.counter++
       this.$bvToast.toast(contenido, {
@@ -386,9 +432,6 @@ export default {
     this.tipoId = this.$route.meta.tipo
     this.titulo = this.$route.meta.titulo
     this.cargarTipo(this.tipoId);
-  },
-  beforeDestroy() {
-    this.respaldarTipo(this.tipoId);
   }
 }
 </script>

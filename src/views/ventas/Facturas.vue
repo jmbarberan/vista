@@ -58,7 +58,7 @@
                 v-b-tooltip.hover
                 title="Verificar"
               />
-              <span v-else
+              <span v-else-if="row.item.Tipo == tipoFactura && row.item.Estado == 0"
                 class="span-comando mdi mdi-certificate mdi-18px mr-2"
                 @click="autorizar(row)"
                 v-b-tooltip.hover
@@ -227,7 +227,7 @@ export default {
   },
   methods: {
     estaAutorizado(vta) {
-      return vta.CERespuestaMsj == 'AUTORIZADO' || (vta.CEAutorizacion != null && vta.CEAutorizacion.length > 0);
+      return vta.Tipo == tipoFactura && vta.CERespuestaMsj == 'AUTORIZADO' || (vta.CEAutorizacion != null && vta.CEAutorizacion.length > 0);
     },
     cambiarPagina(p) {
       this.porPagina = p;
@@ -258,7 +258,7 @@ export default {
       this.ventas = [];
       this.paginaActual = 1;
       this.$store
-        .dispatch("ventas/ventasBuscar")
+        .dispatch("ventas/ventasBuscar", this.tipoId)
         .then(function(r) {
           if (r.id == 1) {
             if (r.respuesta.data != undefined) {
